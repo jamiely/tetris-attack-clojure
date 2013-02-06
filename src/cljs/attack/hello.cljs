@@ -1,4 +1,4 @@
-(ns hello)
+(ns attack.hello)
 (defn ^:export greet [n]
   (str "Hello " n))
 
@@ -22,5 +22,5 @@
 (defn grid [blocks]
   {:grid {
           :blocks blocks
-          }}]
+          }})
 
