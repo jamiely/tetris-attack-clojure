@@ -21086,7 +21086,7 @@ attack.game.point = function point(x, y) {
   return cljs.core.PersistentVector.fromArray([x, y], true)
 };
 attack.game.simple_block = function simple_block(pos, type) {
-  return cljs.core.ObjMap.fromObject(["\ufdd0'simple-block"], {"\ufdd0'simple-block":cljs.core.ObjMap.fromObject(["\ufdd0'type", "\ufdd0'position"], {"\ufdd0'type":type, "\ufdd0'position":pos})})
+  return cljs.core.ObjMap.fromObject(["\ufdd0'block"], {"\ufdd0'block":cljs.core.ObjMap.fromObject(["\ufdd0'type", "\ufdd0'position"], {"\ufdd0'type":type, "\ufdd0'position":pos})})
 };
 attack.game.complex_block = function complex_block(blocks) {
   return cljs.core.ObjMap.fromObject(["\ufdd0'complex-block"], {"\ufdd0'complex-block":cljs.core.ObjMap.fromObject(["\ufdd0'blocks"], {"\ufdd0'blocks":blocks})})
@@ -28887,11 +28887,57 @@ goog.exportSymbol("attack.hello.greet", attack.hello.greet);
 goog.provide("attack.display");
 goog.require("cljs.core");
 goog.require("attack.game");
+attack.display.WHITE = "white";
+attack.display.BLUE = "blue";
+attack.display.BLOCKWIDTH = 20;
+attack.display.BLOCKHEIGHT = 20;
+attack.display.BLOCKSIZE = cljs.core.PersistentVector.fromArray([attack.display.BLOCKWIDTH, attack.display.BLOCKHEIGHT], true);
 attack.display.init = function init() {
+  attack.display.draw_grid.call(null);
   return attack.game.default_game.call(null)
 };
 goog.exportSymbol("attack.display.init", attack.display.init);
-attack.display.render = function render(game) {
-  return console.log([cljs.core.str("Hello "), cljs.core.str(game)].join(""))
+attack.display.render = function render(p__10888) {
+  var map__10890 = p__10888;
+  var map__10890__$1 = cljs.core.seq_QMARK_.call(null, map__10890) ? cljs.core.apply.call(null, cljs.core.hash_map, map__10890) : map__10890;
+  var game = map__10890__$1;
+  var grid = cljs.core._lookup.call(null, map__10890__$1, "\ufdd0'game", null);
+  console.log([cljs.core.str("Hello "), cljs.core.str(game)].join(""));
+  return attack.display.render_grid.call(null, grid)
 };
 goog.exportSymbol("attack.display.render", attack.display.render);
+attack.display.render_grid = function render_grid(p__10891) {
+  var map__10894 = p__10891;
+  var map__10894__$1 = cljs.core.seq_QMARK_.call(null, map__10894) ? cljs.core.apply.call(null, cljs.core.hash_map, map__10894) : map__10894;
+  var map__10895 = cljs.core._lookup.call(null, map__10894__$1, "\ufdd0'grid", null);
+  var map__10895__$1 = cljs.core.seq_QMARK_.call(null, map__10895) ? cljs.core.apply.call(null, cljs.core.hash_map, map__10895) : map__10895;
+  var blocks = cljs.core._lookup.call(null, map__10895__$1, "\ufdd0'blocks", null);
+  return cljs.core.doall.call(null, cljs.core.map.call(null, attack.display.draw_block, blocks))
+};
+attack.display.canvas = function canvas() {
+  return document.getElementById("canvas")
+};
+attack.display.draw_context = function draw_context() {
+  return attack.display.canvas.call(null).getContext("2d")
+};
+attack.display.fill = function fill(context, color) {
+  return context.fillStyle = color
+};
+attack.display.rect = function rect(context, color, x, y, w, h) {
+  attack.display.fill.call(null, context, color);
+  return context.fillRect(x, y, w, h)
+};
+attack.display.draw_grid = function draw_grid() {
+  return attack.display.rect.call(null, attack.display.draw_context.call(null), attack.display.WHITE, 20, 20, 100, 100)
+};
+attack.display.draw_block = function draw_block(p__10896) {
+  var map__10900 = p__10896;
+  var map__10900__$1 = cljs.core.seq_QMARK_.call(null, map__10900) ? cljs.core.apply.call(null, cljs.core.hash_map, map__10900) : map__10900;
+  var map__10901 = cljs.core._lookup.call(null, map__10900__$1, "\ufdd0'block", null);
+  var map__10901__$1 = cljs.core.seq_QMARK_.call(null, map__10901) ? cljs.core.apply.call(null, cljs.core.hash_map, map__10901) : map__10901;
+  var map__10902 = cljs.core._lookup.call(null, map__10901__$1, "\ufdd0'position", null);
+  var map__10902__$1 = cljs.core.seq_QMARK_.call(null, map__10902) ? cljs.core.apply.call(null, cljs.core.hash_map, map__10902) : map__10902;
+  var x = cljs.core._lookup.call(null, map__10902__$1, "\ufdd0'x", null);
+  var y = cljs.core._lookup.call(null, map__10902__$1, "\ufdd0'y", null);
+  return attack.display.rect.call(null, attack.display.draw_context.call(null), attack.display.BLUE, x, y, attack.display.BLOCKWIDTH, attack.display.BLOCKHEIGHT)
+};

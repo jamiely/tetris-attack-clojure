@@ -7,7 +7,7 @@
 ; a basic block, not to be confused with non-basic blocks
 ; such as garbage blocks
 (defn simple-block [pos type]
-  {:simple-block {
+  {:block {
            :type type
            :position pos
            }
