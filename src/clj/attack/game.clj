@@ -23,6 +23,9 @@
           }})
 
 (defn default-grid []
-  {:grid {
-          :blocks [(simple-block (point 1 1) "red")]
-          }})
+  (grid [(simple-block (point 1 1) "red")]))
+  
+(defn default-game []
+  {:game (default-grid)})
+
+   

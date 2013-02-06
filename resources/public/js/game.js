@@ -21095,7 +21095,10 @@ attack.game.grid = function grid(blocks) {
   return cljs.core.ObjMap.fromObject(["\ufdd0'grid"], {"\ufdd0'grid":cljs.core.ObjMap.fromObject(["\ufdd0'blocks"], {"\ufdd0'blocks":blocks})})
 };
 attack.game.default_grid = function default_grid() {
-  return cljs.core.ObjMap.fromObject(["\ufdd0'grid"], {"\ufdd0'grid":cljs.core.ObjMap.fromObject(["\ufdd0'blocks"], {"\ufdd0'blocks":cljs.core.PersistentVector.fromArray([attack.game.simple_block.call(null, attack.game.point.call(null, 1, 1), "red")], true)})})
+  return attack.game.grid.call(null, cljs.core.PersistentVector.fromArray([attack.game.simple_block.call(null, attack.game.point.call(null, 1, 1), "red")], true))
+};
+attack.game.default_game = function default_game() {
+  return cljs.core.ObjMap.fromObject(["\ufdd0'game"], {"\ufdd0'game":attack.game.default_grid.call(null)})
 };
 goog.provide("goog.disposable.IDisposable");
 goog.disposable.IDisposable = function() {
@@ -28881,3 +28884,14 @@ attack.hello.greet = function greet(n) {
   return[cljs.core.str("Hello "), cljs.core.str(n)].join("")
 };
 goog.exportSymbol("attack.hello.greet", attack.hello.greet);
+goog.provide("attack.display");
+goog.require("cljs.core");
+goog.require("attack.game");
+attack.display.init = function init() {
+  return attack.game.default_game.call(null)
+};
+goog.exportSymbol("attack.display.init", attack.display.init);
+attack.display.render = function render(game) {
+  return console.log([cljs.core.str("Hello "), cljs.core.str(game)].join(""))
+};
+goog.exportSymbol("attack.display.render", attack.display.render);

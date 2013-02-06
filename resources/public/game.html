@@ -4,7 +4,16 @@
   <h1>Tetris Attack</h1>
   <div id="game">
   </div>
+  <script src="js/jquery-1.9.1.min.js"></script>
   <script src="js/game.js"></script>
+  <script>
+    $(function() {
+      var game = attack.display.init();
+      setInterval(function() {
+         attack.display.render(game);
+      }, 1000);
+    });
+  </script>
 </body>
 </html>
   
