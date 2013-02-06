@@ -12,6 +12,8 @@
             ]
   :ring {:handler attack.core/handler }
   :cljsbuild {
+              :crossovers [attack.game]
+              :crossover-path "src/cljs/crossovers"
               :builds [{
                         :source-paths ["src/cljs"]
                         :compiler {
