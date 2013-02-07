@@ -17,24 +17,25 @@
 (defn block-types []
   [:orange :yellow :pink :cyan :green :purple :red])
 
+(defn rand-block-type []
+  (rand-nth (block-types)))
+
 (defn grid-add-block-row [{blocks :blocks
                            rows :rows
                            cols :cols}]
-  (let [types (block-types)
-        new-last (+ rows 1)
+  (let [new-last (+ rows 1)
         new-block (fn [x]
-                    (simple-block (point x new-last) (rand-nth types)))
+                    (simple-block (point x new-last) (rand-block-type)))
         new-blocks (map new-block (range 1 (+ cols 1)))]
     {:blocks (concat blocks new-blocks)
      :rows new-last
      :cols cols}))
 
 (defn default-grid [cols rows]
-  (let [types (block-types)
-        xs (range 1 (+ cols 1))]
+  (let [xs (range 1 (+ cols 1))]
     {:blocks (for [x xs
                 y (range 1 (+ rows 1))]
-               (simple-block (point x y) (rand-nth types)))
+               (simple-block (point x y) (rand-block-type)))
      :cols cols
      :rows rows}))
   
