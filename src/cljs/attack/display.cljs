@@ -12,11 +12,11 @@
   (draw-grid)
   (game/default-game))
 
-(defn ^:export render[{grid :game :as game}]
+(defn ^:export render[{grid :grid :as game}]
   (js/console.log (str "Hello " game))
   (render-grid grid))
 
-(defn render-grid [{{blocks :blocks} :grid}]
+(defn render-grid [{blocks :blocks}]
   (doall (map draw-block blocks)))
 
 (defn canvas []
@@ -35,6 +35,6 @@
 (defn draw-grid []
   (rect (draw-context) WHITE 20 20 100 100))
 
-(defn draw-block [{{{x :x y :y} :position} :block}]
+(defn draw-block [{{x :x y :y} :position}]
   (rect (draw-context) BLUE x y BLOCKWIDTH BLOCKHEIGHT))
 

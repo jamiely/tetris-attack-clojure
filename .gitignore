@@ -11,3 +11,5 @@ src/cljs/crossovers
 out
 repl
 target
+resources/public/js/game.js
+
