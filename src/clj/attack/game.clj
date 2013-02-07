@@ -14,17 +14,29 @@
 (defn complex-block[blocks]
   {:blocks blocks})
 
-(defn grid [blocks]
-  {:blocks blocks})
+(defn grid [blocks last-row]
+  {:blocks blocks :last-row last-row})
 
 (defn block-types []
   [:orange :yellow :pink :cyan :green :purple :red])
 
+(defn x-range []
+  (range 1 7))
+
+(defn grid-add-block-row [{blocks :blocks last-row :last-row}]
+  (let [types (block-types)
+        new-last (+ last-row 1)
+        new-block (fn [x]
+                    (simple-block (point x new-last) (rand-nth types)))
+        new-blocks (map new-block (x-range))]
+    (grid (concat blocks new-blocks) new-last)))
+
 (defn default-grid []
-  (let [types (block-types)]
-    (grid (for [row (range 1 7)
-                col (range 1 7)]
-            (simple-block (point row col) (rand-nth types))))))
+  (let [types (block-types)
+        xs (x-range)]
+    (grid (for [x xs
+                y (range 1 7)]
+            (simple-block (point x y) (rand-nth types))) (reduce max xs))))
   
 (defn default-game []
   {:grid (default-grid)})

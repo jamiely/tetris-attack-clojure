@@ -18,7 +18,7 @@
     $(function() {
       var game = attack.display.init();
       setInterval(function() {
-         attack.display.render(game);
+         game = attack.display.render(game);
       }, 1000);
     });
   </script>

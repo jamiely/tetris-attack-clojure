@@ -16,8 +16,11 @@
   (js/console.log (str "Hello " game))
   (render-grid grid))
 
-(defn render-grid [{blocks :blocks}]
-  (doall (map draw-block blocks)))
+(defn render-grid [grid]
+  (let [new-grid (game/grid-add-block-row grid)
+        {blocks :blocks} new-grid]
+    (doall (map draw-block blocks))
+    {:grid new-grid}))
 
 (defn canvas []
   (.getElementById js/document "canvas"))
