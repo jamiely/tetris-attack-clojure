@@ -17,8 +17,14 @@
 (defn grid [blocks]
   {:blocks blocks})
 
+(defn block-types []
+  [:orange :yellow :pink :cyan :green :purple :red])
+
 (defn default-grid []
-  (grid [(simple-block (point 1 1) "red")]))
+  (let [types (block-types)]
+    (grid (for [row (range 1 7)
+                col (range 1 7)]
+            (simple-block (point row col) (rand-nth types))))))
   
 (defn default-game []
   {:grid (default-grid)})

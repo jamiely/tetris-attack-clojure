@@ -35,6 +35,10 @@
 (defn draw-grid []
   (rect (draw-context) WHITE 20 20 100 100))
 
-(defn draw-block [{{x :x y :y} :position}]
-  (rect (draw-context) BLUE x y BLOCKWIDTH BLOCKHEIGHT))
+(defn draw-block [{[grid-x grid-y] :position color :type :as block}]
+  (let [x (* grid-x BLOCKWIDTH)
+        y (* grid-y BLOCKHEIGHT)]
+    (.log js/console (str "Drawing block " block " at " x ", " y))
+    (rect (draw-context) (name color) x y BLOCKWIDTH BLOCKHEIGHT)))
+
 
