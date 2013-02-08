@@ -22,7 +22,19 @@
       }, 50);
       setInterval(function() {
          attack.display.render(gameInterface);
-      }, 1000);
+      }, 500);
+      $('body').keyup(function(e) {
+        if(e.which == 13) { return; } // ENTER
+        if(e.which == 39) { // RIGHT
+            gameInterface = attack.display.cursor_right(gameInterface);
+        } else if (e.which == 37) { // LEFT
+            gameInterface = attack.display.cursor_left(gameInterface);
+        } else if (e.which == 38) { // UP
+            gameInterface = attack.display.cursor_up(gameInterface);
+        } else if (e.which == 40) { // DOWN
+            gameInterface = attack.display.cursor_down(gameInterface);
+        }
+      });
     });
   </script>
 </body>

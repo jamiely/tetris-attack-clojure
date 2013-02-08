@@ -4,6 +4,9 @@
 (defn point [x y]
   [x y])
 
+(defn point-add [[x1 y1] [x2 y2]]
+  [(+ x1 x2) (+ y1 y2)])
+
 (defn simple-block [pos type]
   "Returns a simple block, not to be confused with non-basic blocks such as garbage blocks"
   {:type type
