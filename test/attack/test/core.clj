@@ -73,4 +73,23 @@
     (is (= (r (s (s (s (s game))))) (+ 2 rows)))
     ))
 
+(deftest swap-block 
+  (let [ticks 20
+        blk #(game/simple-block (game/point %1 %2) :notype)
+        a (blk 1 2)
+        b (blk 3 4)
+        new-block (game/swap-block a b ticks)]
+    (is (= new-block
+           {:blocks [a b]
+            :ticks ticks
+            :type :swap}))))
 
+(deftest resolve-swap-blocks
+  "When ticks reaches 0, any swap-blocks should split into regular blocks"
+  (let [bt #(game/simple-block (game/point %1 %2) %3)
+        b #(bt %1 %2 :notype)
+        sb (fn [blks ticks] {:type :swap :ticks ticks :blocks blks})
+        blocks [(b 1 1) (b 1 2) (sb [(bt 3 4 :red)(bt 5 6 :blue)] 0)]]
+    (is (= (game/resolve-swap-blocks blocks)
+           [(b 1 1) (b 1 2) (bt 3 4 :blue) (bt 5 6 :red)]))))
+        

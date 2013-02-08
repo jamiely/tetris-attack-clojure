@@ -22,6 +22,15 @@
   "Returns a random block type"
   (rand-nth (block-types)))
 
+(defn swap-block [a b ticks]
+  {:blocks [a b]
+   :ticks ticks
+   :type :swap})
+
+(defn resolve-swap-blocks [blocks]
+  "Dissolved swap blocks when the ticks reach 0"
+  blocks)
+
 (defn grid-empty [cols]
   "Returns an empty grid"
   {:blocks []
