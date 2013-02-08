@@ -12,6 +12,10 @@ Another simple game to practice clojure and clojurescript.
     lein ring server
     # Navigate to: http://localhost:3000/game.html
 
+## Tests
+
+    lein test
+
 ## Browser Repl
 
     # Starts a server listening on port 9000 which the game page 
