@@ -16,12 +16,12 @@
   <script src="js/game.js"></script>
   <script>
     $(function() {
-      var game = attack.display.init();
+      var gameInterface = attack.display.init();
       setInterval(function() {
-         game = attack.display.step(game);
+         gameInterface = attack.display.step(gameInterface);
       }, 50);
       setInterval(function() {
-         attack.display.render(game);
+         attack.display.render(gameInterface);
       }, 1000);
     });
   </script>

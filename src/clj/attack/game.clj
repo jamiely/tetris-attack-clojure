@@ -74,7 +74,7 @@
                (simple-block (point x y) (rand-block-type)))
      :cols cols
      :rows rows}))
-  
+
 (defn default-game []
   (let [rows 6
         cols 6]
@@ -83,6 +83,9 @@
      :clock 0
      ;; add a line after this many ticks
      :add-line-ticks 60}))
+
+(defn default-cursor []
+  {:origin (point 2 2)})
 
 (defn tick [{clock :clock :as game}]
   "Increments the clock of a game"
