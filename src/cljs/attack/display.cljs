@@ -23,13 +23,17 @@
 (defn draw-context []
   (.getContext (canvas) "2d"))
 
+(defn draw-block-fun [fun {pt :position color :type}]
+  (let [[x y] (pt-to-display-pt pt)]
+    (fun (draw-context) (name color) x y BLOCKWIDTH BLOCKHEIGHT)))
 
 (defn render-cursor [{pt :origin :as cursor}]
-  (let [[x y] (pt-to-display-pt pt)
-        [ax ay] (pt-to-display-pt (game/point-add pt (game/point 1 0)))]
-    (orect (draw-context) "black" x y BLOCKWIDTH BLOCKHEIGHT)
-    (orect (draw-context) "black" ax ay BLOCKWIDTH BLOCKHEIGHT)))
-
+  (let [context (draw-context)
+        nofill-block (fn [pt]
+                       (let [[x y] (pt-to-display-pt pt)]
+                         (orect context "black" x y BLOCKWIDTH BLOCKHEIGHT)))]
+    (nofill-block pt)
+    (nofill-block (game/point-add pt (game/point 1 0)))))
 
 (defn fill [context color]
   (set! (.-fillStyle context) color))
@@ -41,9 +45,8 @@
 (defn draw-grid []
   (rect (draw-context) WHITE 20 20 100 100))
 
-(defn draw-block [{pt :position color :type :as block}]
-  (let [[x y] (pt-to-display-pt pt)]
-    (rect (draw-context) (name color) x y BLOCKWIDTH BLOCKHEIGHT)))
+(defn draw-block [b]
+  (draw-block-fun rect b))
 
 (defn cursor-mod [{{origin :origin :as cursor} :cursor :as gi} pt]
   (let [new-orig (game/point-add origin pt)
