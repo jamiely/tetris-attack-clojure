@@ -83,13 +83,23 @@
            {:blocks [a b]
             :ticks ticks
             :type :swap}))))
-
+(deftest dec-ticks
+  (let [t #(get % :ticks)
+        t! (fn [n] {:ticks n})
+        things (map t! (range 1 6))]
+    (is (= (map #(t (game/dec-ticks %)) things)
+           (range 0 5)))))
+    
 (deftest resolve-swap-blocks
   "When ticks reaches 0, any swap-blocks should split into regular blocks"
   (let [bt #(game/simple-block (game/point %1 %2) %3)
         b #(bt %1 %2 :notype)
         sb (fn [blks ticks] {:type :swap :ticks ticks :blocks blks})
-        blocks [(b 1 1) (b 1 2) (sb [(bt 3 4 :red)(bt 5 6 :blue)] 0)]]
+        f-blks (fn [ticks] [(b 1 1) (b 1 2) (sb [(bt 3 4 :red)(bt 5 6 :blue)] ticks)])
+        blocks (f-blks 0)
+        nodissolve-blocks (f-blks 1)]
     (is (= (game/resolve-swap-blocks blocks)
-           [(b 1 1) (b 1 2) (bt 3 4 :blue) (bt 5 6 :red)]))))
-        
+           [(b 1 1) (b 1 2) (bt 5 6 :red) (bt 3 4 :blue)]))
+    (is (= (game/resolve-swap-blocks nodissolve-blocks)
+           nodissolve-blocks))))
+     

@@ -23,13 +23,32 @@
   (rand-nth (block-types)))
 
 (defn swap-block [a b ticks]
+  "Creates a swap block, which represents two blocks which will change positions when the tick count has reached 0"
   {:blocks [a b]
    :ticks ticks
    :type :swap})
 
+(defn swap-block? [{type :type}]
+  (= type :swap))
+
+(defn ticks0? [{ticks :ticks}]
+  (and (not (nil? ticks))
+       (zero? ticks)))
+
+(defn blocks-swap! [[a b]]
+  (let [{a-pos :position} a
+        {b-pos :position} b]
+    [(assoc a :position b-pos)
+     (assoc b :position a-pos)]))
+
 (defn resolve-swap-blocks [blocks]
-  "Dissolved swap blocks when the ticks reach 0"
-  blocks)
+  "Dissolves swap blocks when the ticks reach 0"
+  (flatten
+   (map (fn [blk]
+        (if (and (swap-block? blk) (ticks0? blk))
+          (blocks-swap! (get blk :blocks))
+          blk))
+        blocks)))
 
 (defn grid-empty [cols]
   "Returns an empty grid"
@@ -77,8 +96,21 @@
     (assoc game :grid (grid-add-block-row (get game :grid)))
     game))
 
+(defn dec-ticks [{ticks :ticks :as thing}]
+  "If the thing has ticks, decrement the ticks"
+  (if (nil? ticks)
+    thing
+    (assoc thing :ticks (- ticks 1))))
+
+(defn step-blocks [blocks]
+  (resolve-swap-blocks (map dec-ticks blocks)))
+
+(defn step-grid [{blocks :blocks :as grid}]
+  (assoc grid :blocks (step-blocks blocks)))
+
 (defn step [game]
   "Steps a game by 1"
-  (step-add-line
-   (tick game))
-  )
+  (let [{grid :grid :as g} (tick game)
+        new-grid (step-grid grid)]
+    (step-add-line (assoc g :grid new-grid))))
+
