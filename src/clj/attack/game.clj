@@ -20,6 +20,12 @@
 (defn rand-block-type []
   (rand-nth (block-types)))
 
+(defn grid-empty [cols]
+  "Returns an empty grid"
+  {:blocks []
+   :rows 0
+   :cols cols})
+
 (defn grid-add-block-row [{blocks :blocks
                            rows :rows
                            cols :cols}]
