@@ -12,15 +12,15 @@
   (draw-grid)
   (game/default-game))
 
-(defn ^:export render[{grid :grid :as game}]
-  (js/console.log (str "Hello " game))
+(defn ^:export step [game]
+  (game/step game))
+
+(defn ^:export render[{grid :grid clock :clock :as game}]
+  (js/console.log (str "Clock " clock))
   (render-grid grid))
 
 (defn render-grid [grid]
-  (let [new-grid (game/grid-add-block-row grid)
-        {blocks :blocks} new-grid]
-    (doall (map draw-block blocks))
-    {:grid new-grid}))
+    (doall (map draw-block (get grid :blocks))))
 
 (defn canvas []
   (.getElementById js/document "canvas"))
@@ -41,7 +41,6 @@
 (defn draw-block [{[grid-x grid-y] :position color :type :as block}]
   (let [x (* grid-x BLOCKWIDTH)
         y (* grid-y BLOCKHEIGHT)]
-    (.log js/console (str "Drawing block " block " at " x ", " y))
     (rect (draw-context) (name color) x y BLOCKWIDTH BLOCKHEIGHT)))
 
 
