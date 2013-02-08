@@ -22,6 +22,7 @@
           :cols 6})))
 
 (deftest grid-add-row
+  "Tests adding a new row to a grid"
   (let [cols 6
         {blocks :blocks :as new-grid-orig} (game/grid-add-block-row (game/grid-empty cols))
         ;; Use to change the type of the block (required since when we
@@ -36,10 +37,12 @@
             :cols cols}))))
 
 (deftest mod-clock
+  "Test an internal function that is used to test clock ticks"
   (is (game/mod-clock {:clock 10} 10))
   (is (not (game/mod-clock {:clock 10} 9))))
 
-(deftest step
+(deftest step-clock
+  "Tests that the clock is incremented when the game steps"
   (let [g (game/default-game)
         c #(get % :clock)]
         (is (= (c g) 0))
@@ -48,6 +51,7 @@
         ))
 
 (deftest stepline1
+  "Tests that a line is added every 1 step"
   (let [game (assoc (game/default-game) :add-line-ticks 1)
         r #(get (get % :grid) :rows)
         s game/step
@@ -57,6 +61,7 @@
     (is (= (r (s (s game))) (+ 2 rows)))))
 
 (deftest stepline2
+  "Tests that a line is added every 2 steps"
   (let [game (assoc (game/default-game) :add-line-ticks 2)
         r #(get (get % :grid) :rows)
         s game/step
