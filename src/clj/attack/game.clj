@@ -1,11 +1,5 @@
-(ns attack.game)
-
-; a point
-(defn point [x y]
-  [x y])
-
-(defn point-add [[x1 y1] [x2 y2]]
-  [(+ x1 x2) (+ y1 y2)])
+(ns attack.game
+  (:use [attack.point :only [point point-add]]))
 
 (defn simple-block [pos type]
   "Returns a simple block, not to be confused with non-basic blocks such as garbage blocks"

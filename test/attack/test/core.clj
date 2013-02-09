@@ -1,13 +1,14 @@
 (ns attack.test.core
   (:use [attack.core])
   (:require [attack.game :as game])
+  (:require [attack.point :as pt])
   (:use [clojure.test]))
 
 (deftest point
-  (is (= (game/point 1 2) [1 2]) "No tests have been written."))
+  (is (= (pt/point 1 2) [1 2]) "No tests have been written."))
 
 (deftest simple-block
-  (is (= (game/simple-block (game/point 1 2) :red)
+  (is (= (game/simple-block (pt/point 1 2) :red)
          {:type :red :position [1 2]})))
 
 (deftest complex-block
@@ -29,7 +30,7 @@
         ;; add a row, the block values are random.
         swapped-blocks (map #(assoc % :type :red) blocks)
         new-grid (assoc new-grid-orig :blocks swapped-blocks)
-        test-blocks (map #(game/simple-block (game/point % 1) :red)
+        test-blocks (map #(game/simple-block (pt/point % 1) :red)
                          (range 1 (+ cols 1)))]
     (is (= new-grid
            {:blocks test-blocks
@@ -75,7 +76,7 @@
 
 (deftest swap-block 
   (let [ticks 20
-        blk #(game/simple-block (game/point %1 %2) :notype)
+        blk #(game/simple-block (pt/point %1 %2) :notype)
         a (blk 1 2)
         b (blk 3 4)
         new-block (game/swap-block a b ticks)]
@@ -92,7 +93,7 @@
     
 (deftest resolve-swap-blocks
   "When ticks reaches 0, any swap-blocks should split into regular blocks"
-  (let [bt #(game/simple-block (game/point %1 %2) %3)
+  (let [bt #(game/simple-block (pt/point %1 %2) %3)
         b #(bt %1 %2 :notype)
         sb (fn [blks ticks] {:type :swap :ticks ticks :blocks blks})
         f-blks (fn [ticks] [(b 1 1) (b 1 2) (sb [(bt 3 4 :red)(bt 5 6 :blue)] ticks)])
@@ -105,7 +106,7 @@
 
 (deftest grid-swap-blocks
   "Tests creating swap blocks out of two other blocks"
-  (let [blk #(game/simple-block (game/point %1 %2) :notype)
+  (let [blk #(game/simple-block (pt/point %1 %2) :notype)
         a (blk 1 2)
         b (blk 3 4)
         c (blk 5 6)
@@ -114,10 +115,10 @@
            {:blocks [{:blocks [a b] :ticks 20 :type :swap} c]}))))
 
 (deftest grid-block-at
-  (let [blk #(game/simple-block (game/point %1 %2) :notype)
+  (let [blk #(game/simple-block (pt/point %1 %2) :notype)
         [a b c] [(blk 1 2) (blk 2 3) (blk 4 5)]
         grid {:blocks [a b c]}
-        blk-at #(game/grid-block-at grid (game/point %1 %2))
+        blk-at #(game/grid-block-at grid (pt/point %1 %2))
         ]
     (is (= (blk-at 2 3) b))
     (is (= (blk-at 4 5) c))

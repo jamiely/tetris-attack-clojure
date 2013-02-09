@@ -1,5 +1,6 @@
 (ns attack.display
-  (:require [attack.game :as game]))
+  (:require [attack.game :as game]
+            [attack.point :as pt]))
 
 (def WHITE "white")
 (def BLUE "blue")
@@ -33,7 +34,7 @@
                        (let [[x y] (pt-to-display-pt pt)]
                          (orect context "black" x y BLOCKWIDTH BLOCKHEIGHT)))]
     (nofill-block pt)
-    (nofill-block (game/point-add pt (game/point 1 0)))))
+    (nofill-block (pt/point-add pt (pt/point 1 0)))))
 
 (defn fill [context color]
   (set! (.-fillStyle context) color))
@@ -62,25 +63,25 @@
     (draw-block-fun rect block)))
 
 (defn cursor-mod [{{origin :origin :as cursor} :cursor :as gi} pt]
-  (let [new-orig (game/point-add origin pt)
+  (let [new-orig (pt/point-add origin pt)
         new-cursor (assoc cursor :origin new-orig)]
     (assoc gi :cursor new-cursor)))
 
 (defn ^:export cursor-down [gi]
-  (cursor-mod gi (game/point 0 1)))
+  (cursor-mod gi (pt/point 0 1)))
 
 (defn ^:export cursor-up [gi]
-  (cursor-mod gi (game/point 0 -1)))
+  (cursor-mod gi (pt/point 0 -1)))
 
 (defn ^:export cursor-left [gi]
-  (cursor-mod gi (game/point -1 0)))
+  (cursor-mod gi (pt/point -1 0)))
 
 (defn ^:export cursor-right [gi]
   (cursor-mod gi (game/point 1 0)))
 
 (defn ^:export cursor-swap [{{grid :grid :as game} :game {origin :origin} :cursor :as gi}] 
   (let [blk-at (partial game/grid-block-at grid)
-        b-pt (game/point-add origin (game/point 1 0))
+        b-pt (pt/point-add origin (pt/point 1 0))
         [a b] (map blk-at [origin b-pt])
         new-grid (game/grid-swap-blocks grid a b)]
     (.log js/console (str new-grid))
