@@ -11,8 +11,7 @@
             [lein-ring "0.8.2"]
             ]
   :ring {:handler attack.core/handler }
-  :cljsbuild {
-              :crossovers [attack.point
+  :cljsbuild {:crossovers [attack.point
                            attack.tick
                            attack.block
                            attack.grid
@@ -20,11 +19,7 @@
                            attack.game
                            attack.game-interface]
               :crossover-path "src/cljs/crossovers"
-              :builds [{
-                        :source-paths ["src/cljs"]
-                        :compiler {
-                                   :output-to "resources/public/js/game.js"
+              :builds [{:source-paths ["src/cljs"]
+                        :compiler {:output-to "resources/public/js/game.js"
                                    :optimizations :whitespace
-                                   :pretty-print true
-                                   }
-              }]})
+                                   :pretty-print true}}]})

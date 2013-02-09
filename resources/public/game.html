@@ -15,28 +15,7 @@
   <script src="js/jquery-1.9.1.min.js"></script>
   <script src="js/game.js"></script>
   <script>
-    $(function() {
-      var gameInterface = attack.display.init();
-      setInterval(function() {
-         gameInterface = attack.display.step(gameInterface);
-      }, 25);
-      setInterval(function() {
-         attack.display.render(gameInterface);
-      }, 100);
-      $('body').keyup(function(e) {
-        if(e.which == 13) { // ENTER
-            gameInterface = attack.display.cursor_swap(gameInterface);
-        } else if(e.which == 39) { // RIGHT
-            gameInterface = attack.display.cursor_right(gameInterface);
-        } else if (e.which == 37) { // LEFT
-            gameInterface = attack.display.cursor_left(gameInterface);
-        } else if (e.which == 38) { // UP
-            gameInterface = attack.display.cursor_up(gameInterface);
-        } else if (e.which == 40) { // DOWN
-            gameInterface = attack.display.cursor_down(gameInterface);
-        }
-      });
-    });
+    $(attack.entrypoint.init);
   </script>
 </body>
 </html>
