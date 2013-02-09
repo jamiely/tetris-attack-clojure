@@ -19,13 +19,14 @@
       var gameInterface = attack.display.init();
       setInterval(function() {
          gameInterface = attack.display.step(gameInterface);
-      }, 50);
+      }, 25);
       setInterval(function() {
          attack.display.render(gameInterface);
-      }, 500);
+      }, 100);
       $('body').keyup(function(e) {
-        if(e.which == 13) { return; } // ENTER
-        if(e.which == 39) { // RIGHT
+        if(e.which == 13) { // ENTER
+            gameInterface = attack.display.cursor_swap(gameInterface);
+        } else if(e.which == 39) { // RIGHT
             gameInterface = attack.display.cursor_right(gameInterface);
         } else if (e.which == 37) { // LEFT
             gameInterface = attack.display.cursor_left(gameInterface);

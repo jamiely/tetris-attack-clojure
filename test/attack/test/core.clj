@@ -102,4 +102,25 @@
            [(b 1 1) (b 1 2) (bt 5 6 :red) (bt 3 4 :blue)]))
     (is (= (game/resolve-swap-blocks nodissolve-blocks)
            nodissolve-blocks))))
+
+(deftest grid-swap-blocks
+  "Tests creating swap blocks out of two other blocks"
+  (let [blk #(game/simple-block (game/point %1 %2) :notype)
+        a (blk 1 2)
+        b (blk 3 4)
+        c (blk 5 6)
+        grid {:blocks [a b c]}]
+    (is (= (game/grid-swap-blocks grid a b)
+           {:blocks [{:blocks [a b] :ticks 20 :type :swap} c]}))))
+
+(deftest grid-block-at
+  (let [blk #(game/simple-block (game/point %1 %2) :notype)
+        [a b c] [(blk 1 2) (blk 2 3) (blk 4 5)]
+        grid {:blocks [a b c]}
+        blk-at #(game/grid-block-at grid (game/point %1 %2))
+        ]
+    (is (= (blk-at 2 3) b))
+    (is (= (blk-at 4 5) c))
+    (is (= (blk-at 9 9) nil))))
+
      

@@ -45,8 +45,15 @@
 (defn draw-grid []
   (rect (draw-context) WHITE 20 20 100 100))
 
-(defn draw-block [b]
-  (draw-block-fun rect b))
+(defn draw-swap-block [{blocks :blocks ticks :ticks}]
+  (let [alter #(assoc %1 :type :gray)
+        bs (doall (map alter blocks))]
+    (doall (map draw-block bs))))
+
+(defn draw-block [{type :type :as block}]
+  (if (= type :swap)
+    (draw-swap-block block)
+    (draw-block-fun rect block)))
 
 (defn cursor-mod [{{origin :origin :as cursor} :cursor :as gi} pt]
   (let [new-orig (game/point-add origin pt)
@@ -65,6 +72,16 @@
 (defn ^:export cursor-right [gi]
   (cursor-mod gi (game/point 1 0)))
 
+(defn ^:export cursor-swap [{{grid :grid :as game} :game {origin :origin} :cursor :as gi}] 
+  (let [blk-at (partial game/grid-block-at grid)
+        b-pt (game/point-add origin (game/point 1 0))
+        [a b] (map blk-at [origin b-pt])
+        new-grid (game/grid-swap-blocks grid a b)]
+    (.log js/console (str new-grid))
+    (if (some nil? [a b])
+      gi
+      (assoc gi :game (assoc game :grid new-grid)))))
+
 (defn render-grid [grid]
     (doall (map draw-block (get grid :blocks))))
 
@@ -76,7 +93,7 @@
 (defn ^:export step [{game :game :as gi}]
   (assoc gi :game (game/step game)))
   
-(defn ^:export render[{{grid :grid clock :clock} :game cursor :cursor :as thing}]
-  (js/console.log (str "Clock " clock))
+(defn ^:export render[{{grid :grid clock :clock :as game} :game cursor :cursor :as thing}]
+  (js/console.log (str "Clock " clock " Game: " game))
   (render-grid grid)
   (render-cursor cursor))

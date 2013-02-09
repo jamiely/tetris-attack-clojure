@@ -59,6 +59,19 @@
    :rows 0
    :cols cols})
 
+(defn swap-block-default-ticks []
+  20)
+
+(defn grid-swap-blocks [{blocks :blocks :as grid} a b]
+  "Replaces the passed blocks in the grid with a swap block"
+  (let [swap-blk (swap-block a b (swap-block-default-ticks))
+        new-blocks (cons swap-blk (remove #{a b} blocks))]
+    (assoc grid :blocks new-blocks)))
+
+(defn grid-block-at [{blocks :blocks} point]
+  (first (filter (fn [{pt :position}] (and (not (nil? pt)) (= pt point)))
+                 blocks)))
+
 (defn grid-add-block-row [{blocks :blocks
                            rows :rows
                            cols :cols}]
@@ -85,7 +98,7 @@
      ;; everything is based on the clock
      :clock 0
      ;; add a line after this many ticks
-     :add-line-ticks 60}))
+     :add-line-ticks 120}))
 
 (defn default-cursor []
   {:origin (point 2 2)})
