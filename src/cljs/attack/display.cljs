@@ -42,8 +42,14 @@
   (fill context color)
   (.fillRect context x y w h))
 
+(defn render-clock [clock]
+  (let [context (draw-context)]
+    (fill context "black")
+    (set! (.-font context) "bold 12px sans-serid")
+    (.fillText context (str "Clock " clock), 0, 10)))
+
 (defn draw-grid []
-  (rect (draw-context) WHITE 20 20 100 100))
+  (rect (draw-context) WHITE 0 0 200 300))
 
 (defn draw-swap-block [{blocks :blocks ticks :ticks}]
   (let [alter #(assoc %1 :type :gray)
@@ -95,5 +101,7 @@
   
 (defn ^:export render[{{grid :grid clock :clock :as game} :game cursor :cursor :as thing}]
   (js/console.log (str "Clock " clock " Game: " game))
+  (draw-grid)
+  (render-clock clock)
   (render-grid grid)
   (render-cursor cursor))
