@@ -22,3 +22,7 @@ Another simple game to practice clojure and clojurescript.
     # can communicate with. Run after `lein ring server`
     lein trampoline cljsbuild repl-listen
 
+## Media
+
+* d6ef2ae - http://youtu.be/w4A6288J2x8
+
