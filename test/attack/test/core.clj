@@ -1,23 +1,27 @@
 (ns attack.test.core
   (:use [attack.core])
-  (:require [attack.game :as game])
-  (:require [attack.point :as pt])
+  (:require [attack.game :as game]
+            [attack.point :as pt]
+            [attack.block :as blk]
+            [attack.grid :as grid]
+            [attack.tick :as tick]
+            [attack.cursor :as cursor]
+            [attack.game-interface :as gi])
   (:use [clojure.test]))
 
 (deftest point
   (is (= (pt/point 1 2) [1 2]) "No tests have been written."))
 
 (deftest simple-block
-  (is (= (game/simple-block (pt/point 1 2) :red)
+  (is (= (blk/new-simple (pt/point 1 2) :red)
          {:type :red :position [1 2]})))
 
 (deftest complex-block
-  (is (= (game/complex-block [1 2 3])
+  (is (= (blk/new-complex [1 2 3])
          {:blocks [1 2 3]})))
 
-
 (deftest grid-empty
-  (is (= (game/grid-empty 6)
+  (is (= (grid/empty-grid 6)
          {:blocks []
           :rows 0
           :cols 6})))
@@ -25,12 +29,12 @@
 (deftest grid-add-row
   "Tests adding a new row to a grid"
   (let [cols 6
-        {blocks :blocks :as new-grid-orig} (game/grid-add-block-row (game/grid-empty cols))
+        {blocks :blocks :as new-grid-orig} (grid/add-row (grid/empty-grid cols))
         ;; Use to change the type of the block (required since when we
         ;; add a row, the block values are random.
         swapped-blocks (map #(assoc % :type :red) blocks)
         new-grid (assoc new-grid-orig :blocks swapped-blocks)
-        test-blocks (map #(game/simple-block (pt/point % 1) :red)
+        test-blocks (map #(blk/new-simple (pt/point % 1) :red)
                          (range 1 (+ cols 1)))]
     (is (= new-grid
            {:blocks test-blocks
@@ -39,12 +43,12 @@
 
 (deftest mod-clock
   "Test an internal function that is used to test clock ticks"
-  (is (game/mod-clock {:clock 10} 10))
-  (is (not (game/mod-clock {:clock 10} 9))))
+  (is (game/mod-clock? {:clock 10} 10))
+  (is (not (game/mod-clock? {:clock 10} 9))))
 
 (deftest step-clock
   "Tests that the clock is incremented when the game steps"
-  (let [g (game/default-game)
+  (let [g (game/default)
         c #(get % :clock)]
         (is (= (c g) 0))
         (is (= (c (game/step g)) 1))
@@ -53,7 +57,7 @@
 
 (deftest stepline1
   "Tests that a line is added every 1 step"
-  (let [game (assoc (game/default-game) :add-line-ticks 1)
+  (let [game (assoc (game/default) :add-line-ticks 1)
         r #(get (get % :grid) :rows)
         s game/step
         rows 6]
@@ -63,7 +67,7 @@
 
 (deftest stepline2
   "Tests that a line is added every 2 steps"
-  (let [game (assoc (game/default-game) :add-line-ticks 2)
+  (let [game (assoc (game/default) :add-line-ticks 2)
         r #(get (get % :grid) :rows)
         s game/step
         rows 6]
@@ -76,52 +80,55 @@
 
 (deftest swap-block 
   (let [ticks 20
-        blk #(game/simple-block (pt/point %1 %2) :notype)
+        blk #(blk/new-simple (pt/point %1 %2) :notype)
         a (blk 1 2)
         b (blk 3 4)
-        new-block (game/swap-block a b ticks)]
+        new-block (blk/new-swap a b ticks)]
     (is (= new-block
            {:blocks [a b]
             :ticks ticks
             :type :swap}))))
+
 (deftest dec-ticks
   (let [t #(get % :ticks)
         t! (fn [n] {:ticks n})
         things (map t! (range 1 6))]
-    (is (= (map #(t (game/dec-ticks %)) things)
+    (is (= (map #(t (tick/dec-ticks %)) things)
            (range 0 5)))))
     
 (deftest resolve-swap-blocks
   "When ticks reaches 0, any swap-blocks should split into regular blocks"
-  (let [bt #(game/simple-block (pt/point %1 %2) %3)
+  (let [bt #(blk/new-simple (pt/point %1 %2) %3)
         b #(bt %1 %2 :notype)
         sb (fn [blks ticks] {:type :swap :ticks ticks :blocks blks})
         f-blks (fn [ticks] [(b 1 1) (b 1 2) (sb [(bt 3 4 :red)(bt 5 6 :blue)] ticks)])
         blocks (f-blks 0)
         nodissolve-blocks (f-blks 1)]
-    (is (= (game/resolve-swap-blocks blocks)
+    (is (= (blk/resolve-swaps blocks)
            [(b 1 1) (b 1 2) (bt 5 6 :red) (bt 3 4 :blue)]))
-    (is (= (game/resolve-swap-blocks nodissolve-blocks)
+    (is (= (blk/resolve-swaps nodissolve-blocks)
            nodissolve-blocks))))
 
 (deftest grid-swap-blocks
   "Tests creating swap blocks out of two other blocks"
-  (let [blk #(game/simple-block (pt/point %1 %2) :notype)
+  (let [blk #(blk/new-simple (pt/point %1 %2) :notype)
         a (blk 1 2)
         b (blk 3 4)
         c (blk 5 6)
         grid {:blocks [a b c]}]
-    (is (= (game/grid-swap-blocks grid a b)
+    (is (= (grid/swap-blocks grid a b)
            {:blocks [{:blocks [a b] :ticks 20 :type :swap} c]}))))
 
 (deftest grid-block-at
-  (let [blk #(game/simple-block (pt/point %1 %2) :notype)
+  (let [blk #(blk/new-simple (pt/point %1 %2) :notype)
         [a b c] [(blk 1 2) (blk 2 3) (blk 4 5)]
         grid {:blocks [a b c]}
-        blk-at #(game/grid-block-at grid (pt/point %1 %2))
+        blk-at #(grid/block-at grid (pt/point %1 %2))
         ]
     (is (= (blk-at 2 3) b))
     (is (= (blk-at 4 5) c))
     (is (= (blk-at 9 9) nil))))
 
-     
+(deftest gi-step
+  (let [g (gi/default)]
+    (is (not (nil? (gi/step g))))))

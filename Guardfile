@@ -1,7 +1,7 @@
 
 guard 'shell' do
   watch(%r{(src/clj/attack|test/attack/test)/.*\.cljs?}) do |m| 
-    result = `lein test 2>&1`
+    result = `lein test attack.test.core 2>&1`
     failed = /(Tests failed)/i.match result
     lines = /\(([^\)]+:\d+)\)/i.match result
     if failed.nil? || failed.captures.nil?

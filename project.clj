@@ -12,7 +12,13 @@
             ]
   :ring {:handler attack.core/handler }
   :cljsbuild {
-              :crossovers [attack.game]
+              :crossovers [attack.point
+                           attack.tick
+                           attack.block
+                           attack.grid
+                           attack.cursor
+                           attack.game
+                           attack.game-interface]
               :crossover-path "src/cljs/crossovers"
               :builds [{
                         :source-paths ["src/cljs"]

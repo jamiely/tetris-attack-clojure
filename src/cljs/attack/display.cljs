@@ -1,6 +1,8 @@
 (ns attack.display
   (:require [attack.game :as game]
-            [attack.point :as pt]))
+            [attack.point :as pt]
+            [attack.grid :as grid]
+            [attack.game-interface :as gi]))
 
 (def WHITE "white")
 (def BLUE "blue")
@@ -8,7 +10,6 @@
 (def BLOCKWIDTH 20)
 (def BLOCKHEIGHT 20)
 (def BLOCKSIZE [BLOCKWIDTH BLOCKHEIGHT])
-
 
 (defn pt-to-display-pt [[x y]]
   [(* x BLOCKWIDTH) (* y BLOCKHEIGHT)])
@@ -52,15 +53,15 @@
 (defn draw-grid []
   (rect (draw-context) WHITE 0 0 200 300))
 
-(defn draw-swap-block [{blocks :blocks ticks :ticks}]
-  (let [alter #(assoc %1 :type :gray)
-        bs (doall (map alter blocks))]
-    (doall (map draw-block bs))))
-
 (defn draw-block [{type :type :as block}]
   (if (= type :swap)
     (draw-swap-block block)
     (draw-block-fun rect block)))
+
+(defn draw-swap-block [{blocks :blocks ticks :ticks}]
+  (let [alter #(assoc %1 :type :gray)
+        bs (doall (map alter blocks))]
+    (doall (map draw-block bs))))
 
 (defn cursor-mod [{{origin :origin :as cursor} :cursor :as gi} pt]
   (let [new-orig (pt/point-add origin pt)
@@ -77,13 +78,13 @@
   (cursor-mod gi (pt/point -1 0)))
 
 (defn ^:export cursor-right [gi]
-  (cursor-mod gi (game/point 1 0)))
+  (cursor-mod gi (pt/point 1 0)))
 
-(defn ^:export cursor-swap [{{grid :grid :as game} :game {origin :origin} :cursor :as gi}] 
-  (let [blk-at (partial game/grid-block-at grid)
+(defn ^:export cursor-swap [{{gr :grid :as game} :game {origin :origin} :cursor :as gi}] 
+  (let [blk-at #(grid/block-at gr %)
         b-pt (pt/point-add origin (pt/point 1 0))
-        [a b] (map blk-at [origin b-pt])
-        new-grid (game/grid-swap-blocks grid a b)]
+        [a b] (doall (map blk-at [origin b-pt]))
+        new-grid (grid/swap-blocks gr a b)]
     (.log js/console (str new-grid))
     (if (some nil? [a b])
       gi
@@ -94,14 +95,13 @@
 
 (defn ^:export init[]
   (draw-grid)
-  {:game (game/default-game)
-   :cursor (game/default-cursor)})
+  (gi/default))
 
-(defn ^:export step [{game :game :as gi}]
-  (assoc gi :game (game/step game)))
+(defn ^:export step [game-interface]
+  (gi/step game-interface))
   
 (defn ^:export render[{{grid :grid clock :clock :as game} :game cursor :cursor :as thing}]
-  (js/console.log (str "Clock " clock " Game: " game))
+  ;;(js/console.log (str "Clock " clock " Game: " game))
   (draw-grid)
   (render-clock clock)
   (render-grid grid)
