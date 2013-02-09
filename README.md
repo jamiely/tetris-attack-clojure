@@ -14,7 +14,12 @@ Another simple game to practice clojure and clojurescript.
 
 ## Tests
 
-    lein test
+    lein test attack.test.core
+
+## Development
+
+    bundle install
+    guard
 
 ## Browser Repl
 
