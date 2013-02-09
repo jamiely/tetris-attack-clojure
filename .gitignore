@@ -13,3 +13,4 @@ repl
 target
 resources/public/js/game.js
 
+Gemfile.lock
