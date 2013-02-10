@@ -135,36 +135,39 @@
 
 (deftest grid-match-blocks-horizontal
   "Tests removing matches from a grid"
-  (let [b #(blk/new-simple (point %1 %2) %3)
+  (let [b #(blk/new-simple (pt/point %1 %2) %3)
         blocks [(b 1 1 :red) (b 2 1 :red) (b 3 1 :red) (b 4 1 :blue)]
         grid {:blocks blocks}
-        matches #{(b 1 1 :red) (b 2 1 :red) (b 3 1 :red)}]
+        matches #{#{(b 1 1 :red) (b 2 1 :red) (b 3 1 :red)}}]
     (is (= (grid/match-sets grid)
            matches))))
-
-(deftest grid-no-match-blocks-horizontal
-  "Tests removing matches from a grid"
-  (let [b #(blk/new-simple (point %1 %2) %3)
-        blocks [(b 1 1 :red) (b 2 1 :red) (b 3 1 :blue) (b 4 1 :blue)]
-        grid {:blocks blocks}]
-    (is (= (grid/match-sets grid)
-           #{}))))
 
 (deftest grid-match-blocks-vertical
   "Tests removing matches from a grid"
-  (let [b #(blk/new-simple (point %1 %2) %3)
+  (let [b #(blk/new-simple (pt/point %1 %2) %3)
         blocks [(b 1 1 :red) (b 1 2 :red) (b 1 3 :red) (b 1 4 :blue)]
         grid {:blocks blocks}
-        matches #{(b 1 1 :red) (b 2 1 :red) (b 3 1 :red)}]
+        matches #{#{(b 1 1 :red) (b 1 2 :red) (b 1 3 :red)}}]
     (is (= (grid/match-sets grid)
            matches))))
 
+
 (deftest grid-no-match-blocks-vertical
   "Tests removing matches from a grid"
-  (let [b #(blk/new-simple (point %1 %2) %3)
-        blocks [(b 1 1 :red) (b 1 2 :red) (b 1 3 :blue) (b 1 4 :blue)]
-        grid {:blocks blocks}]
+  (let [b #(blk/new-simple (pt/point %1 %2) %3)
+        blocks [(b 1 1 :red) (b 1 2 :blue) (b 1 3 :red) (b 1 4 :blue)]
+        grid {:blocks blocks}
+        matches #{}]
     (is (= (grid/match-sets grid)
-           #{}))))
+           matches))))
 
-
+(deftest grid-match-blocks-vertical-and-horizontal
+  "Tests removing matches from a grid"
+  (let [b #(blk/new-simple (pt/point %1 %2) %3)
+        blocks [(b 1 1 :red)
+                (b 1 2 :red) (b 1 3 :red) (b 1 4 :blue)
+                (b 2 1 :red) (b 3 1 :red) (b 4 1 :blue)]
+        grid {:blocks blocks}
+        matches #{#{(b 1 1 :red) (b 1 2 :red) (b 1 3 :red) (b 2 1 :red) (b 3 1 :red)}}]
+    (is (= (grid/match-sets grid)
+           matches))))

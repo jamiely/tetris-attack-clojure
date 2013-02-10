@@ -30,6 +30,12 @@
 (defn before [pt]
   (point-add pt (left)))
 
+(defn horizontal []
+  [(left) (right)])
+
+(defn vertical []
+  [(down) (up)])
+
 (defn directions []
-  [(up) (down) (left) (right)])
+  (concat (horizontal) (vertical)))
 
