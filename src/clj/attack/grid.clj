@@ -1,5 +1,5 @@
 (ns attack.grid
-  (:use [attack.point :only [point point-add]])
+  (:use [attack.point :only [point point-add directions]])
   (:require [attack.block :as blk]))
 
 (defn empty-grid [cols]
@@ -36,3 +36,28 @@
                (blk/new-simple (point x y) (blk/rand-type)))
      :cols cols
      :rows rows}))
+
+(defn match-sets [{all-blocks :blocks :as grid}]
+  "Returns a sequence of match sets. Only simple blocks may be matched"
+  (let [simple-blocks (filter blk/simple? all-blocks)]
+    (reduce (fn [matches block]
+              (cons (find-matches-with-grid-block grid block)
+                    matches))
+            simple-blocks)))
+
+(defn find-matches-with-grid-block [grid blk]
+  "Returns all the matches in the grid using the block as the origin"
+  (let [dirs (directions)
+        fn-match-dir #(matches-in-direction-matching-block-with-quota grid % blk 3)]
+    (map fn-match-dir dirs)))
+
+(defn block-in-direction [grid {pos :position} dir]
+  (block-at grid (point-add pos dir)))
+
+(defn matches-in-direction-matching-block-with-quota [grid dir blk quota]
+  (let [next-blk (block-in-direction grid blk dir)
+        recurse? (and (not (nil? next-blk)) (blk/same-type? blk next-blk))]
+    (if recurse?
+      (cons blk (matches-in-direction-matching-block-with-quota grid dir next-blk (- quota 1)))
+      [])))
+  

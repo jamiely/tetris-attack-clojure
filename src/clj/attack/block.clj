@@ -6,6 +6,9 @@
   {:type type
    :position pos})
 
+(defn simple? [blk]
+  (contains? blk :position))
+
 ;; complex blocks must be all of a single type
 (defn new-complex[blocks]
   "Creates a complex block given a passed sequence of blocks"
@@ -45,4 +48,7 @@
           (blocks-swap! (get blk :blocks))
           blk))
         blocks)))
+
+(defn same-type? [{a :type} {b :type}]
+  (= a b))
 
