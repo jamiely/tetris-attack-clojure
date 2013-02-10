@@ -28,7 +28,8 @@
   (blk/resolve-swaps (map tick/dec-ticks blocks)))
 
 (defn step-grid [{blocks :blocks :as grid}]
-  (assoc grid :blocks (step-blocks blocks)))
+  (let [stepped-grid (assoc grid :blocks (step-blocks blocks))]
+    (grid/resolve-grid stepped-grid)))
 
 (defn step [game]
   "Steps a game by 1"

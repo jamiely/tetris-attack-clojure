@@ -54,9 +54,11 @@
   (rect (draw-context) WHITE 0 0 200 300))
 
 (defn draw-block [{type :type :as block}]
-  (if (= type :swap)
-    (draw-swap-block block)
-    (draw-block-fun rect block)))
+  (let [fn-draw (case type
+                  :swap draw-swap-block
+                  :disappear identity
+                  (partial draw-block-fun rect))]
+    (fn-draw block)))
 
 (defn draw-swap-block [{blocks :blocks ticks :ticks}]
   (let [alter #(assoc %1 :type :gray)

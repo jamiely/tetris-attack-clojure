@@ -6,13 +6,24 @@
   {:type type
    :position pos})
 
-(defn simple? [blk]
-  (contains? blk :position))
-
 ;; complex blocks must be all of a single type
 (defn new-complex[blocks]
   "Creates a complex block given a passed sequence of blocks"
   {:blocks blocks})
+
+(defn new-swap [a b ticks]
+  "Creates a swap block, which represents two blocks which will change positions when the tick count has reached 0"
+  {:blocks [a b]
+   :ticks ticks
+   :type :swap})
+
+(defn new-disappear [blocks]
+  (merge (new-complex blocks)
+         {:ticks 60
+          :type :disappear}))
+
+(defn simple? [blk]
+  (contains? blk :position))
 
 (defn types []
   "Lists available block types"
@@ -21,12 +32,6 @@
 (defn rand-type []
   "Returns a random block type"
   (rand-nth (types)))
-
-(defn new-swap [a b ticks]
-  "Creates a swap block, which represents two blocks which will change positions when the tick count has reached 0"
-  {:blocks [a b]
-   :ticks ticks
-   :type :swap})
 
 (defn swap-block-default-ticks []
   20)

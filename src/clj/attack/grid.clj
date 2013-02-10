@@ -1,7 +1,7 @@
 (ns attack.grid
   (:require [attack.block :as blk]
             [attack.point :as pt])
-  (:use [clojure.set]))
+  (:use [clojure.set :only [subset?]]))
 
 (defn empty-grid [cols]
   "Returns an empty grid"
@@ -91,19 +91,36 @@
 (defn condense-match-set2 [ match-set ]
   (into #{} (to-superset match-set)))
 
+(defn disappear-blocks [{grid-blocks :blocks :as grid} blocks-to-disappear]
+  "Creates a disappear-type block using the passed blocks and inserts it into a new grid"
+  (let [fn-remove? (partial contains? blocks-to-disappear)
+        new-grid-blocks (cons (blk/new-disappear blocks-to-disappear)
+                              (remove fn-remove? grid-blocks))]
+    (assoc grid :blocks new-grid-blocks)))
+
+(defn reduce-matches [grid matches block]
+  (cons (find-matches-with-grid-block grid block)
+        matches))
+
 (defn match-sets [{all-blocks :blocks :as grid}]
-  "Returns a sequence of match sets. Only simple blocks may be matched"
+  "Returns a sequence (probably a set) of match sets. Only simple blocks may be matched"
   (let [simple-blocks (filter blk/simple? all-blocks)
-        sets-vectors (reduce (fn [matches block]
-                       (let [result (find-matches-with-grid-block grid block)
-                             item result]
-                         (if (nil? item)
-                           matches
-                           (cons item
-                                 matches))))
-                     []
-                     simple-blocks)
-        sets (map #(into #{} %) sets-vectors)
+        set-vectors (reduce (partial reduce-matches grid) [] simple-blocks)
+        non-nil-set-vectors (filter (comp not nil?) set-vectors)
+        sets (map #(into #{} %) non-nil-set-vectors)
         filtered-sets (filter (comp not empty?) sets)]
     (condense-match-set2 (into #{} filtered-sets))))
 
+(defn disappear-blocks-from-match-set [grid match-set]
+  (disappear-blocks grid (flatten (map (partial into '())
+                                       match-set))))
+
+(defn resolve-matches [grid]
+  (let [matches (match-sets grid)
+        ]
+    ;;(.log js/console (str "Matches " matches))
+    ;;(disappear-blocks-from-match-set grid matches)))
+    grid))
+
+(defn resolve-grid [grid]
+  (resolve-matches grid))
