@@ -93,7 +93,7 @@
 
 (defn disappear-blocks [{grid-blocks :blocks :as grid} blocks-to-disappear]
   "Creates a disappear-type block using the passed blocks and inserts it into a new grid"
-  (let [fn-remove? (partial contains? blocks-to-disappear)
+  (let [fn-remove? (partial contains? (into #{} blocks-to-disappear))
         new-grid-blocks (cons (blk/new-disappear blocks-to-disappear)
                               (remove fn-remove? grid-blocks))]
     (assoc grid :blocks new-grid-blocks)))
@@ -119,8 +119,8 @@
   (let [matches (match-sets grid)
         ]
     ;;(.log js/console (str "Matches " matches))
-    ;;(disappear-blocks-from-match-set grid matches)))
-    grid))
+    (disappear-blocks-from-match-set grid matches)))
+    ;;grid))
 
 (defn resolve-grid [grid]
   (resolve-matches grid))
