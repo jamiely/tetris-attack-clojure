@@ -1,6 +1,7 @@
 (ns attack.grid
   (:require [attack.block :as blk]
-            [attack.point :as pt]))
+            [attack.point :as pt])
+  (:use [clojure.set]))
 
 (defn empty-grid [cols]
   "Returns an empty grid"
@@ -63,6 +64,33 @@
         matches [horizontal vertical]]
     (flatten (filter (comp not empty?) matches))))
 
+(defn is-not-equal-subset? [set1 set2]
+  (and (subset? set1 set2) (not= set1 set2)))
+
+(defn isnt-subset-of-another? [set1 large-set]
+  (empty? (filter (partial is-not-equal-subset? set1)
+                  large-set)))
+
+(defn condense-match-set [match-set]
+  (reduce (fn [condensed mset]
+            (if (isnt-subset-of-another? mset match-set)
+              (cons condensed mset)
+              condensed)) match-set))
+
+(defn to-superset [ orig-set ]
+  "http://stackoverflow.com/questions/8162149/remove-all-the-subsets-in-a-list-of-sets"
+  (let [coll (into '() orig-set)]
+    (loop [result () coll coll]
+      (if (empty? coll) result
+          (let  [x  (first coll)
+                 xs (rest coll)]
+            (if (some #(clojure.set/subset? x %) xs) 
+              (recur result xs)
+              (recur (cons x result) xs)))))))
+
+(defn condense-match-set2 [ match-set ]
+  (into #{} (to-superset match-set)))
+
 (defn match-sets [{all-blocks :blocks :as grid}]
   "Returns a sequence of match sets. Only simple blocks may be matched"
   (let [simple-blocks (filter blk/simple? all-blocks)
@@ -77,5 +105,5 @@
                      simple-blocks)
         sets (map #(into #{} %) sets-vectors)
         filtered-sets (filter (comp not empty?) sets)]
-    (into #{} filtered-sets)))
+    (condense-match-set2 (into #{} filtered-sets))))
 
