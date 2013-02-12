@@ -19,4 +19,4 @@
     (is (= (color/color-parts col)
            '("FF" "AA" "11")))
     (is (= (color/color-values col)
-           '(255, 170 17)))))
+           '(255 170 17)))))
