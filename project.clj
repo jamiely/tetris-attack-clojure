@@ -12,6 +12,7 @@
             ]
   :ring {:handler attack.core/handler }
   :cljsbuild {:crossovers [attack.point
+                           attack.color
                            attack.tick
                            attack.block
                            attack.grid

@@ -1,5 +1,6 @@
 (ns attack.color
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [attack.compat :as compat]))
 
 (defn no-hash [color-str]
   (str/replace-first color-str "#" ""))
@@ -9,7 +10,7 @@
   (map str/join (partition 2 (no-hash color-str))))
 
 (defn hex-to-int [hex-val]
-  (read-string hex-val))
+  (compat/compat-read-string hex-val))
 
 (defn color-values [color-str]
   "Given a string like `#FFAA11`, returns a seq of int values corresponding to each color like '(255 170 17)"

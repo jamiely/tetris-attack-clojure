@@ -2,6 +2,7 @@
   (:require [attack.game :as game]
             [attack.point :as pt]
             [attack.grid :as grid]
+            [attack.color :as color]
             [attack.game-interface :as gi]))
 
 (def WHITE "white")
@@ -53,17 +54,25 @@
 (defn draw-grid []
   (rect (draw-context) WHITE 0 0 200 300))
 
-(defn draw-block [{type :type :as block}]
-  (let [fn-draw (case type
-                  :swap draw-swap-block
-                  :disappear identity
-                  (partial draw-block-fun rect))]
-    (fn-draw block)))
+(defn draw-disappear-block [{ blocks :blocks ticks :ticks}]
+  (let [alter (fn [{type :type :as blk}]
+                (let [color (str type)
+                      factor 0.5]
+                  (assoc blk :type (color/brighten color factor))))
+        bs (doall (map alter blocks))]
+    (doall (map draw-block bs))))
 
 (defn draw-swap-block [{blocks :blocks ticks :ticks}]
   (let [alter #(assoc %1 :type :gray)
         bs (doall (map alter blocks))]
     (doall (map draw-block bs))))
+
+(defn draw-block [{type :type :as block}]
+  (let [fn-draw (case type
+                  :swap draw-swap-block
+                  :disappear draw-disappear-block
+                  (partial draw-block-fun rect))]
+    (fn-draw block)))
 
 (defn cursor-mod [{{origin :origin :as cursor} :cursor :as gi} pt]
   (let [new-orig (pt/point-add origin pt)

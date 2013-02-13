@@ -27,7 +27,7 @@
 
 (defn types []
   "Lists available block types"
-  [:orange :yellow :pink :cyan :green :purple :red])
+  ["#FF6600" "#FFFF00" "#FF6699" "#00FFFF" "#00FF00" "#9900CC" "#FF0000"])
 
 (defn rand-type []
   "Returns a random block type"
