@@ -10,11 +10,11 @@
   (map str/join (partition 2 (no-hash color-str))))
 
 (defn hex-to-int [hex-val]
-  (compat/compat-read-string hex-val))
+  (compat/hex-to-int hex-val))
 
 (defn color-values [color-str]
   "Given a string like `#FFAA11`, returns a seq of int values corresponding to each color like '(255 170 17)"
-  (map #(hex-to-int (str "0x" %)) (color-parts color-str)))
+  (map hex-to-int (color-parts color-str)))
 
 (defn color-parts-to-str [color-parts]
   "Given a seq of color parts like '(\"FF\" \"AA\" \"11\"), returns \"#FFAA11\""
