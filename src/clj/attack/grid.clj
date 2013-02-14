@@ -1,6 +1,7 @@
 (ns attack.grid
   (:require [attack.block :as blk]
-            [attack.point :as pt])
+            [attack.point :as pt]
+            [attack.tick :as tick])
   (:use [clojure.set :only [subset?]]))
 
 (defn empty-grid [cols]
@@ -117,11 +118,23 @@
   (disappear-blocks grid (flatten (map (partial into '())
                                        match-set))))
 
+
+(defn remove-blocks [{blocks :blocks :as grid} blocks-to-remove]
+  (let [bs-remove (into #{} blocks-to-remove)]
+    (assoc grid :blocks (remove #(contains? bs-remove %) blocks))))
+
+(defn remove-blocks-with-pred [{blocks :blocks :as grid} pred]
+  "Removes blocks from the passed grid filtered using the passed predicate"
+  (remove-blocks grid (filter pred blocks)))
+
+(defn resolve-disappear-blocks [grid]
+  (remove-blocks-with-pred grid #(and (blk/disappear? %)
+                                       (tick/ticks0? %))))
+
 (defn resolve-matches [grid]
-  (let [matches (match-sets grid)
-        ]
+  (let [matches (match-sets grid)]
     ;;(.log js/console (str "Matches " matches))
-    (disappear-blocks-from-match-set grid matches)))
+    (resolve-disappear-blocks (disappear-blocks-from-match-set grid matches))))
     ;;grid))
 
 (defn resolve-grid [grid]

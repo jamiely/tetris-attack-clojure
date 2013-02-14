@@ -54,10 +54,12 @@
 (defn draw-grid []
   (rect (draw-context) WHITE 0 0 200 300))
 
-(defn draw-disappear-block [{ blocks :blocks ticks :ticks}]
-  (let [alter (fn [{type :type :as blk}]
+(defn draw-disappear-block [{blocks :blocks ticks :ticks}]
+  (let [alter1 #(assoc %1 :type :black)
+        alter (fn [{type :type :as blk}]
                 (let [color (str type)
-                      factor 0.5]
+                      max-ticks 20
+                      factor (+ (/ (- max-ticks ticks) 20) 0.2)]
                   (assoc blk :type (color/brighten color factor))))
         bs (doall (map alter blocks))]
     (doall (map draw-block bs))))

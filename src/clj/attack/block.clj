@@ -19,15 +19,18 @@
 
 (defn new-disappear [blocks]
   (merge (new-complex blocks)
-         {:ticks 60
+         {:ticks 20
           :type :disappear}))
 
 (defn simple? [blk]
   (contains? blk :position))
 
+(defn disappear? [{type :type}]
+  (= type :disappear))
+
 (defn types []
   "Lists available block types"
-  ["#FF6600" "#FFFF00" "#FF6699" "#00FFFF" "#00FF00" "#9900CC" "#FF0000"])
+  ["#996633" "#FFFF00" "#FF6699" "#00FFFF" "#00FF00" "#9900CC" "#FF0000"])
 
 (defn rand-type []
   "Returns a random block type"

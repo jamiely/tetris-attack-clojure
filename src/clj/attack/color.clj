@@ -22,10 +22,10 @@
 
 (defn color-values-to-str [color-values]
   "Given a seq of color values like '(255 170 17) returns a string \"#FFAA11\""
-  (color-parts-to-str (map #(format "%02x" %) color-values)))
+  (color-parts-to-str (map compat/int-to-hex color-values)))
 
 (defn increase-value-by-pct-with-cap [val pct cap]
-  (min (* (+ 1 pct) val) cap))
+  (min (* (+ 1 pct) (+ val 100)) cap))
 
 (defn brighten-values [color-vals pct]
   (map int (map #(increase-value-by-pct-with-cap % pct 255) color-vals)))

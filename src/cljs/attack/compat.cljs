@@ -1,5 +1,6 @@
 (ns attack.compat
-  (:require [cljs.reader :as reader]))
+  (:require [cljs.reader :as reader]
+            [clojure.string :as str]))
 
 (defn compat-read-string [val]
   (reader/read-string val))
@@ -18,6 +19,25 @@
 
 (defn hex-multipliers [len]
   (map (partial pow 16) (doall (range 0 len))))
+
+(defn int-digit-to-hex [int-dig]
+  (case int-dig
+    "15" "F" 
+    "14" "E" 
+    "13" "D" 
+    "12" "C" 
+    "11" "B" 
+    "10" "A" 
+    "9"  "9" 
+    "8"  "8" 
+    "7"  "7" 
+    "6"  "6" 
+    "5"  "5" 
+    "4"  "4" 
+    "3"  "3" 
+    "2"  "2" 
+    "1"  "1" 
+    "0"  "0"))
 
 (defn hex-digit-to-int [hex-dig]
   (case hex-dig
@@ -46,3 +66,9 @@
         vals (doall (map (fn [[a b]] (* a b)) parts))
         sum (reduce + vals)]
     sum))
+
+(defn int-to-hex [i]
+  (let [a (int (/ i 16))
+        b (mod i 16)]
+    (str/join (map (comp int-digit-to-hex str) [a b]))))
+    
