@@ -32,6 +32,7 @@
     38 :UP
     32 :SPACE
     40 :DOWN
+    191 :QMARK
     :UNSUPPORTED))
 
 (defn keyup [event]
@@ -42,6 +43,7 @@
                :RIGHT disp/cursor-right
                :UP    disp/cursor-up
                :DOWN  disp/cursor-down
+               :QMARK disp/inspect
                identity)]
     (swap! GI func)))
 

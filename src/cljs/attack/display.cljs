@@ -101,6 +101,18 @@
       gi
       (assoc gi :game (assoc game :grid new-grid)))))
 
+(defn inspect [gi]
+  (let [log #(.log js/console (str %))
+        log-blks (fn [thing]
+                   (log thing)
+                   (let [blocks (get thing :blocks)]
+                     (if (not (nil? blocks))
+                       (doall (map log blocks)))))
+        grid (get (get gi :game) :grid)
+        blocks (get grid :blocks)]
+    (doall (map log-blks blocks)))
+  gi)
+
 (defn render-grid [grid]
     (doall (map draw-block (get grid :blocks))))
 
