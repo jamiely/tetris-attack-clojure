@@ -17,8 +17,24 @@
     (assoc grid :blocks new-blocks)))
 
 (defn block-at [{blocks :blocks} point]
-  (first (filter (fn [{pt :position}] (and (not (nil? pt)) (= pt point)))
+  (first (filter (fn [{pt :position}]
+                   (and (not (nil? pt))
+                        (= pt point)))
                  blocks)))
+
+(defn all-simple-blocks [{blocks :blocks}]
+  (concat (filter blk/simple? blocks)
+          (flatten (map (fn [{blocks :blocks}]
+                          (if (nil? blocks)
+                            []
+                            blocks))
+                          blocks))))
+
+(defn occupied-at [grid point]
+  (empty? (filter (fn [{pt :position}]
+                   (and (not (nil? pt))
+                        (= pt point)))
+                  (all-simple-blocks grid))))
 
 (defn add-row [{blocks :blocks
                   rows :rows
@@ -127,6 +143,33 @@
   "Removes blocks from the passed grid filtered using the passed predicate"
   (remove-blocks grid (filter pred blocks)))
 
+(defn position-valid [{rows :rows cols :cols :as grid} [x y]]
+  "Determines whether the passed position is valid relative to the grid"
+  (and (< 0 x)
+       (< 0 y)
+       (>= rows y)
+       (>= cols x)))
+
+(defn check-and-create-falling-block [grid {pos :position :as block}]
+  "Determines whether the passed block should be falling, and if so, returns a falling block"
+  (if (nil? pos))
+    block
+    (let [pt-below (pt/below pos)]
+      (if (position-valid grid pt-below)
+        (if (nil? (block-at grid pt-below))
+          block
+          (blk/new-falling block))
+        block)))
+
+(defn create-falling-blocks [{blocks :blocks :as grid}]
+  "Figures out whether a block in the grid should be falling, and if so, converts it into a falling block"
+  (assoc grid :blocks (map (partial check-and-create-falling-block grid)
+                           blocks)))
+
+(defn resolve-falling-blocks [{blocks :blocks :as grid}]
+  "Changes blocks which have finished falling in the grid into regular blocks"
+  (assoc grid :blocks (map blk/resolve-falling blocks)))
+
 (defn resolve-disappear-blocks [grid]
   (remove-blocks-with-pred grid #(and (blk/disappear? %)
                                        (tick/ticks0? %))))
@@ -138,4 +181,7 @@
     ;;grid))
 
 (defn resolve-grid [grid]
-  (resolve-matches grid))
+  (->> grid
+       resolve-matches
+       resolve-falling-blocks
+       create-falling-blocks))

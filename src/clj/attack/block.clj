@@ -29,18 +29,19 @@
   "Takes a single block and returns a falling block."
   {:type :falling
    :block block
+   :position pos
    :ticks (falling-block-default-ticks)
-   :falling-from pos
    :falling-to (pt/below pos)
    })
-    
-(defn simple? [blk]
-  (contains? blk :position))
 
 (defn compare-type? [{block-type :type} compare-type]
   (= block-type compare-type))
 
 (defn falling? [blk] (compare-type? blk :falling))
+
+(defn simple? [blk]
+  (and (contains? blk :position)
+       (not (falling? blk))))
 
 (defn disappear? [block]
   (compare-type? block :disappear))
@@ -55,7 +56,7 @@
   "Unwraps a falling block if its ticks are 0"
   (if (tick/ticks0? block)
     (unwrap-falling block)
-    (block)))
+    block))
 
 (defn types []
   "Lists available block types"
