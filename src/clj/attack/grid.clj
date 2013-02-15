@@ -30,11 +30,11 @@
                             blocks))
                           blocks))))
 
-(defn occupied-at [grid point]
-  (empty? (filter (fn [{pt :position}]
-                   (and (not (nil? pt))
-                        (= pt point)))
-                  (all-simple-blocks grid))))
+(defn occupied-at? [grid point]
+  (not (empty? (filter (fn [{pt :position}]
+                         (and (not (nil? pt))
+                              (= pt point)))
+                       (all-simple-blocks grid)))))
 
 (defn add-row [{blocks :blocks
                   rows :rows
@@ -152,14 +152,14 @@
 
 (defn check-and-create-falling-block [grid {pos :position :as block}]
   "Determines whether the passed block should be falling, and if so, returns a falling block"
-  (if (nil? pos))
+  (if (or (nil? pos) (not (blk/simple? block)))
     block
     (let [pt-below (pt/below pos)]
       (if (position-valid grid pt-below)
-        (if (nil? (block-at grid pt-below))
+        (if (occupied-at? grid pt-below)
           block
           (blk/new-falling block))
-        block)))
+        block))))
 
 (defn create-falling-blocks [{blocks :blocks :as grid}]
   "Figures out whether a block in the grid should be falling, and if so, converts it into a falling block"
