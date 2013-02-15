@@ -67,7 +67,7 @@
   (rand-nth (types)))
 
 (defn swap-block-default-ticks []
-  20)
+  10)
 
 (defn swap? [{type :type}]
   (= type :swap))

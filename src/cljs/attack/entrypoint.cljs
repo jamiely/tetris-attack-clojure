@@ -19,7 +19,7 @@
   (disp/render @GI))
 
 (defn begin-stepping []
-  (js/setInterval step 100))
+  (js/setInterval step 50))
 
 (defn begin-rendering []
   (js/setInterval render 100))
