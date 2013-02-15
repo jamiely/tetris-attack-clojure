@@ -1,5 +1,6 @@
 (ns attack.block
-  (:require [attack.tick :as tick]))
+  (:require [attack.tick :as tick]
+            [attack.point :as pt]))
 
 (defn new-simple [pos type]
   "Returns a simple block, not to be confused with non-basic blocks such as garbage blocks"
@@ -22,11 +23,39 @@
          {:ticks 20
           :type :disappear}))
 
+(defn falling-block-default-ticks [] 20)
+
+(defn new-falling [{pos :position :as block}]
+  "Takes a single block and returns a falling block."
+  {:type :falling
+   :block block
+   :ticks (falling-block-default-ticks)
+   :falling-from pos
+   :falling-to (pt/below pos)
+   })
+    
 (defn simple? [blk]
   (contains? blk :position))
 
-(defn disappear? [{type :type}]
-  (= type :disappear))
+(defn compare-type? [{block-type :type} compare-type]
+  (= block-type compare-type))
+
+(defn falling? [blk] (compare-type? blk :falling))
+
+(defn disappear? [block]
+  (compare-type? block :disappear))
+
+(defn unwrap-falling [{inner-block :block fall-to :falling-to :as block}]
+  "Unwraps a falling block, returning the inner block with its updated position"
+  (if (falling? block)
+    (assoc inner-block :position fall-to)
+    block))
+
+(defn resolve-falling [{ticks :ticks :as block}]
+  "Unwraps a falling block if its ticks are 0"
+  (if (tick/ticks0? block)
+    (unwrap-falling block)
+    (block)))
 
 (defn types []
   "Lists available block types"
