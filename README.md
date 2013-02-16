@@ -2,6 +2,8 @@
 
 Another simple game to practice clojure and clojurescript.
 
+[![Continuous Integration status](https://api.travis-ci.org/jamiely/simple-clojure-game.png)](http://travis-ci.org/jamiely/simple-clojure-game)
+
 ## Usage
 
     # Install plugins and dependencies based on project.clj
@@ -14,7 +16,7 @@ Another simple game to practice clojure and clojurescript.
 
 ## Tests
 
-    lein test attack.test.core attack.test.color
+    lein test attack.test.core attack.test.color attack.test.grid
 
 ## Development
 
