@@ -4,15 +4,15 @@
 
 (deftest brighten-values
   (is (= (color/brighten-values '(44 22 00) 0.5)
-         '(66 33 00))))
+         '(216 183 150))))
 
 (deftest brighten
   (is (= (color/brighten "#AA0000" 1)
-         "#FF0000"))
+         "#FFC8C8"))
   (is (= (color/brighten "#880000" 0.5)
-         "#CC0000"))
+         "#FF9696"))
   (is (= (color/brighten "#880000" -0.5)
-         "#440000")))
+         "#763232")))
 
 (deftest color-pieces
   (let [col "#FFAA11"]

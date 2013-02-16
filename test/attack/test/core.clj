@@ -117,7 +117,7 @@
         c (blk 5 6)
         grid {:blocks [a b c]}]
     (is (= (grid/swap-blocks grid a b)
-           {:blocks [{:blocks [a b] :ticks 20 :type :swap} c]}))))
+           {:blocks [{:blocks [a b] :ticks (blk/swap-block-default-ticks) :type :swap} c]}))))
 
 (deftest grid-block-at
   (let [blk #(blk/new-simple (pt/point %1 %2) :notype)
