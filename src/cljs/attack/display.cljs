@@ -11,6 +11,7 @@
 (def BLOCKWIDTH 20)
 (def BLOCKHEIGHT 20)
 (def BLOCKSIZE [BLOCKWIDTH BLOCKHEIGHT])
+(def DISPLAYHEIGHT 500)
 
 (defn pt-to-display-pt [[x y]]
   [(* x BLOCKWIDTH) (* y BLOCKHEIGHT)])
@@ -69,10 +70,14 @@
         bs (doall (map alter blocks))]
     (doall (map draw-block bs))))
 
+(defn draw-falling-block [{inner-block :block}]
+  (draw-block inner-block))
+
 (defn draw-block [{type :type :as block}]
   (let [fn-draw (case type
                   :swap draw-swap-block
                   :disappear draw-disappear-block
+                  :falling draw-falling-block
                   (partial draw-block-fun rect))]
     (fn-draw block)))
 

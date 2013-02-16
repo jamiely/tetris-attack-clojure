@@ -7,10 +7,10 @@
   [(+ x1 x2) (+ y1 y2)])
 
 (defn up []
-  (point 0 1))
+  (point 0 -1))
 
 (defn down []
-  (point 0 -1))
+  (point 0 1))
 
 (defn left []
   (point -1 0))
