@@ -42,3 +42,23 @@
     (is (not (grid/occupied-at-without-falling? grid (p 1 1))))
     (is (not (grid/occupied-at-without-falling? grid (p 1 2))))))
   
+(deftest swap-empty-into-falling
+  "Test the behavior of swapping an empty block into the spot where a block is falling"
+  (let [p pt/point
+        target-block (bpt 2 3)
+        next-block (bpt 2 4)
+        fall (->> (bpt 1 3) blk/new-falling)
+        grid {:blocks [fall target-block next-block]}
+        uniq-blocks (fn [{bs :blocks}] (into #{} bs))]
+    (is (= (grid/swap-empty grid target-block (p 1 3))
+           grid))
+    (is (= (grid/swap-empty grid next-block (p 1 4))
+           grid))
+    (is (= (uniq-blocks (grid/swap-empty grid
+                                         (bpt 2 5)
+                                         (p 1 5)))
+           (uniq-blocks (assoc grid :blocks [fall
+                                             target-block
+                                             next-block
+                                             (blk/new-swap-empty (bpt 2 5) (p 1 5))]))))))
+
