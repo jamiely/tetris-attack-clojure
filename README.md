@@ -2,7 +2,7 @@
 
 Another simple game to practice clojure and clojurescript.
 
-[![Continuous Integration status](https://api.travis-ci.org/jamiely/simple-clojure-game.png)](http://travis-ci.org/jamiely/simple-clojure-game)
+[![Build Status](https://travis-ci.org/jamiely/simple-clojure-game.png)](https://travis-ci.org/jamiely/simple-clojure-game)
 
 ## Usage
 
