@@ -10,23 +10,6 @@
    :rows 0
    :cols cols})
 
-(defn swap-empty [{blocks :blocks :as grid} a new-pos]
-  (let [new-block (blk/new-swap-empty a new-pos)
-        new-blocks (cons new-block (remove #{a} blocks))]
-    (assoc grid :blocks new-blocks)))
-
-(defn swap-blocks [{blocks :blocks :as grid} a b]
-  "Replaces the passed blocks in the grid with a swap block"
-  (let [swap-blk (blk/new-swap a b)
-        new-blocks (cons swap-blk (remove #{a b} blocks))]
-    (assoc grid :blocks new-blocks)))
-
-(defn block-at [{blocks :blocks} point]
-  (first (filter (fn [{pt :position}]
-                   (and (not (nil? pt))
-                        (= pt point)))
-                 blocks)))
-
 (defn all-simple-blocks [{blocks :blocks}]
   (concat (filter blk/simple? blocks)
           (flatten (map (fn [{blocks :blocks}]
@@ -48,6 +31,27 @@
                          (and (not (nil? pt))
                               (= pt point)))
                        (all-occupied-pts grid)))))
+
+(defn swap-empty [{blocks :blocks :as grid} replace-block new-pos]
+  "Creates a new swap-empty block using the passed block"
+  (if (occupied-at? grid new-pos)
+    grid
+    (let [new-block (blk/new-swap-empty replace-block new-pos)
+          new-blocks (cons new-block (remove #{replace-block} blocks))]
+      (assoc grid :blocks new-blocks))))
+
+(defn swap-blocks [{blocks :blocks :as grid} a b]
+  "Replaces the passed blocks in the grid with a swap block"
+  (let [swap-blk (blk/new-swap a b)
+        new-blocks (cons swap-blk (remove #{a b} blocks))]
+    (assoc grid :blocks new-blocks)))
+
+(defn block-at [{blocks :blocks} point]
+  (first (filter (fn [{pt :position}]
+                   (and (not (nil? pt))
+                        (= pt point)))
+                 blocks)))
+
 
 (defn add-row [{blocks :blocks
                   rows :rows

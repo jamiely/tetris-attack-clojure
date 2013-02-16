@@ -58,6 +58,8 @@
 (defn draw-grid []
   (rect (draw-context) WHITE 0 0 200 DISPLAYHEIGHT))
 
+(declare draw-block)
+
 (defn draw-disappear-block [total-rows {blocks :blocks ticks :ticks}]
   (let [alter1 #(assoc %1 :type :black)
         alter (fn [{type :type :as blk}]
