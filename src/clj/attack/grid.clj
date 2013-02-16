@@ -33,13 +33,19 @@
                           (if (nil? blocks)
                             []
                             blocks))
-                          blocks))))
+                        blocks))))
+
+(defn all-occupied-pts [{blocks :blocks :as grid}]
+  (concat (map #(get % :position)
+               (all-simple-blocks grid))
+          (map #(get % :into-position)
+               (filter blk/swap-empty? blocks))))
 
 (defn occupied-at? [grid point]
-  (not (empty? (filter (fn [{pt :position}]
+  (not (empty? (filter (fn [pt]
                          (and (not (nil? pt))
                               (= pt point)))
-                       (all-simple-blocks grid)))))
+                       (all-occupied-pts grid)))))
 
 (defn add-row [{blocks :blocks
                   rows :rows
