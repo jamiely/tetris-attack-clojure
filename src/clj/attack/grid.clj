@@ -49,9 +49,11 @@
 
 (defn swap-blocks [{blocks :blocks :as grid} a b]
   "Replaces the passed blocks in the grid with a swap block"
-  (let [swap-blk (blk/new-swap a b)
-        new-blocks (cons swap-blk (remove #{a b} blocks))]
-    (assoc grid :blocks new-blocks)))
+  (if (every? blk/simple? [a b])
+    (let [swap-blk (blk/new-swap a b)
+          new-blocks (cons swap-blk (remove #{a b} blocks))]
+      (assoc grid :blocks new-blocks))
+    grid))
 
 (defn block-at [{blocks :blocks} point]
   (first (filter (fn [{pt :position}]
@@ -203,14 +205,16 @@
 
 (defn resolve-matches [grid]
   (let [matches (match-sets grid)]
-    ;;(.log js/console (str "Matches " matches))
     (resolve-disappear-blocks (disappear-blocks-from-match-set grid matches))))
-    ;;grid))
 
 (defn resolve-grid [grid]
   (->> grid
        resolve-matches
-       resolve-falling-blocks
        create-falling-blocks
+       ;; create falling blocks BEFORE resolving existing once
+       ;; so that we provide an opportunity for the player to
+       ;; swap out a block that has temporarily finished falling
+       ;; (1-space)
+       resolve-falling-blocks
        resolve-swap-empty-blocks))
 

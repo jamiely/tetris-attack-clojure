@@ -23,7 +23,7 @@
   (render))
 
 (defn begin-stepping-and-rendering []
-  (js/setInterval step-and-render 100))
+  (js/setInterval step-and-render 33))
 
 (defn which [num]
   (case num
