@@ -8,10 +8,11 @@
 (def WHITE "white")
 (def BLUE "blue")
 
-(def BLOCKWIDTH 20)
-(def BLOCKHEIGHT 20)
+(def BLOCKWIDTH 30)
+(def BLOCKHEIGHT 30)
 (def BLOCKSIZE [BLOCKWIDTH BLOCKHEIGHT])
-(def DISPLAYHEIGHT 300)
+(def DISPLAYHEIGHT 400)
+(def DISPLAYWIDTH (* 6 BLOCKWIDTH))
 
 (defn pt-to-display-pt [total-rows [x y]]
   (let [diff (- total-rows y)
@@ -53,10 +54,10 @@
   (let [context (draw-context)]
     (fill context "black")
     (set! (.-font context) "bold 12px sans-serid")
-    (.fillText context (str "Clock " clock), 0, 10)))
+    (.fillText context (str "Clock " clock), BLOCKWIDTH, 10)))
 
 (defn draw-grid []
-  (rect (draw-context) WHITE 0 0 200 DISPLAYHEIGHT))
+  (rect (draw-context) WHITE BLOCKWIDTH 0 DISPLAYWIDTH DISPLAYHEIGHT))
 
 (declare draw-block)
 
