@@ -33,6 +33,7 @@ Another simple game to practice clojure and clojurescript.
 
 ![d6ef2ae](media/d6ef2ae.png)
 
+* 16c6402 - http://youtu.be/CuqilytlfJE
 * 391bb24 - http://youtu.be/wai3ft4yHl8
 * f349bbd - http://youtu.be/pUMlQips6o0
 * 1e4683f - http://youtu.be/KoNOEXhocbw
