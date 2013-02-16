@@ -209,8 +209,8 @@
 
 (defn resolve-grid [grid]
   (->> grid
-       resolve-matches
        create-falling-blocks
+       resolve-matches
        ;; create falling blocks BEFORE resolving existing once
        ;; so that we provide an opportunity for the player to
        ;; swap out a block that has temporarily finished falling

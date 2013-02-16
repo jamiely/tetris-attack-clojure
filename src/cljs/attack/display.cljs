@@ -11,7 +11,7 @@
 (def BLOCKWIDTH 20)
 (def BLOCKHEIGHT 20)
 (def BLOCKSIZE [BLOCKWIDTH BLOCKHEIGHT])
-(def DISPLAYHEIGHT 500)
+(def DISPLAYHEIGHT 300)
 
 (defn pt-to-display-pt [total-rows [x y]]
   (let [diff (- total-rows y)

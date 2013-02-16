@@ -12,7 +12,7 @@
   "Creates a complex block given a passed sequence of blocks"
   {:blocks blocks})
 
-(defn swap-block-default-ticks [] 10)
+(defn swap-block-default-ticks [] 5)
 
 (defn new-swap [a b]
   "Creates a swap block, which represents two blocks which will change positions when the tick count has reached 0"
@@ -29,10 +29,10 @@
 
 (defn new-disappear [blocks]
   (merge (new-complex blocks)
-         {:ticks 20
+         {:ticks 15
           :type :disappear}))
 
-(defn falling-block-default-ticks [] 10)
+(defn falling-block-default-ticks [] 5)
 
 (defn new-falling [{pos :position :as block}]
   "Takes a single block and returns a falling block."

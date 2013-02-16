@@ -22,8 +22,11 @@
   (step)
   (render))
 
-(defn begin-stepping-and-rendering []
-  (js/setInterval step-and-render 33))
+(defn begin-stepping []
+  (js/setInterval step 5))
+
+(defn begin-rendering []
+  (js/setInterval render 30))
 
 (defn which [num]
   (case num
@@ -55,6 +58,7 @@
   "Initializes all the functions required for the game"
   (.log js/console (str "Initializing " @GI))
   (initial-render)
-  (begin-stepping-and-rendering)
+  (begin-stepping)
+  (begin-rendering)
   (bind-keys))
         
