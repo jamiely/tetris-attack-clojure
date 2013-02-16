@@ -22,5 +22,23 @@
         chk #(grid/occupied-at? grid (pt/point %1 %2))]
     (is (chk 1 2))
     (is (chk 1 3))
-    (is (chk 1 4))
-    (is (not (chk 1 1)))))
+    (is (chk 1 4))))
+
+(deftest occupied-points-falling
+  (let [p pt/point
+        fall (->> (bpt 1 1)
+                  blk/new-falling)
+        grid {:blocks [fall]}]
+    (is (= (grid/all-occupied-pts grid)
+           [(p 1 1) (p 1 2)]))))
+
+(deftest occupied-at-falling
+  (let [p pt/point
+        fall (->> (bpt 1 1)
+                  blk/new-falling)
+        grid {:blocks [fall]}]
+    (is (grid/occupied-at? grid (p 1 1)))
+    (is (grid/occupied-at? grid (p 1 2)))
+    (is (not (grid/occupied-at-without-falling? grid (p 1 1))))
+    (is (not (grid/occupied-at-without-falling? grid (p 1 2))))))
+  

@@ -18,17 +18,18 @@
                             blocks))
                         blocks))))
 
-(defn all-occupied-pts [{blocks :blocks :as grid}]
-  (concat (all-occupied-pts-without-falling grid)
-          (flatten (map (fn [{{pos :position} :block fall-pos :falling-into}]
-                 [pos fall-pos])
-               (filter blk/falling? blocks)))))
-
 (defn all-occupied-pts-without-falling [{blocks :blocks :as grid}]
   (concat (map #(get % :position)
                (all-simple-blocks grid))
           (map #(get % :into-position)
                (filter blk/swap-empty? blocks))))
+
+(defn all-occupied-pts [{blocks :blocks :as grid}]
+  (concat (all-occupied-pts-without-falling grid)
+          (reduce (fn [mem {{pos :position} :block fall-pos :falling-to}]
+                    (concat mem [pos fall-pos]))
+                  []
+                  (filter blk/falling? blocks))))
 
 (defn occupied-at-without-falling? [grid point]
   (contains? (into #{} (all-occupied-pts-without-falling grid))
