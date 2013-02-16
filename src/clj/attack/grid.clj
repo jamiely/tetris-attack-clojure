@@ -171,6 +171,9 @@
   (assoc grid :blocks (map (partial check-and-create-falling-block grid)
                            blocks)))
 
+(defn resolve-swap-empty-blocks [{blocks :blocks :as grid}]
+  (assoc grid :blocks (map blk/resolve-swap-empty blocks)))
+
 (defn resolve-falling-blocks [{blocks :blocks :as grid}]
   "Changes blocks which have finished falling in the grid into regular blocks"
   (assoc grid :blocks (map blk/resolve-falling blocks)))
@@ -189,4 +192,5 @@
   (->> grid
        resolve-matches
        resolve-falling-blocks
+       resolve-swap-empty-blocks
        create-falling-blocks))

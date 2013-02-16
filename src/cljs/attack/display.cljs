@@ -65,17 +65,23 @@
         bs (doall (map alter blocks))]
     (doall (map draw-block bs))))
 
+(defn make-gray [block]
+  (assoc block :type :gray))
+
 (defn draw-swap-block [{blocks :blocks ticks :ticks}]
-  (let [alter #(assoc %1 :type :gray)
-        bs (doall (map alter blocks))]
+  (let [bs (doall (map make-gray blocks))]
     (doall (map draw-block bs))))
 
 (defn draw-falling-block [{inner-block :block}]
   (draw-block inner-block))
 
+(defn draw-swap-empty-block [{block :block into-pos :into-position}]
+  (map draw-block [(make-gray block)]))
+
 (defn draw-block [{type :type :as block}]
   (let [fn-draw (case type
                   :swap draw-swap-block
+                  :swap-empty draw-swap-empty-block
                   :disappear draw-disappear-block
                   :falling draw-falling-block
                   (partial draw-block-fun rect))]
@@ -104,8 +110,7 @@
     (assoc gi :game (assoc game :grid new-grid))))
 
 (defn cursor-swap-empty [{{gr :grid :as game} :game :as gi}
-                         block
-                         after-pos]
+                         [block after-pos]]
   (assoc gi :game (assoc game :grid (grid/swap-empty gr
                                                      block
                                                      after-pos))))
@@ -119,8 +124,8 @@
       (if (every? (comp not nil?) [a b])
         (cursor-swap-fill gi a b)
         (cursor-swap-empty gi
-                           (first (filter (comp not nil?) [a b]))
-                           b-pt)))))
+                           (first (filter (fn [[blk pt]] (not (nil? blk)))
+                                          [[a b-pt] [b origin]])))))))
 
 (defn inspect [gi]
   (let [log #(.log js/console (str %))

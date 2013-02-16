@@ -47,6 +47,7 @@
   (= block-type compare-type))
 
 (defn falling? [blk] (compare-type? blk :falling))
+(defn swap-empty? [blk] (compare-type? blk :swap-empty))
 
 (defn simple? [blk]
   (and (contains? blk :position)
@@ -65,6 +66,11 @@
   "Unwraps a falling block if its ticks are 0"
   (if (tick/ticks0? block)
     (unwrap-falling block)
+    block))
+
+(defn resolve-swap-empty [{inner :block into-pos :into-position :as block}]
+  (if (and (tick/ticks0? block) (swap-empty? block))
+    (assoc inner :position into-pos)
     block))
 
 (defn types []
