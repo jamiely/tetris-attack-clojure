@@ -12,11 +12,20 @@
   "Creates a complex block given a passed sequence of blocks"
   {:blocks blocks})
 
-(defn new-swap [a b ticks]
+(defn swap-block-default-ticks [] 10)
+
+(defn new-swap [a b]
   "Creates a swap block, which represents two blocks which will change positions when the tick count has reached 0"
   {:blocks [a b]
-   :ticks ticks
+   :ticks (swap-block-default-ticks)
    :type :swap})
+
+(defn new-swap-empty [blk pos]
+  "Creates a new block which represents a block which has been moved into empty space"
+  {:type :swap-empty
+   :block blk
+   :into-position pos
+   :ticks (swap-block-default-ticks)})
 
 (defn new-disappear [blocks]
   (merge (new-complex blocks)
@@ -65,9 +74,6 @@
 (defn rand-type []
   "Returns a random block type"
   (rand-nth (types)))
-
-(defn swap-block-default-ticks []
-  10)
 
 (defn swap? [{type :type}]
   (= type :swap))

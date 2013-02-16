@@ -16,7 +16,7 @@ Another simple game to practice clojure and clojurescript.
 
 ## Tests
 
-    lein test attack.test.core attack.test.color attack.test.grid
+    lein test
 
 ## Development
 

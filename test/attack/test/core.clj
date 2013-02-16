@@ -79,14 +79,13 @@
     ))
 
 (deftest swap-block 
-  (let [ticks 20
-        blk #(blk/new-simple (pt/point %1 %2) :notype)
+  (let [blk #(blk/new-simple (pt/point %1 %2) :notype)
         a (blk 1 2)
         b (blk 3 4)
-        new-block (blk/new-swap a b ticks)]
+        new-block (blk/new-swap a b)]
     (is (= new-block
            {:blocks [a b]
-            :ticks ticks
+            :ticks (blk/swap-block-default-ticks)
             :type :swap}))))
 
 (deftest dec-ticks

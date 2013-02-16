@@ -98,15 +98,24 @@
 (defn cursor-right [gi]
   (cursor-mod gi (pt/point 1 0)))
 
-(defn cursor-swap [{{gr :grid :as game} :game {origin :origin} :cursor :as gi}] 
-  (let [blk-at #(grid/block-at gr %)
-        b-pt (pt/point-add origin (pt/point 1 0))
-        [a b] (doall (map blk-at [origin b-pt]))
-        new-grid (grid/swap-blocks gr a b)]
-    (.log js/console (str new-grid))
+(defn cursor-swap-fill [{{gr :grid :as game} :game :as gi}
+                        a b]
+  (let [new-grid (grid/swap-blocks gr a b)]
     (if (some nil? [a b])
       gi
       (assoc gi :game (assoc game :grid new-grid)))))
+
+(defn cursor-swap-empty [gi block after-pos]
+  gi)
+
+(defn cursor-swap [{{gr :grid} :game {origin :origin} :cursor :as gi}] 
+  (let [b-pt (pt/after origin)
+        [a b] (doall (map #(grid/block-at gr %) [origin b-pt]))]
+    (if (nil? a)
+      gi
+      (if (nil? b)
+        (cursor-swap-empty gi a b-pt)
+        (cursor-swap-fill gi a b)))))
 
 (defn inspect [gi]
   (let [log #(.log js/console (str %))

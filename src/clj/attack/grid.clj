@@ -12,7 +12,7 @@
 
 (defn swap-blocks [{blocks :blocks :as grid} a b]
   "Replaces the passed blocks in the grid with a swap block"
-  (let [swap-blk (blk/new-swap a b (blk/swap-block-default-ticks))
+  (let [swap-blk (blk/new-swap a b)
         new-blocks (cons swap-blk (remove #{a b} blocks))]
     (assoc grid :blocks new-blocks)))
 
