@@ -27,10 +27,8 @@
                (filter blk/falling? blocks))))
 
 (defn occupied-at? [grid point]
-  (not (empty? (filter (fn [pt]
-                         (and (not (nil? pt))
-                              (= pt point)))
-                       (all-occupied-pts grid)))))
+  (contains? (into #{} (all-occupied-pts grid))
+             point))
 
 (defn swap-empty [{blocks :blocks :as grid} replace-block new-pos]
   "Creates a new swap-empty block using the passed block"
@@ -204,5 +202,6 @@
   (->> grid
        resolve-matches
        resolve-falling-blocks
-       resolve-swap-empty-blocks
-       create-falling-blocks))
+       create-falling-blocks
+       resolve-swap-empty-blocks))
+
