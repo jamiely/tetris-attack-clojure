@@ -16,6 +16,7 @@
                            attack.tick
                            attack.block
                            attack.grid
+                           attack.display-math
                            attack.cursor
                            attack.game
                            attack.game-interface]

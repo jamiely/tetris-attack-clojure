@@ -13,8 +13,11 @@
 (def BLOCKSIZE [BLOCKWIDTH BLOCKHEIGHT])
 (def DISPLAYHEIGHT 500)
 
-(defn pt-to-display-pt [[x y]]
-  [(* x BLOCKWIDTH) (* y BLOCKHEIGHT)])
+(defn pt-to-display-pt [total-rows [x y]]
+  (let [diff (- total-rows y)
+        adj-y (* (+ diff 1) BLOCKHEIGHT)
+        y (- DISPLAYHEIGHT adj-y)]
+    [(* x BLOCKWIDTH) y]))
 
 (defn orect [context color x y w h]
   (set! (.-lineWidth context) 3)
@@ -27,14 +30,14 @@
 (defn draw-context []
   (.getContext (canvas) "2d"))
 
-(defn draw-block-fun [fun {pt :position color :type}]
-  (let [[x y] (pt-to-display-pt pt)]
+(defn draw-block-fun [total-rows fun {pt :position color :type}]
+  (let [[x y] (pt-to-display-pt total-rows pt)]
     (fun (draw-context) (name color) x y BLOCKWIDTH BLOCKHEIGHT)))
 
-(defn render-cursor [{pt :origin :as cursor}]
+(defn render-cursor [total-rows {pt :origin :as cursor}]
   (let [context (draw-context)
         nofill-block (fn [pt]
-                       (let [[x y] (pt-to-display-pt pt)]
+                       (let [[x y] (pt-to-display-pt total-rows pt)]
                          (orect context "black" x y BLOCKWIDTH BLOCKHEIGHT)))]
     (nofill-block pt)
     (nofill-block (pt/point-add pt (pt/point 1 0)))))
@@ -53,9 +56,9 @@
     (.fillText context (str "Clock " clock), 0, 10)))
 
 (defn draw-grid []
-  (rect (draw-context) WHITE 0 0 200 300))
+  (rect (draw-context) WHITE 0 0 200 DISPLAYHEIGHT))
 
-(defn draw-disappear-block [{blocks :blocks ticks :ticks}]
+(defn draw-disappear-block [total-rows {blocks :blocks ticks :ticks}]
   (let [alter1 #(assoc %1 :type :black)
         alter (fn [{type :type :as blk}]
                 (let [color (str type)
@@ -63,28 +66,28 @@
                       factor (+ (/ (- max-ticks ticks) 20) 0.2)]
                   (assoc blk :type (color/brighten color factor))))
         bs (doall (map alter blocks))]
-    (doall (map draw-block bs))))
+    (doall (map (partial draw-block total-rows) bs))))
 
 (defn make-gray [block]
   (assoc block :type :gray))
 
-(defn draw-swap-block [{blocks :blocks ticks :ticks}]
+(defn draw-swap-block [total-rows {blocks :blocks ticks :ticks}]
   (let [bs (doall (map make-gray blocks))]
-    (doall (map draw-block bs))))
+    (doall (map (partial draw-block total-rows) bs))))
 
-(defn draw-falling-block [{inner-block :block}]
-  (draw-block inner-block))
+(defn draw-falling-block [total-rows {inner-block :block}]
+  (draw-block total-rows inner-block))
 
-(defn draw-swap-empty-block [{block :block into-pos :into-position}]
-  (map draw-block [(make-gray block)]))
+(defn draw-swap-empty-block [total-rows {block :block into-pos :into-position}]
+  (map (partial draw-block total-rows) [(make-gray block)]))
 
-(defn draw-block [{type :type :as block}]
+(defn draw-block [total-rows {type :type :as block}]
   (let [fn-draw (case type
-                  :swap draw-swap-block
-                  :swap-empty draw-swap-empty-block
-                  :disappear draw-disappear-block
-                  :falling draw-falling-block
-                  (partial draw-block-fun rect))]
+                  :swap (partial draw-swap-block total-rows)
+                  :swap-empty (partial draw-swap-empty-block total-rows)
+                  :disappear (partial draw-disappear-block total-rows)
+                  :falling (partial draw-falling-block total-rows)
+                  (partial draw-block-fun total-rows rect))]
     (fn-draw block)))
 
 (defn cursor-mod [{{origin :origin :as cursor} :cursor :as gi} pt]
@@ -139,8 +142,8 @@
     (doall (map log-blks blocks)))
   gi)
 
-(defn render-grid [grid]
-    (doall (map draw-block (get grid :blocks))))
+(defn render-grid [{total-rows :rows :as grid}]
+    (doall (map (partial draw-block total-rows) (get grid :blocks))))
 
 (defn init[]
   (draw-grid)
@@ -149,9 +152,9 @@
 (defn step [game-interface]
   (gi/step game-interface))
   
-(defn render[{{grid :grid clock :clock :as game} :game cursor :cursor :as thing}]
+(defn render[{{{rows :rows :as grid} :grid clock :clock :as game} :game cursor :cursor :as gi}]
   ;;(js/console.log (str "Clock " clock " Game: " game))
   (draw-grid)
   (render-clock clock)
   (render-grid grid)
-  (render-cursor cursor))
+  (render-cursor rows cursor))
