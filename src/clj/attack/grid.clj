@@ -10,6 +10,11 @@
    :rows 0
    :cols cols})
 
+(defn swap-empty [{blocks :blocks :as grid} a new-pos]
+  (let [new-block (blk/new-swap-empty a new-pos)
+        new-blocks (cons new-block (remove #{a} blocks))]
+    (assoc grid :blocks new-blocks)))
+
 (defn swap-blocks [{blocks :blocks :as grid} a b]
   "Replaces the passed blocks in the grid with a swap block"
   (let [swap-blk (blk/new-swap a b)

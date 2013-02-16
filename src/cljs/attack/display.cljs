@@ -101,21 +101,26 @@
 (defn cursor-swap-fill [{{gr :grid :as game} :game :as gi}
                         a b]
   (let [new-grid (grid/swap-blocks gr a b)]
-    (if (some nil? [a b])
-      gi
-      (assoc gi :game (assoc game :grid new-grid)))))
+    (assoc gi :game (assoc game :grid new-grid))))
 
-(defn cursor-swap-empty [gi block after-pos]
-  gi)
+(defn cursor-swap-empty [{{gr :grid :as game} :game :as gi}
+                         block
+                         after-pos]
+  (assoc gi :game (assoc game :grid (grid/swap-empty gr
+                                                     block
+                                                     after-pos))))
 
 (defn cursor-swap [{{gr :grid} :game {origin :origin} :cursor :as gi}] 
   (let [b-pt (pt/after origin)
-        [a b] (doall (map #(grid/block-at gr %) [origin b-pt]))]
-    (if (nil? a)
+        [a b] (doall (map #(grid/block-at gr %)
+                          [origin b-pt]))]
+    (if (every? nil? [a b])
       gi
-      (if (nil? b)
-        (cursor-swap-empty gi a b-pt)
-        (cursor-swap-fill gi a b)))))
+      (if (every? (comp not nil?) [a b])
+        (cursor-swap-fill gi a b)
+        (cursor-swap-empty gi
+                           (first (filter (comp not nil?) [a b]))
+                           b-pt)))))
 
 (defn inspect [gi]
   (let [log #(.log js/console (str %))
