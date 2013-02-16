@@ -32,7 +32,7 @@
          {:ticks 20
           :type :disappear}))
 
-(defn falling-block-default-ticks [] 20)
+(defn falling-block-default-ticks [] 10)
 
 (defn new-falling [{pos :position :as block}]
   "Takes a single block and returns a falling block."

@@ -39,7 +39,9 @@
   (concat (map #(get % :position)
                (all-simple-blocks grid))
           (map #(get % :into-position)
-               (filter blk/swap-empty? blocks))))
+               (filter blk/swap-empty? blocks))
+          (map #(get % :falling-to)
+               (filter blk/falling? blocks))))
 
 (defn occupied-at? [grid point]
   (not (empty? (filter (fn [pt]
