@@ -1,51 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+  <![endif]-->
   <style>
-    body {
-      text-align: center;
-    }
     #canvas {
-       margin-top: 0.5in;
-       border: 1px #EEE solid;
-    }
-    #instructions li {
-      list-style-type: none;
+      margin-top: 3em;
     }
   </style>
 </head>
 <body>
-  <h1>Tetris Attack Clojurescript Clone</h1>
-  <section id="intro">
-    <p>
-    This is a clone of puzzle game <a
-      href="http://en.wikipedia.org/wiki/Tetris_Attack">Tetris
-      Attack</a> in <a
-      href="https://github.com/clojure/clojurescript">Clojurescript</a>.
-    </p>
-
-    <p>
-    You can find the full source at: <a
-      href="https://github.com/jamiely/simple-clojure-game">https://github.com/jamiely/simple-clojure-game</a>
-    </p>
-  </section>
-  <div id="game">
-    <div>
-      <canvas id="canvas" width="250" height="400"></canvas>
-    </div>
-    <div id="instructions-container">
-      <div>
-        <section id="instructions">
-          <h2>Objective</h2>
-          Clear the colored blocks before the stack rises to the top
-
-          <h2>Controls</h2>
-          <ul>
-            <li>N - Restarts the game</li>
-            <li>ENTER/SPACE - Swap blocks</li>
-            <li>Arrow keys - Move cursor</li>
-          </ul>
-        </section>
+  <div class="container">
+    <div class="row">
+      <div class="span8">
+        <div class="hero-unit">
+          <h2>Tetris Attack Clojurescript Clone</h2>
+          <section id="intro">
+            <p>
+            This is a clone of puzzle game <a
+              href="http://en.wikipedia.org/wiki/Tetris_Attack">Tetris
+              Attack</a> in <a
+              href="https://github.com/clojure/clojurescript">Clojurescript</a>.
+            </p>
+        
+            <p>
+            You can find the full source at: <a
+              href="https://github.com/jamiely/simple-clojure-game">https://github.com/jamiely/simple-clojure-game</a>
+            </p>
+          </section>
+          <section id="instructions">
+            <h3>Objective</h3>
+            <p>
+              Clear the colored blocks before the stack rises to the top.
+            </p>
+  
+            <h3>Controls</h3>
+            <ul>
+              <li>ENTER/SPACE - Swap blocks</li>
+              <li>Arrow keys - Move cursor</li>
+              <li>N - Restarts the game</li>
+              <li>R - Force another row to be added</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+      <div id="game" class="span4">
+        <div>
+          <canvas id="canvas" width="250" height="400"></canvas>
+        </div>
       </div>
     </div>
   </div>
