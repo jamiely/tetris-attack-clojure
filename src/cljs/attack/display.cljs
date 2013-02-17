@@ -3,6 +3,7 @@
             [attack.point :as pt]
             [attack.grid :as grid]
             [attack.color :as color]
+            [attack.display-math :as dispm]
             [attack.game-interface :as gi]))
 
 (def WHITE "white")
@@ -14,11 +15,11 @@
 (def DISPLAYHEIGHT 400)
 (def DISPLAYWIDTH (* 6 BLOCKWIDTH))
 
-(defn pt-to-display-pt [total-rows [x y]]
-  (let [diff (- total-rows y)
-        adj-y (* (+ diff 1) BLOCKHEIGHT)
-        y (- DISPLAYHEIGHT adj-y)]
-    [(* x BLOCKWIDTH) y]))
+(defn disp-info [total-rows]
+  {:total-rows total-rows
+   :block-height BLOCKHEIGHT
+   :block-width BLOCKWIDTH
+   :display-height DISPLAYHEIGHT})
 
 (defn orect [context color x y w h]
   (set! (.-lineWidth context) 3)
@@ -32,13 +33,13 @@
   (.getContext (canvas) "2d"))
 
 (defn draw-block-fun [total-rows fun {pt :position color :type}]
-  (let [[x y] (pt-to-display-pt total-rows pt)]
+  (let [[x y] (dispm/pt-to-display-pt (disp-info total-rows) pt)]
     (fun (draw-context) (name color) x y BLOCKWIDTH BLOCKHEIGHT)))
 
 (defn render-cursor [total-rows {pt :origin :as cursor}]
   (let [context (draw-context)
         nofill-block (fn [pt]
-                       (let [[x y] (pt-to-display-pt total-rows pt)]
+                       (let [[x y] (dispm/pt-to-display-pt (disp-info total-rows) pt)]
                          (orect context "black" x y BLOCKWIDTH BLOCKHEIGHT)))]
     (nofill-block pt)
     (nofill-block (pt/point-add pt (pt/point 1 0)))))
