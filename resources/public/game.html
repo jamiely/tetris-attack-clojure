@@ -3,17 +3,23 @@
 <head>
   <style>
     #canvas {
-       background-color: #EEE;
+      margin-top: 0.5in;
     }
   </style>
 </head>
 <body>
-  <h1>Simple Clojure Game</h1>
+  <h1>Tetris Attack Clone</h1>
+  <section id="intro">
+    A clone of <a
+      href="http://en.wikipedia.org/wiki/Tetris_Attack">Tetris
+      Attack</a>. 
+  </section>
   <div id="game">
-    <canvas id="canvas" width="800" height="600"></canvas>
+    <canvas id="canvas" width="250" height="450"></canvas>
   </div>
   <script src="js/jquery-1.9.1.min.js"></script>
   <script src="js/game.js"></script>
+  <!--<script src="js/game-prod.js"></script>-->
   <script>
     $(attack.entrypoint.init);
   </script>

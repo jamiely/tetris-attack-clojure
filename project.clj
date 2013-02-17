@@ -24,4 +24,8 @@
               :builds [{:source-paths ["src/cljs"]
                         :compiler {:output-to "resources/public/js/game.js"
                                    :optimizations :whitespace
-                                   :pretty-print true}}]})
+                                   :pretty-print true}}
+                       {:id "prod"
+                        :source-paths ["src/cljs"]
+                        :compiler {:output-to "resources/public/js/game-prod.js"
+                                   :optimizations :advanced}}]})
