@@ -175,7 +175,7 @@
     (set! (.-font context) "bold 20px sans-serif")
     (.fillText context (str "Game over"), (+ x BLOCKWIDTH), y)))
 
-(defn render-game-active [{{clock :clock} :game cursor :cursor}]
+(defn render-game-active [{{clock :clock {rows :rows} :grid} :game cursor :cursor}]
   (render-clock clock)
   (render-cursor rows cursor))
 
