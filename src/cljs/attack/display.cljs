@@ -53,7 +53,7 @@
 (defn render-clock [clock]
   (let [context (draw-context)]
     (fill context "black")
-    (set! (.-font context) "bold 12px sans-serid")
+    (set! (.-font context) "bold 12px sans-serif")
     (.fillText context (str "Clock " clock), BLOCKWIDTH, 10)))
 
 (defn draw-grid []
@@ -133,6 +133,9 @@
                            (first (filter (fn [[blk pt]] (not (nil? blk)))
                                           [[a b-pt] [b origin]])))))))
 
+(defn add-line [{g :game :as gi}]
+  (assoc gi :game (game/add-line g)))
+
 (defn inspect [gi]
   (let [log #(.log js/console (str %))
         log-blks (fn [thing]
@@ -154,10 +157,24 @@
 
 (defn step [game-interface]
   (gi/step game-interface))
-  
+
+(defn render-game-over [gi]
+  (let [context (draw-context)
+        [x y] [BLOCKWIDTH (/ DISPLAYHEIGHT 2)]]
+    (rect context "black" x (- y BLOCKHEIGHT) DISPLAYWIDTH (* BLOCKHEIGHT 2))
+    (fill context "white")
+    (set! (.-font context) "bold 20px sans-serif")
+    (.fillText context (str "Game over"), (+ x BLOCKWIDTH), y)))
+
+(defn render-game-active [{{clock :clock} :game cursor :cursor}]
+  (render-clock clock)
+  (render-cursor rows cursor))
+
 (defn render[{{{rows :rows :as grid} :grid clock :clock :as game} :game cursor :cursor :as gi}]
   ;;(js/console.log (str "Clock " clock " Game: " game))
   (draw-grid)
-  (render-clock clock)
   (render-grid grid)
-  (render-cursor rows cursor))
+  (if (game/game-over? game)
+    (render-game-over gi)
+    (render-game-active gi)))
+

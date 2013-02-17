@@ -63,3 +63,8 @@
                                              (blk/new-swap-empty (bpt 2 5) (p 1 5))]))))))
 
 
+(deftest line-count
+  (let [blocks [(bpt 1 1) (bpt 1 2) (bpt 1 3)]
+        grid {:blocks blocks}]
+    (is (= (grid/line-count grid)
+           3))))

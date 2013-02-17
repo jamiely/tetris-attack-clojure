@@ -36,6 +36,7 @@
     38 :UP
     32 :SPACE
     40 :DOWN
+    82 :R
     191 :QMARK
     :UNSUPPORTED))
 
@@ -47,6 +48,7 @@
                :RIGHT disp/cursor-right
                :UP    disp/cursor-up
                :DOWN  disp/cursor-down
+               :R     disp/add-line
                :QMARK disp/inspect
                identity)]
     (swap! GI func)))
