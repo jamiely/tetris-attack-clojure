@@ -36,6 +36,8 @@
     38 :UP
     32 :SPACE
     40 :DOWN
+    78 :N
+    82 :R
     191 :QMARK
     :UNSUPPORTED))
 
@@ -47,9 +49,14 @@
                :RIGHT disp/cursor-right
                :UP    disp/cursor-up
                :DOWN  disp/cursor-down
+               :R     disp/add-line
+               :N     restart
                :QMARK disp/inspect
                identity)]
     (swap! GI func)))
+
+(defn restart [_]
+  (gi/default))
 
 (defn bind-keys []
   (.keyup (js/$ "body") keyup))

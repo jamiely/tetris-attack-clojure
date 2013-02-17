@@ -39,6 +39,10 @@
   (contains? (into #{} (all-occupied-pts grid))
              point))
 
+(defn line-count [grid]
+  (count (distinct (map (fn [[_ y]] y)
+                        (all-occupied-pts grid)))))
+
 (defn swap-empty [{blocks :blocks :as grid} replace-block new-pos]
   "Creates a new swap-empty block using the passed block"
   (if (occupied-at? grid new-pos)
