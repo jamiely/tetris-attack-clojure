@@ -94,10 +94,18 @@
                   (partial draw-block-fun total-rows rect))]
     (fn-draw block)))
 
-(defn cursor-mod [{{origin :origin :as cursor} :cursor :as gi} pt]
+(defn out-of-bounds? [{{rows :rows cols :cols} :grid} [x y]]
+  (not (and (< 0 x)
+            (< 0 y)
+            (>= rows y)
+            (> cols x))))
+
+(defn cursor-mod [{game :game {origin :origin :as cursor} :cursor :as gi} pt]
   (let [new-orig (pt/point-add origin pt)
         new-cursor (assoc cursor :origin new-orig)]
-    (assoc gi :cursor new-cursor)))
+    (if (out-of-bounds? game new-orig)
+      gi
+      (assoc gi :cursor new-cursor))))
 
 (defn cursor-down [gi]
   (cursor-mod gi (pt/point 0 1)))
