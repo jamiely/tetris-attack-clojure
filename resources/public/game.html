@@ -2,15 +2,32 @@
 <html>
 <head>
   <style>
+    body {
+      text-align: center;
+    }
     #canvas {
        background-color: #EEE;
+       margin-top: 0.5in;
     }
   </style>
 </head>
 <body>
-  <h1>Simple Clojure Game</h1>
+  <h1>Tetris Attack Clojurescript Clone</h1>
+  <section id="intro">
+    <p>
+    This is a clone of puzzle game <a
+      href="http://en.wikipedia.org/wiki/Tetris_Attack">Tetris
+      Attack</a> in <a
+      href="https://github.com/clojure/clojurescript">Clojurescript</a>.
+    </p>
+
+    <p>
+    You can find the full source at: <a
+      href="https://github.com/jamiely/simple-clojure-game">https://github.com/jamiely/simple-clojure-game</a>
+    </p>
+  </section>
   <div id="game">
-    <canvas id="canvas" width="800" height="600"></canvas>
+    <canvas id="canvas" width="250" height="400"></canvas>
   </div>
   <script src="js/jquery-1.9.1.min.js"></script>
   <script src="js/game.js"></script>
