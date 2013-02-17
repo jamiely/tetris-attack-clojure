@@ -6,8 +6,11 @@
       text-align: center;
     }
     #canvas {
-       background-color: #EEE;
        margin-top: 0.5in;
+       border: 1px #EEE solid;
+    }
+    #instructions li {
+      list-style-type: none;
     }
   </style>
 </head>
@@ -27,7 +30,21 @@
     </p>
   </section>
   <div id="game">
-    <canvas id="canvas" width="250" height="400"></canvas>
+    <div>
+      <canvas id="canvas" width="250" height="400"></canvas>
+    </div>
+    <div id="instructions-container">
+      <div>
+        <section id="instructions">
+          <h2>Controls</h2>
+          <ul>
+            <li>N - Restarts the game</li>
+            <li>ENTER/SPACE - Swap blocks</li>
+            <li>Arrow keys - Move cursor</li>
+          </ul>
+        </section>
+      </div>
+    </div>
   </div>
   <script src="js/jquery-1.9.1.min.js"></script>
   <script src="js/game.js"></script>

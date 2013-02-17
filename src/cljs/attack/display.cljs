@@ -13,7 +13,7 @@
 (def BLOCKHEIGHT 30)
 (def BLOCKSIZE [BLOCKWIDTH BLOCKHEIGHT])
 (def DISPLAYHEIGHT 400)
-(def DISPLAYWIDTH (* 6 BLOCKWIDTH))
+(def DISPLAYWIDTH (* 9 BLOCKWIDTH))
 
 (defn disp-info [total-rows]
   {:total-rows total-rows
@@ -58,7 +58,7 @@
     (.fillText context (str "Clock " clock), BLOCKWIDTH, 10)))
 
 (defn draw-grid []
-  (rect (draw-context) WHITE BLOCKWIDTH 0 DISPLAYWIDTH DISPLAYHEIGHT))
+  (rect (draw-context) WHITE 0 0 DISPLAYWIDTH DISPLAYHEIGHT))
 
 (declare draw-block)
 

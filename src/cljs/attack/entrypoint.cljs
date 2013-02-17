@@ -37,6 +37,7 @@
     32 :SPACE
     40 :DOWN
     78 :N
+    80 :P
     82 :R
     191 :QMARK
     :UNSUPPORTED))
