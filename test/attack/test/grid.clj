@@ -68,3 +68,18 @@
         grid {:blocks blocks}]
     (is (= (grid/line-count grid)
            3))))
+
+(deftest adding-blocks
+  "Tests adding a block to the grid"
+  (let [grid (grid/empty-grid 6)
+        block (blk/new-simple (pt/point 1 1) :red)]
+    (is (= (get (grid/add-blocks grid #{block}) :blocks)
+           [block]))))
+
+(deftest removing-blocks
+  "Tests removing a block from the grid"
+  (let [grid (grid/empty-grid 6)
+        block (blk/new-simple (pt/point 1 1) :red)
+        new-grid (grid/add-blocks grid #{block})]
+    (is (= grid
+           (grid/remove-blocks new-grid #{block})))))

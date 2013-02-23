@@ -10,6 +10,14 @@
    :rows 0
    :cols cols})
 
+(defn add-blocks [{blocks :blocks :as grid} new-blocks]
+  "Adds a set of blocks to the grid"
+  (assoc grid :blocks (concat blocks new-blocks)))
+
+(defn remove-blocks [{blocks :blocks :as grid} remove-blocks]
+  "Remove blocks must be a set of blocks to remove from the grid"
+  (assoc grid :blocks (remove remove-blocks blocks)))
+
 (defn all-simple-blocks [{blocks :blocks}]
   (concat (filter blk/simple? blocks)
           (flatten (map (fn [{blocks :blocks}]
@@ -214,7 +222,7 @@
 (defn resolve-grid [grid]
   (->> grid
        create-falling-blocks
-       resolve-matches
+       ;; resolve-matches
        ;; create falling blocks BEFORE resolving existing once
        ;; so that we provide an opportunity for the player to
        ;; swap out a block that has temporarily finished falling
