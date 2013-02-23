@@ -214,7 +214,10 @@
                            (map blk/new-falling fallers))))
 
 (defn resolve-swap-empty-blocks [{blocks :blocks :as grid}]
-  (assoc grid :blocks (map blk/resolve-swap-empty blocks)))
+  (let [to-resolve (into #{} (filter blk/should-resolve-swap-empty? blocks))]
+    (remove-and-add-blocks grid
+                           to-resolve
+                           (map blk/resolve-swap-empty to-resolve))))
 
 (defn resolve-falling-blocks [{blocks :blocks :as grid}]
   "Changes blocks which have finished falling in the grid into regular blocks"

@@ -68,10 +68,12 @@
     (unwrap-falling block)
     block))
 
-(defn resolve-swap-empty [{inner :block into-pos :into-position :as block}]
-  (if (and (tick/ticks0? block) (swap-empty? block))
-    (assoc inner :position into-pos)
-    block))
+(defn should-resolve-swap-empty? [{inner :block into-pos :into-position :as block}]
+  (and (tick/ticks0? block) (swap-empty? block)))
+
+(defn resolve-swap-empty [{inner :block
+                           into-pos :into-position :as block}]
+  (assoc inner :position into-pos))
 
 (defn types []
   "Lists available block types"
