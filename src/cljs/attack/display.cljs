@@ -161,8 +161,8 @@
                        (doall (map log blocks)))))
         grid (get (get gi :game) :grid)
         blocks (get grid :blocks)]
-    (log gi))
     ;;(doall (map log-blks blocks)))
+    (log gi))
   gi)
 
 (defn render-grid [{total-rows :rows :as grid}]

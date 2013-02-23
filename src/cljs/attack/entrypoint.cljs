@@ -8,6 +8,12 @@
 (defn initial-render []
   (disp/draw-grid))
 
+(defn jstime []
+  (.getTime (new js/Date)))
+
+(defn restart [_]
+  (gi/default))
+
 ;; (swap! GI (disp/step @GI))
 (defn log [msg]
   (.log js/console msg))
@@ -22,16 +28,9 @@
         fps (floor (* (/ 1 time-delta) 1000))]
   (disp/render @GI fps)))
 
-(defn step-and-render []
-  (step)
-  (render))
-
 (defn begin-stepping []
   ;;(js/setInterval step 29)
   )
-
-(defn jstime []
-  (.getTime (new js/Date)))
 
 (defn begin-rendering []
   (let [current-time (jstime)]
@@ -68,9 +67,6 @@
                :QMARK disp/inspect
                identity)]
     (swap! GI func)))
-
-(defn restart [_]
-  (gi/default))
 
 (defn bind-keys []
   (.keyup (js/$ "body") keyup))

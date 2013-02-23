@@ -21,11 +21,7 @@
                            attack.game
                            attack.game-interface]
               :crossover-path "src/cljs/crossovers"
-              :builds [{:source-paths ["src/cljs"]
+              :builds [{:source-paths ["src/cljs", "src/cljs/attack"]
                         :compiler {:output-to "resources/public/js/game.js"
                                    :optimizations :whitespace
-                                   :pretty-print true}}
-                       {:id "prod"
-                        :source-paths ["src/cljs"]
-                        :compiler {:output-to "resources/public/js/game-prod.js"
-                                   :optimizations :advanced}}]})
+                                   :pretty-print true}}]})
