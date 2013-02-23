@@ -97,9 +97,9 @@
 (deftest block-at
   (let [blk #(blk/new-simple (pt/point %1 %2) :notype)
         [a b c] [(blk 1 2) (blk 2 3) (blk 4 5)]
-        grid {:blocks [a b c]}
-        blk-at #(grid/block-at grid (pt/point %1 %2))
-        ]
+        grid (-> (grid/empty-grid 6)
+                 (grid/add-blocks #{a b c}))
+        blk-at #(grid/block-at grid (pt/point %1 %2))]
     (is (= (blk-at 2 3) b))
     (is (= (blk-at 4 5) c))
     (is (= (blk-at 9 9) nil))))
@@ -107,8 +107,9 @@
 (deftest match-blocks-horizontal
   "Tests removing matches from a grid"
   (let [b #(blk/new-simple (pt/point %1 %2) %3)
-        blocks [(b 1 1 :red) (b 2 1 :red) (b 3 1 :red) (b 4 1 :blue)]
-        grid {:blocks blocks}
+        blocks #{(b 1 1 :red) (b 2 1 :red) (b 3 1 :red) (b 4 1 :blue)}
+        grid (-> (grid/empty-grid 6)
+                 (grid/add-blocks blocks))
         matches #{#{(b 1 1 :red) (b 2 1 :red) (b 3 1 :red)}}]
     (is (= (grid/match-sets grid)
            matches))))
@@ -116,8 +117,9 @@
 (deftest match-blocks-vertical
   "Tests removing matches from a grid"
   (let [b #(blk/new-simple (pt/point %1 %2) %3)
-        blocks [(b 1 1 :red) (b 1 2 :red) (b 1 3 :red) (b 1 4 :blue)]
-        grid {:blocks blocks}
+        blocks #{(b 1 1 :red) (b 1 2 :red) (b 1 3 :red) (b 1 4 :blue)}
+        grid (-> (grid/empty-grid 6)
+                 (grid/add-blocks blocks))
         matches #{#{(b 1 1 :red) (b 1 2 :red) (b 1 3 :red)}}]
     (is (= (grid/match-sets grid)
            matches))))
@@ -135,10 +137,11 @@
 (deftest match-blocks-vertical-and-horizontal
   "Tests removing matches from a grid"
   (let [b #(blk/new-simple (pt/point %1 %2) %3)
-        blocks [(b 1 1 :red)
+        blocks #{(b 1 1 :red)
                 (b 1 2 :red) (b 1 3 :red) (b 1 4 :blue)
-                (b 2 1 :red) (b 3 1 :red) (b 4 1 :blue)]
-        grid {:blocks blocks}
+                (b 2 1 :red) (b 3 1 :red) (b 4 1 :blue)}
+        grid (-> (grid/empty-grid 6)
+                 (grid/add-blocks blocks))
         matches #{#{(b 1 1 :red) (b 1 2 :red) (b 1 3 :red) (b 2 1 :red) (b 3 1 :red)}}]
     (is (= (grid/match-sets grid)
            matches))))

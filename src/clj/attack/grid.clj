@@ -92,12 +92,8 @@
       (remove-and-add-blocks grid #{a b} #{swap-blk}))
     grid))
 
-(defn block-at [{blocks :blocks} point]
-  (first (filter (fn [{pt :position}]
-                   (and (not (nil? pt))
-                        (= pt point)))
-                 blocks)))
-
+(defn block-at [{h :blocks-hash} point]
+  (get h point))
 
 (defn add-row [{blocks :blocks
                 rows :rows
