@@ -169,7 +169,8 @@
   (is (= (grid/empty-grid 6)
          {:blocks []
           :rows 0
-          :cols 6})))
+          :cols 6
+          :blocks-hash {}})))
 
 (deftest add-row
   "Tests adding a new row to a grid"

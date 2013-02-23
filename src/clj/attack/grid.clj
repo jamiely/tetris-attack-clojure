@@ -8,10 +8,23 @@
   "Returns an empty grid"
   {:blocks []
    :rows 0
-   :cols cols})
+   :cols cols
+   :blocks-hash {}})
 
 (defn replace-blocks [grid replacement-blocks]
   (assoc grid :blocks (into [] replacement-blocks)))
+
+(defn hash-blocks [{h :blocks-hash :as grid} blocks]
+  (let [pos-blocks (filter #(contains? % :position) blocks)
+        new-h (reduce (fn [mem {pos :position :as blk}]
+                        (assoc mem pos blk)) h pos-blocks)]
+    (assoc grid :blocks-hash new-h)))
+
+(defn unhash-blocks [{h :blocks-hash :as grid} blocks]
+    (let [positions (map #(get % :position) (filter #(contains? % :position) blocks))
+          new-h (reduce (fn [mem pos]
+                          (dissoc mem pos)) h positions)]
+    (assoc grid :blocks-hash new-h)))
 
 (defn add-blocks [{blocks :blocks :as grid} new-blocks]
   "Adds a set of blocks to the grid"
