@@ -57,6 +57,13 @@
     (set! (.-font context) "bold 12px sans-serif")
     (.fillText context (str "Clock " clock), BLOCKWIDTH, 10)))
 
+(defn render-fps [fps]
+  (let [context (draw-context)]
+    (fill context "gray")
+    (set! (.-font context) "bold 12px sans-serif")
+    (.fillText context (str "FPS " fps), (* 3 BLOCKWIDTH), 10)))
+
+
 (defn draw-grid []
   (rect (draw-context) WHITE 0 0 DISPLAYWIDTH DISPLAYHEIGHT))
 
@@ -179,10 +186,11 @@
   (render-clock clock)
   (render-cursor rows cursor))
 
-(defn render[{{{rows :rows :as grid} :grid clock :clock :as game} :game cursor :cursor :as gi}]
+(defn render[{{{rows :rows :as grid} :grid clock :clock :as game} :game cursor :cursor :as gi} fps]
   ;;(js/console.log (str "Clock " clock " Game: " game))
   (draw-grid)
   (render-grid grid)
+  (render-fps fps)
   (if (game/game-over? game)
     (render-game-over gi)
     (render-game-active gi)))

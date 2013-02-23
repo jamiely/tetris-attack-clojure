@@ -14,19 +14,33 @@
 
 (defn step []
   (swap! GI disp/step))
-  
-(defn render []
-  (disp/render @GI))
+(defn floor [num]
+  (.floor js/Math num))
+
+(defn render [last-time]
+  (let [time-delta (- (jstime) last-time)
+        fps (floor (* (/ 1 time-delta) 1000))]
+  (log (str "delta: " fps))
+  (disp/render @GI fps)))
 
 (defn step-and-render []
   (step)
   (render))
 
 (defn begin-stepping []
-  (js/setInterval step 5))
+  ;;(js/setInterval step 29)
+  )
+
+(defn jstime []
+  (.getTime (new js/Date)))
 
 (defn begin-rendering []
-  (js/setInterval render 30))
+  (let [current-time (jstime)]
+    (js/setTimeout (fn []
+                     (step)
+                     (render current-time)
+                     (begin-rendering))
+                   31)))
 
 (defn which [num]
   (case num
