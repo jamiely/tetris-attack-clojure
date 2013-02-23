@@ -48,7 +48,7 @@
         target-block (bpt 2 3)
         next-block (bpt 2 4)
         fall (->> (bpt 1 3) blk/new-falling)
-        grid {:blocks [fall target-block next-block]}
+        grid (grid/replace-blocks (grid/empty-grid 6) [fall target-block next-block])
         uniq-blocks (fn [{bs :blocks}] (into #{} bs))]
     (is (= (grid/swap-empty grid target-block (p 1 3))
            grid))
@@ -57,10 +57,10 @@
     (is (= (uniq-blocks (grid/swap-empty grid
                                          (bpt 2 5)
                                          (p 1 5)))
-           (uniq-blocks (assoc grid :blocks [fall
-                                             target-block
-                                             next-block
-                                             (blk/new-swap-empty (bpt 2 5) (p 1 5))]))))))
+           (uniq-blocks (grid/replace-blocks grid [fall
+                                                   target-block
+                                                   next-block
+                                                   (blk/new-swap-empty (bpt 2 5) (p 1 5))]))))))
 
 
 (deftest line-count

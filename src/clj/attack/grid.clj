@@ -10,13 +10,16 @@
    :rows 0
    :cols cols})
 
+(defn replace-blocks [grid replacement-blocks]
+  (assoc grid :blocks (into [] replacement-blocks)))
+
 (defn add-blocks [{blocks :blocks :as grid} new-blocks]
   "Adds a set of blocks to the grid"
-  (assoc grid :blocks (concat blocks new-blocks)))
+  (replace-blocks grid (concat blocks new-blocks)))
 
 (defn remove-blocks [{blocks :blocks :as grid} remove-blocks]
   "Remove blocks must be a set of blocks to remove from the grid"
-  (assoc grid :blocks (remove remove-blocks blocks)))
+  (replace-blocks grid (remove remove-blocks blocks)))
 
 (defn all-simple-blocks [{blocks :blocks}]
   (concat (filter blk/simple? blocks)
@@ -55,16 +58,15 @@
   "Creates a new swap-empty block using the passed block"
   (if (occupied-at? grid new-pos)
     grid
-    (let [new-block (blk/new-swap-empty replace-block new-pos)
-          new-blocks (cons new-block (remove #{replace-block} blocks))]
-      (assoc grid :blocks new-blocks))))
+    (let [new-block (blk/new-swap-empty replace-block new-pos)]
+      (add-blocks (remove-blocks grid #{replace-block})
+                  #{new-block}))))
 
 (defn swap-blocks [{blocks :blocks :as grid} a b]
   "Replaces the passed blocks in the grid with a swap block"
   (if (every? blk/simple? [a b])
-    (let [swap-blk (blk/new-swap a b)
-          new-blocks (cons swap-blk (remove #{a b} blocks))]
-      (assoc grid :blocks new-blocks))
+    (let [swap-blk (blk/new-swap a b)]
+      (add-blocks (remove-blocks grid #{a b}) #{swap-blk}))
     grid))
 
 (defn block-at [{blocks :blocks} point]
@@ -222,7 +224,7 @@
 (defn resolve-grid [grid]
   (->> grid
        create-falling-blocks
-       ;; resolve-matches
+       resolve-matches
        ;; create falling blocks BEFORE resolving existing once
        ;; so that we provide an opportunity for the player to
        ;; swap out a block that has temporarily finished falling
