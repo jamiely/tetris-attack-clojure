@@ -18,6 +18,12 @@
                             blocks))
                         blocks))))
 
+(defn simple-blocks-match? [old new]
+  (let [blk-set #(into #{} (all-simple-blocks %))
+        old-set old
+        new-set new]
+    (= old-set new-set)))
+
 (defn all-occupied-pts-without-falling [{blocks :blocks :as grid}]
   (concat (map #(get % :position)
                (all-simple-blocks grid))
@@ -207,14 +213,14 @@
   (remove-blocks-with-pred grid #(and (blk/disappear? %)
                                        (tick/ticks0? %))))
 
-(defn resolve-matches [grid]
-  (let [matches (match-sets grid)]
-    (resolve-disappear-blocks (disappear-blocks-from-match-set grid matches))))
+(defn resolve-matches [should-resolve-matches? grid]
+  (if should-resolve-matches?
+    (let [matches (match-sets grid)]
+      (resolve-disappear-blocks (disappear-blocks-from-match-set grid matches)))
+    grid))
 
-(defn resolve-grid [grid]
-  (->> grid
-       create-falling-blocks
-       resolve-matches
+(defn resolve-grid [grid should-resolve-matches?]
+  (->> (resolve-matches should-resolve-matches? (create-falling-blocks grid))
        ;; create falling blocks BEFORE resolving existing once
        ;; so that we provide an opportunity for the player to
        ;; swap out a block that has temporarily finished falling

@@ -59,9 +59,9 @@
 
 (defn render-fps [fps]
   (let [context (draw-context)]
-    (fill context "gray")
+    (fill context "#EEE")
     (set! (.-font context) "bold 12px sans-serif")
-    (.fillText context (str "FPS " fps), (* 3 BLOCKWIDTH), 10)))
+    (.fillText context (str "FPS " fps), (* 5 BLOCKWIDTH), 10)))
 
 
 (defn draw-grid []
@@ -161,7 +161,8 @@
                        (doall (map log blocks)))))
         grid (get (get gi :game) :grid)
         blocks (get grid :blocks)]
-    (doall (map log-blks blocks)))
+    ;;(doall (map log-blks blocks)))
+    (log gi))
   gi)
 
 (defn render-grid [{total-rows :rows :as grid}]

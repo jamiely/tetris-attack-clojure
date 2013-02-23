@@ -20,12 +20,7 @@
 (defn render [last-time]
   (let [time-delta (- (jstime) last-time)
         fps (floor (* (/ 1 time-delta) 1000))]
-  (log (str "delta: " fps))
   (disp/render @GI fps)))
-
-(defn step-and-render []
-  (step)
-  (render))
 
 (defn begin-stepping []
   ;;(js/setInterval step 29)

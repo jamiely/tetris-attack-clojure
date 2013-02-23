@@ -11,6 +11,8 @@
      :max-lines 13
      ;; everything is based on the clock
      :clock 0
+     ;; is game dirty, meaning does it need to be checked for matches
+     :dirty false
      ;; add a line after this many ticks
      :add-line-ticks 120}))
 
@@ -35,16 +37,22 @@
 (defn step-blocks [blocks]
   (blk/resolve-swaps (map tick/dec-ticks blocks)))
 
-(defn step-grid [{blocks :blocks :as grid}]
+(defn step-grid [{blocks :blocks :as grid} should-resolve-matches?]
   (let [stepped-grid (assoc grid :blocks (step-blocks blocks))]
-    (grid/resolve-grid stepped-grid)))
+    (grid/resolve-grid stepped-grid should-resolve-matches?)))
 
-(defn step [game]
+(defn mark-dirty [{old-grid :grid} {new-grid :grid :as new-game}]
+  (if (grid/simple-blocks-match? old-grid new-grid)
+    (assoc new-game :dirty false)
+    (assoc new-game :dirty true)))
+
+(defn step [{dirty :dirty :as game}]
   "Steps a game by 1"
   (if (game-over? game)
     (let [{status :status} game]
       (assoc game :status :game-over))
     (let [{grid :grid :as g} (tick game)
-          new-grid (step-grid grid)]
-      (step-add-line (assoc g :grid new-grid)))))
+          new-grid (step-grid grid dirty)
+          new-game (step-add-line (assoc g :grid new-grid))]
+      (mark-dirty game new-game))))
 
