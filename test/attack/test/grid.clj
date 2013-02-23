@@ -186,3 +186,10 @@
             :rows 1
             :cols cols}))))
 
+(deftest disappear-blocks
+  "Tests creating disappear blocks"
+  (let [[a b c d :as blocks] [(bpt 1 1) (bpt 2 2) (bpt 3 3) (bpt 4 4)]
+        grid (-> (grid/empty-grid 6) (grid/replace-blocks blocks))
+        new-grid (grid/disappear-blocks grid [b c])]
+    (is (= (into #{} (get new-grid :blocks))
+           #{(blk/new-disappear [b c]) a d}))))
