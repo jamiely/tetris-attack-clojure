@@ -195,21 +195,23 @@
        (>= rows y)
        (>= cols x)))
 
-(defn check-and-create-falling-block [grid {pos :position :as block}]
+(defn should-block-fall? [grid {pos :position :as block}]
   "Determines whether the passed block should be falling, and if so, returns a falling block"
   (if (or (nil? pos) (not (blk/simple? block)))
-    block
+    false
     (let [pt-below (pt/below pos)]
       (if (position-valid grid pt-below)
         (if (occupied-at-without-falling? grid pt-below)
-          block
-          (blk/new-falling block))
-        block))))
+          false
+          true)
+        false))))
 
 (defn create-falling-blocks [{blocks :blocks :as grid}]
   "Figures out whether a block in the grid should be falling, and if so, converts it into a falling block"
-  (assoc grid :blocks (map (partial check-and-create-falling-block grid)
-                           blocks)))
+  (let [fallers (into #{} (filter (partial should-block-fall? grid) blocks))]
+    (remove-and-add-blocks grid
+                           fallers
+                           (map blk/new-falling fallers))))
 
 (defn resolve-swap-empty-blocks [{blocks :blocks :as grid}]
   (assoc grid :blocks (map blk/resolve-swap-empty blocks)))
