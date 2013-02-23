@@ -28,11 +28,15 @@
 
 (defn add-blocks [{blocks :blocks :as grid} new-blocks]
   "Adds a set of blocks to the grid"
-  (replace-blocks grid (concat blocks new-blocks)))
+  (-> grid
+      (replace-blocks (concat blocks new-blocks))
+      (hash-blocks new-blocks)))
 
 (defn remove-blocks [{blocks :blocks :as grid} blks-to-remove]
   "Remove blocks must be a set of blocks to remove from the grid"
-  (replace-blocks grid (remove blks-to-remove blocks)))
+  (-> grid
+      (replace-blocks (remove blks-to-remove blocks))
+      (unhash-blocks blks-to-remove)))
 
 (defn remove-and-add-blocks [grid blocks-to-remove blocks-to-add]
   (-> grid
@@ -96,23 +100,21 @@
 
 
 (defn add-row [{blocks :blocks
-                  rows :rows
-                  cols :cols}]
+                rows :rows
+                cols :cols
+                :as grid}]
   (let [new-last (+ rows 1)
         new-block (fn [x]
                     (blk/new-simple (pt/point x new-last) (blk/rand-type)))
         new-blocks (map new-block (range 1 (+ cols 1)))]
-    {:blocks (concat blocks new-blocks)
-     :rows new-last
-     :cols cols}))
+    (-> grid
+        (add-blocks new-blocks)
+        (assoc :rows new-last))))
 
 (defn default [cols rows]
-  (let [xs (range 1 (+ cols 1))]
-    {:blocks (for [x xs
-                y (range 1 (+ rows 1))]
-               (blk/new-simple (pt/point x y) (blk/rand-type)))
-     :cols cols
-     :rows rows}))
+  (let [grid (empty-grid cols)
+        fns (repeat rows add-row)]
+    (reduce (fn [g func] (func g)) grid fns)))
 
 (defn block-in-direction [grid {pos :position} dir]
   (block-at grid (pt/point-add pos dir)))

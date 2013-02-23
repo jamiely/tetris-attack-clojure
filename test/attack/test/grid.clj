@@ -81,8 +81,8 @@
   (let [grid (grid/empty-grid 6)
         block (blk/new-simple (pt/point 1 1) :red)
         new-grid (grid/add-blocks grid #{block})]
-    (is (= grid
-           (grid/remove-blocks new-grid #{block})))))
+    (is (= (get grid :blocks)
+           (get (grid/remove-blocks new-grid #{block}) :blocks)))))
 
 (deftest swap-blocks
   "Tests creating swap blocks out of two other blocks"
