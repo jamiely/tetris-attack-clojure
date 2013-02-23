@@ -21,6 +21,11 @@
   "Remove blocks must be a set of blocks to remove from the grid"
   (replace-blocks grid (remove remove-blocks blocks)))
 
+(defn remove-and-add-blocks [grid blocks-to-remove blocks-to-add]
+  (-> grid
+      (remove-blocks blocks-to-remove)
+      (add-blocks blocks-to-add)))
+
 (defn all-simple-blocks [{blocks :blocks}]
   (concat (filter blk/simple? blocks)
           (flatten (map (fn [{blocks :blocks}]
@@ -59,14 +64,15 @@
   (if (occupied-at? grid new-pos)
     grid
     (let [new-block (blk/new-swap-empty replace-block new-pos)]
-      (add-blocks (remove-blocks grid #{replace-block})
-                  #{new-block}))))
+      (remove-and-add-blocks grid
+                             #{replace-block}
+                             #{new-block}))))
 
 (defn swap-blocks [{blocks :blocks :as grid} a b]
   "Replaces the passed blocks in the grid with a swap block"
   (if (every? blk/simple? [a b])
     (let [swap-blk (blk/new-swap a b)]
-      (add-blocks (remove-blocks grid #{a b}) #{swap-blk}))
+      (remove-and-add-blocks grid #{a b} #{swap-blk}))
     grid))
 
 (defn block-at [{blocks :blocks} point]
