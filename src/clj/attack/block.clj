@@ -62,11 +62,13 @@
     (assoc inner-block :position fall-to)
     block))
 
+(defn should-resolve-falling? [{ticks :ticks :as block}]
+  "Determines if a falling block should be removed"
+  (tick/ticks0? block))
+
 (defn resolve-falling [{ticks :ticks :as block}]
   "Unwraps a falling block if its ticks are 0"
-  (if (tick/ticks0? block)
-    (unwrap-falling block)
-    block))
+  (unwrap-falling block))
 
 (defn should-resolve-swap-empty? [{inner :block into-pos :into-position :as block}]
   (and (tick/ticks0? block) (swap-empty? block)))

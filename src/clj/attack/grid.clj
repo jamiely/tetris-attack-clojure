@@ -221,7 +221,10 @@
 
 (defn resolve-falling-blocks [{blocks :blocks :as grid}]
   "Changes blocks which have finished falling in the grid into regular blocks"
-  (assoc grid :blocks (map blk/resolve-falling blocks)))
+  (let [to-resolve (into #{} (filter blk/should-resolve-falling? blocks))]
+    (remove-and-add-blocks grid
+                           to-resolve
+                           (map blk/resolve-falling to-resolve))))
 
 (defn resolve-disappear-blocks [grid]
   (remove-blocks-with-pred grid #(and (blk/disappear? %)
