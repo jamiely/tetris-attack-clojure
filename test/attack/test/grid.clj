@@ -182,10 +182,10 @@
         new-grid (assoc new-grid-orig :blocks swapped-blocks)
         test-blocks (map #(blk/new-simple (pt/point % 1) :red)
                          (range 1 (+ cols 1)))]
-    (is (= new-grid
-           {:blocks test-blocks
-            :rows 1
-            :cols cols}))))
+    (is (= (get new-grid :blocks)
+           test-blocks))
+    (is (= (get new-grid :rows)
+           1))))
 
 (deftest disappear-blocks
   "Tests creating disappear blocks"
