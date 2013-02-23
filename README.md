@@ -34,6 +34,7 @@ Another simple game to practice clojure and clojurescript.
 ![8c8eb47](media/8c8eb47.png)
 ![0b1d1da gameover](media/0b1d1da-gameover.png)
 
+* 27463f8 - http://youtu.be/WWK8RFEY04I
 * 0a9ca69 - http://youtu.be/t9HijqwaZbs
 * 2ed0943 - http://youtu.be/5W6ntRg5AjE
 * 16c6402 - http://youtu.be/CuqilytlfJE
