@@ -19,7 +19,7 @@
 
 (defn remove-blocks [{blocks :blocks :as grid} remove-blocks]
   "Remove blocks must be a set of blocks to remove from the grid"
-  (replace-blocks grid (remove remove-blocks blocks)))
+  (replace-blocks grid (remove (into #{} remove-blocks) blocks)))
 
 (defn remove-and-add-blocks [grid blocks-to-remove blocks-to-add]
   (-> grid
@@ -180,10 +180,6 @@
                                        match-set))))
 
 
-(defn remove-blocks [{blocks :blocks :as grid} blocks-to-remove]
-  (let [bs-remove (into #{} blocks-to-remove)]
-    (assoc grid :blocks (remove #(contains? bs-remove %) blocks))))
-
 (defn remove-blocks-with-pred [{blocks :blocks :as grid} pred]
   "Removes blocks from the passed grid filtered using the passed predicate"
   (remove-blocks grid (filter pred blocks)))
@@ -230,12 +226,31 @@
   (remove-blocks-with-pred grid #(and (blk/disappear? %)
                                        (tick/ticks0? %))))
 
+(defn resolve-swaps [{blocks :blocks :as grid}]
+  "Dissolves swap blocks when the ticks reach 0"
+  (let [to-resolve (filter blk/should-resolve-swap? blocks)
+        to-add (flatten (map #(blk/blocks-swap! (get % :blocks))
+                             to-resolve))]
+    (remove-and-add-blocks grid
+                           to-resolve
+                           to-add)))
+
+(defn step-blocks [{blocks :blocks :as grid}]
+  "Resolves ticks for each block"
+  (let [have-ticks (filter #(contains? % :ticks) blocks)
+        ticked (map tick/dec-ticks have-ticks)]
+    (remove-and-add-blocks grid
+                           have-ticks
+                           ticked)))
+
 (defn resolve-matches [grid]
   (let [matches (match-sets grid)]
     (resolve-disappear-blocks (disappear-blocks-from-match-set grid matches))))
 
 (defn resolve-grid [grid]
   (->> grid
+       step-blocks
+       resolve-swaps
        create-falling-blocks
        resolve-matches
        ;; create falling blocks BEFORE resolving existing once

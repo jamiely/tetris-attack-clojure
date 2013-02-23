@@ -32,19 +32,12 @@
     (add-line game)
     game))
 
-(defn step-blocks [blocks]
-  (blk/resolve-swaps (map tick/dec-ticks blocks)))
-
-(defn step-grid [{blocks :blocks :as grid}]
-  (let [stepped-grid (assoc grid :blocks (step-blocks blocks))]
-    (grid/resolve-grid stepped-grid)))
-
 (defn step [game]
   "Steps a game by 1"
   (if (game-over? game)
     (let [{status :status} game]
       (assoc game :status :game-over))
     (let [{grid :grid :as g} (tick game)
-          new-grid (step-grid grid)]
+          new-grid (grid/resolve-grid grid)]
       (step-add-line (assoc g :grid new-grid)))))
 

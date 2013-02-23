@@ -94,6 +94,9 @@
     [(assoc a :position b-pos)
      (assoc b :position a-pos)]))
 
+(defn should-resolve-swap? [blk]
+  (and (swap? blk) (tick/ticks0? blk)))
+
 (defn resolve-swaps [blocks]
   "Dissolves swap blocks when the ticks reach 0"
   (flatten
