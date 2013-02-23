@@ -17,9 +17,9 @@
   "Adds a set of blocks to the grid"
   (replace-blocks grid (concat blocks new-blocks)))
 
-(defn remove-blocks [{blocks :blocks :as grid} remove-blocks]
+(defn remove-blocks [{blocks :blocks :as grid} blks-to-remove]
   "Remove blocks must be a set of blocks to remove from the grid"
-  (replace-blocks grid (remove (into #{} remove-blocks) blocks)))
+  (replace-blocks grid (remove blks-to-remove blocks)))
 
 (defn remove-and-add-blocks [grid blocks-to-remove blocks-to-add]
   (-> grid
@@ -182,7 +182,7 @@
 
 (defn remove-blocks-with-pred [{blocks :blocks :as grid} pred]
   "Removes blocks from the passed grid filtered using the passed predicate"
-  (remove-blocks grid (filter pred blocks)))
+  (remove-blocks grid (into #{} (filter pred blocks))))
 
 (defn position-valid [{rows :rows cols :cols :as grid} [x y]]
   "Determines whether the passed position is valid relative to the grid"
@@ -206,20 +206,20 @@
   "Figures out whether a block in the grid should be falling, and if so, converts it into a falling block"
   (let [fallers (into #{} (filter (partial should-block-fall? grid) blocks))]
     (remove-and-add-blocks grid
-                           fallers
+                           (into #{} fallers)
                            (map blk/new-falling fallers))))
 
 (defn resolve-swap-empty-blocks [{blocks :blocks :as grid}]
   (let [to-resolve (into #{} (filter blk/should-resolve-swap-empty? blocks))]
     (remove-and-add-blocks grid
-                           to-resolve
+                           (into #{} to-resolve)
                            (map blk/resolve-swap-empty to-resolve))))
 
 (defn resolve-falling-blocks [{blocks :blocks :as grid}]
   "Changes blocks which have finished falling in the grid into regular blocks"
   (let [to-resolve (into #{} (filter blk/should-resolve-falling? blocks))]
     (remove-and-add-blocks grid
-                           to-resolve
+                           (into #{} to-resolve)
                            (map blk/resolve-falling to-resolve))))
 
 (defn resolve-disappear-blocks [grid]
@@ -232,7 +232,7 @@
         to-add (flatten (map #(blk/blocks-swap! (get % :blocks))
                              to-resolve))]
     (remove-and-add-blocks grid
-                           to-resolve
+                           (into #{} to-resolve)
                            to-add)))
 
 (defn step-blocks [{blocks :blocks :as grid}]
@@ -240,7 +240,7 @@
   (let [have-ticks (filter #(contains? % :ticks) blocks)
         ticked (map tick/dec-ticks have-ticks)]
     (remove-and-add-blocks grid
-                           have-ticks
+                           (into #{} have-ticks)
                            ticked)))
 
 (defn resolve-matches [grid]
