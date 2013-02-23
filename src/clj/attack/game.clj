@@ -27,7 +27,7 @@
 (defn add-line [{grid :grid :as game}]
   (assoc game :grid (grid/add-row grid)))
 
-(defn step-add-line [{add-line-ticks :add-line-ticks grid :grid :as game}]
+(defn step-add-line [{add-line-ticks :add-line-ticks :as game}]
   (if (mod-clock? game add-line-ticks)
     (add-line game)
     game))
