@@ -197,3 +197,58 @@
         new-grid (grid/disappear-blocks grid [b c])]
     (is (= (into #{} (get new-grid :blocks))
            #{(blk/new-disappear [b c]) a d}))))
+
+(deftest garbage-block-bottoms
+  (let [p pt/point
+        gb (blk/new-garbage (p 2 2) 3 1)]
+    (is (= (grid/garbage-block-bottom-points gb)
+           [(p 2 2) (p 3 2) (p 4 2)]))))
+
+(deftest should-garbage-block-fall-1
+  "Tests whether a garbage block should fall"
+  (let [gb (blk/new-garbage (pt/point 2 2) 1 1)
+        grid (-> (grid/default 3 3)
+                 (assoc :blocks []) ;; clear all the blocks (as if they've been matched)
+                 (grid/add-blocks #{gb}))]
+    (is (true? (grid/should-garbage-block-fall? grid gb)))))
+
+(deftest should-garbage-block-fall-2
+  "Tests whether a garbage block should fall"
+  (let [orig (pt/point 2 2)
+        gb (blk/new-garbage orig 1 1)
+        simp (blk/new-simple (pt/below orig) :none)
+        grid (-> (grid/default 3 3)
+                 (assoc :blocks []) ;; clear all the blocks (as if they've been matched)
+                 (grid/add-blocks #{gb simp}))]
+    (is (false? (grid/should-garbage-block-fall? grid gb)))))
+
+(deftest should-garbage-block-fall-3
+  "Tests whether a garbage block should fall"
+  (let [orig (pt/point 2 2)
+        b (pt/after orig)
+        c (pt/after b)
+        gb (blk/new-garbage orig 3 1)
+        block-below #(blk/new-simple (pt/below %) :none)
+        blocks (into #{} (map block-below [b c]))
+        grid (-> (grid/default 4 4)
+                 (assoc :blocks []) ;; clear all the blocks (as if they've been matched)
+                 (grid/add-blocks (conj blocks gb)))]
+    (is (false? (grid/should-garbage-block-fall? grid gb)))))
+
+(deftest should-garbage-block-fall-3
+  "Tests whether a garbage block should fall. It shouldn't fall unless there's nothing below"
+  (let [orig (pt/point 2 2)
+        b (pt/after orig)
+        c (pt/after b)
+        gb (blk/new-garbage orig 3 1)
+        block-below #(blk/new-simple (pt/below (pt/below %)) :none)
+        blocks (into #{} (map block-below [orig b c]))
+        grid (-> (grid/default 4 4)
+                 (assoc :blocks []) ;; clear all the blocks (as if they've been matched)
+                 (grid/add-blocks (conj blocks gb)))]
+    (is (true? (grid/should-garbage-block-fall? grid gb)))))
+
+
+
+
+

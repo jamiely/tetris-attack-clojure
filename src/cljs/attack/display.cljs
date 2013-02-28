@@ -93,10 +93,10 @@
 (defn draw-swap-empty-block [total-rows {block :block into-pos :into-position}]
   (map (partial draw-block total-rows) [(make-gray block)]))
 
-(defn draw-garbage-block [total-rows {[ox oy] :origin length :length height :height}]
+(defn draw-garbage-block [total-rows {[ox oy] :position length :length height :height}]
   (let [points (for [x (range 0 length)
                      y (range 0 height)]
-                 (pt/point (+ ox x) (+ oy y)))
+                 (pt/point (+ ox x) (- oy y)))
         blocks (doall (map #(blk/new-simple % :black) points))]
     (doall (map (partial draw-block total-rows) blocks))))
 

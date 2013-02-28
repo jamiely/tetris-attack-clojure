@@ -4,9 +4,14 @@
             [attack.block :as blk])
   (:use [attack.point :only [point point-add]]))
 
+(defn adjusted-grid [cols rows]
+  (let [def (grid/default cols rows)
+        removed (grid/remove-blocks def (into #{} (get def :blocks)))]
+    (reduce (fn [grid f] (f grid)) removed (repeat rows grid/add-row))))
+
 (defn default []
   (let [[rows cols] [6 6]]
-    {:grid (grid/default cols rows)
+    {:grid (adjusted-grid rows cols)
      :status :active
      :max-lines 13
      ;; everything is based on the clock
@@ -17,7 +22,7 @@
      :add-line-ticks 120}))
 
 (defn add-garbage [{grid :grid :as game}]
-  (let [garbage (blk/new-garbage (point 1 -3) 5 2)
+  (let [garbage (blk/new-garbage (point 1 1) 5 1)
         new-grid (grid/add-blocks grid #{garbage})] 
     (assoc game :grid new-grid)))
 

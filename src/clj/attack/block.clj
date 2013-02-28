@@ -31,7 +31,7 @@
   "Creates a new garbage block"
   (let [simple (fn [x y] new-simple (pt/point x y) :black)]
   {:type :garbage
-   :origin position
+   :position position
    :length length
    :height height}))
   
@@ -63,6 +63,9 @@
 
 (defn disappear? [block]
   (compare-type? block :disappear))
+
+(defn garbage? [block]
+  (compare-type? block :garbage))
 
 (defn unwrap-falling [{inner-block :block fall-to :falling-to :as block}]
   "Unwraps a falling block, returning the inner block with its updated position"

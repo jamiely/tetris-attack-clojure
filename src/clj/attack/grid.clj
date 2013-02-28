@@ -208,16 +208,40 @@
        (>= rows y)
        (>= cols x)))
 
-(defn should-block-fall? [grid {pos :position :as block}]
+(defn should-position-fall? [grid pos]
+  (let [pt-below (pt/below pos)]
+    (if (position-valid grid pt-below)
+      (if (occupied-at-without-falling? grid pt-below)
+        false
+        true)
+      false)))
+
+(defn garbage-block-bottom-points [{[ox oy] :position
+                                    height :height
+                                    length :length :as garbage-block}]
+  (if (blk/garbage? garbage-block)
+    (map #(pt/point (+ ox %) oy height)
+         (range 0 length))
+    []))
+
+(defn should-garbage-block-fall? [grid garbage-block]
+  "Determines whether or not a garbage block should fall"
+  (if (blk/garbage? garbage-block)
+    (let [bottom-points (garbage-block-bottom-points garbage-block)]
+      (every? #(true? (should-position-fall? grid %))
+              bottom-points))
+    false))
+
+(defn should-simple-block-fall? [grid {pos :position :as block}]
   "Determines whether the passed block should be falling, and if so, returns a falling block"
   (if (or (nil? pos) (not (blk/simple? block)))
     false
-    (let [pt-below (pt/below pos)]
-      (if (position-valid grid pt-below)
-        (if (occupied-at-without-falling? grid pt-below)
-          false
-          true)
-        false))))
+    (should-position-fall? grid pos)))
+
+(defn should-block-fall? [grid block]
+  "Determines whether the passed block should be falling, and if so, returns a falling block"
+  (or (should-simple-block-fall? grid block)
+      (should-garbage-block-fall? grid block)))
 
 (defn create-falling-blocks [{blocks :blocks :as grid}]
   "Figures out whether a block in the grid should be falling, and if so, converts it into a falling block"
