@@ -1,6 +1,7 @@
 (ns attack.display
   (:require [attack.game :as game]
             [attack.point :as pt]
+            [attack.block :as blk]
             [attack.grid :as grid]
             [attack.color :as color]
             [attack.display-math :as dispm]
@@ -92,8 +93,16 @@
 (defn draw-swap-empty-block [total-rows {block :block into-pos :into-position}]
   (map (partial draw-block total-rows) [(make-gray block)]))
 
+(defn draw-garbage-block [total-rows {[ox oy] :origin length :length height :height}]
+  (let [points (for [x (range 0 length)
+                     y (range 0 height)]
+                 (pt/point (+ ox x) (+ oy y)))
+        blocks (doall (map #(blk/new-simple % :black) points))]
+    (doall (map (partial draw-block total-rows) blocks))))
+
 (defn draw-block [total-rows {type :type :as block}]
   (let [fn-draw (case type
+                  :garbage (partial draw-garbage-block total-rows)
                   :swap (partial draw-swap-block total-rows)
                   :swap-empty (partial draw-swap-empty-block total-rows)
                   :disappear (partial draw-disappear-block total-rows)
@@ -151,6 +160,9 @@
 
 (defn add-line [{g :game :as gi}]
   (assoc gi :game (game/add-line g)))
+
+(defn add-garbage-block[{g :game :as gi}]
+  (assoc gi :game (game/add-garbage g)))
 
 (defn inspect [gi]
   (let [log #(.log js/console (str %))

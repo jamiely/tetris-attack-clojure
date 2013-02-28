@@ -27,6 +27,14 @@
    :into-position pos
    :ticks (swap-block-default-ticks)})
 
+(defn new-garbage [position length height]
+  "Creates a new garbage block"
+  (let [simple (fn [x y] new-simple (pt/point x y) :black)]
+  {:type :garbage
+   :origin position
+   :length length
+   :height height}))
+  
 (defn new-disappear [blocks]
   (merge (new-complex blocks)
          {:ticks 15

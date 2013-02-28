@@ -16,6 +16,11 @@
      ;; add a line after this many ticks
      :add-line-ticks 120}))
 
+(defn add-garbage [{grid :grid :as game}]
+  (let [garbage (blk/new-garbage (point 1 -3) 5 2)
+        new-grid (grid/add-blocks grid #{garbage})] 
+    (assoc game :grid new-grid)))
+
 (defn game-over? [{grid :grid max-lines :max-lines :as game}]
   (> (grid/line-count grid) max-lines))
 

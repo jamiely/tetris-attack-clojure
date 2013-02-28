@@ -43,6 +43,7 @@
 (defn which [num]
   (case num
     13 :ENTER
+    49 :EXCLAMATION
     39 :RIGHT
     37 :LEFT
     38 :UP
@@ -54,6 +55,10 @@
     191 :QMARK
     :UNSUPPORTED))
 
+(defn inspect-key [event]
+  (log event)
+  identity)
+
 (defn keyup [event]
   (let [func (case (which (.-which event))
                :ENTER disp/cursor-swap
@@ -64,8 +69,9 @@
                :DOWN  disp/cursor-down
                :R     disp/add-line
                :N     restart
+               :EXCLAMATION disp/add-garbage-block
                :QMARK disp/inspect
-               identity)]
+               (inspect-key event))]
     (swap! GI func)))
 
 (defn bind-keys []
