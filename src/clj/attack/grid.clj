@@ -220,7 +220,7 @@
                                     height :height
                                     length :length :as garbage-block}]
   (if (blk/garbage? garbage-block)
-    (map #(pt/point (+ ox %) oy height)
+    (map #(pt/point (+ ox %) oy)
          (range 0 length))
     []))
 

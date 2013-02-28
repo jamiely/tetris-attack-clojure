@@ -59,6 +59,7 @@
 
 (defn simple? [blk]
   (and (contains? blk :position)
+       (not (garbage? blk))
        (not (falling? blk))))
 
 (defn disappear? [block]

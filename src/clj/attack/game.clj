@@ -22,7 +22,7 @@
      :add-line-ticks 120}))
 
 (defn add-garbage [{grid :grid :as game}]
-  (let [garbage (blk/new-garbage (point 1 1) 5 1)
+  (let [garbage (blk/new-garbage (point 1 1) 5 2)
         new-grid (grid/add-blocks grid #{garbage})] 
     (assoc game :grid new-grid)))
 
