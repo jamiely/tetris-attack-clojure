@@ -5,13 +5,13 @@
   (:use [attack.point :only [point point-add]]))
 
 (defn adjusted-grid [cols rows]
-  (let [def (grid/default cols rows)
+  (let [def (grid/default cols 13)
         removed (grid/remove-blocks def (into #{} (get def :blocks)))]
     (reduce (fn [grid f] (f grid)) removed (repeat rows grid/add-row))))
 
 (defn default []
-  (let [[rows cols] [6 6]]
-    {:grid (adjusted-grid rows cols)
+  (let [[rows cols] [3 6]]
+    {:grid (adjusted-grid cols rows)
      :status :active
      :max-lines 13
      ;; everything is based on the clock
@@ -54,10 +54,10 @@
     (add-garbage-block game garbage)))
 
 (defn random-garbage-block [{cols :cols rows :rows :as grid}]
-  (let [length (rand-int (- cols 3))
-        x (+ 1 (rand-int (- cols length 1)))]
+  (let [length (+ 3 (rand-int (- cols 3)))
+        x (+ 1 (rand-int (- cols length -1)))]
     (blk/new-garbage (point x (- rows 11))
-                     (+ 3 length)
+                     length
                      (+ 1 (rand-int 2)))))
 
 (defn add-random-garbage-every-n-steps [{grid :grid clock :clock :as game} n-steps]
