@@ -2,5 +2,5 @@
   (:require [attack.point :as pt]))
 
 (defn default []
-  {:origin (pt/point 2 2)})
+  {:origin (pt/point 2 15)})
 

@@ -74,7 +74,7 @@
           new-grid (grid/resolve-grid grid dirty?)
           new-game (add-random-garbage-every-n-steps
                     (step-add-line (assoc g :grid new-grid))
-                    101)]
+                    201)]
       (mark-dirty game new-game))))
 
 
