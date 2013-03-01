@@ -1,8 +1,8 @@
-v0.0.2
+v1.0.2
 ======
 * Implemented garbage blocks
 
-v0.0.1
+v1.0.1
 ======
 * Block matching
 * Block falling
