@@ -309,8 +309,8 @@
   "Returns the points that border the garbage block"
   (let [x-min (- ox 1)
         x-max (+ ox length)
-        y-min (- oy 1)
-        y-max (+ oy height)
+        y-max (+ oy 1)
+        y-min (- oy height)
         top-and-bottom (for [x (range ox x-max)
                              y [y-min y-max]]
                          (pt/point x y))
