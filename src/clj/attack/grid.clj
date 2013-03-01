@@ -61,7 +61,11 @@
   (concat (map #(get % :position)
                (all-simple-blocks grid))
           (map #(get % :into-position)
-               (filter blk/swap-empty? blocks))))
+               (filter blk/swap-empty? blocks))
+          (reduce (fn [all blk]
+                    (concat all (blk/garbage-block-points blk)))
+                  []
+                  (filter blk/garbage? blocks))))
 
 (defn all-occupied-pts [{blocks :blocks :as grid}]
   (concat (all-occupied-pts-without-falling grid)
@@ -299,7 +303,7 @@
 (defn dissolve-blocks-from-garbage-blocks [grid blocks]
   "Turns the passed garbage blocks into 'dissolve' blocks, which transition
    a garbage block into a bunch of simple blocks"
-  ;; @todo
+
   (into #{} (map blk/new-dissolve
                  (filter blk/garbage? blocks))))
 
