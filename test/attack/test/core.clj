@@ -39,7 +39,7 @@
         r #(get (get % :grid) :rows)
         s game/step
         ;; the number of rows gets adjusted as a hack for garbage
-        rows (* 6 2)]
+        rows 16]
     (is (= (r game) rows))
     (is (= (r (s game)) (+ 1 rows)))
     (is (= (r (s (s game))) (+ 2 rows)))))
@@ -50,7 +50,7 @@
         r #(get (get % :grid) :rows)
         s game/step
         ;; the number of rows gets adjusted as a hack for garbage
-        rows (* 6 2)]
+        rows 16]
     (is (= (r game) rows))
     (is (= (r (s game)) rows))
     (is (= (r (s (s game))) (+ 1 rows)))
