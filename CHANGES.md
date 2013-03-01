@@ -1,13 +1,13 @@
-v0.0.3
+v1.0.3
 ======
 * Fixed cursor position
-* Made garbage blocks appear at a slower rate
+* Made garbage blocks appear at a slower 
 
-v0.0.2
+v1.0.2
 ======
 * Implemented garbage blocks
 
-v0.0.1
+v1.0.1
 ======
 * Block matching
 * Block falling
