@@ -1,4 +1,4 @@
-(defproject tetris-attack-clojure "1.0.0-SNAPSHOT"
+(defproject tetris-attack-clojure "1.0.3-SNAPSHOT"
   :description "Tetris Attack Implementation in Clojure"
   :dependencies [
                  [org.clojure/clojure "1.4.0"]
