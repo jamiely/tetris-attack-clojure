@@ -92,16 +92,25 @@
 
 (defn draw-swap-empty-block [total-rows {block :block into-pos :into-position}]
   (map (partial draw-block total-rows) [(make-gray block)]))
-
-(defn draw-garbage-block [total-rows {[ox oy] :position length :length height :height}]
+   
+(defn draw-garbage-block-with-color [total-rows
+                                     {[ox oy] :position length :length height :height}
+                                     color]
   (let [points (for [x (range 0 length)
                      y (range 0 height)]
                  (pt/point (+ ox x) (- oy y)))
-        blocks (doall (map #(blk/new-simple % :black) points))]
+        blocks (doall (map #(blk/new-simple % color) points))]
     (doall (map (partial draw-block total-rows) blocks))))
+
+(defn draw-dissolve-block [total-rows {inner :garbage-block :as dissolve}]
+  (draw-garbage-block-with-color total-rows inner :AAA))
+   
+(defn draw-garbage-block [total-rows block]
+  (draw-garbage-block-with-color total-rows block :black))
 
 (defn draw-block [total-rows {type :type :as block}]
   (let [fn-draw (case type
+                  :dissolve (partial draw-dissolve-block total-rows)
                   :garbage (partial draw-garbage-block total-rows)
                   :swap (partial draw-swap-block total-rows)
                   :swap-empty (partial draw-swap-empty-block total-rows)

@@ -34,6 +34,17 @@
    :position position
    :length length
    :height height}))
+
+(defn dissolve-block-default-ticks [block] 30)
+
+(defn new-dissolve [block]
+  (let [ticks (dissolve-block-default-ticks block)]
+    {:type :dissolve
+     :garbage-block block
+     :ticks ticks
+     ;; these are the blocks that will replace the garbage block
+     :resulting-blocks []
+     :starting-ticks ticks}))
   
 (defn new-disappear [blocks]
   (merge (new-complex blocks)
@@ -55,6 +66,8 @@
   (= block-type compare-type))
 
 (defn falling? [blk] (compare-type? blk :falling))
+(defn dissolve? [blk] (compare-type? blk :dissolve))
+
 (defn swap-empty? [blk] (compare-type? blk :swap-empty))
 
 (defn garbage? [block]

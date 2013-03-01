@@ -293,7 +293,8 @@
   "Turns the passed garbage blocks into 'dissolve' blocks, which transition
    a garbage block into a bunch of simple blocks"
   ;; @todo
-  #{})
+  (into #{} (map blk/new-dissolve
+                 (filter blk/garbage? blocks))))
 
 (defn garbage-block-boundary-points [grid {[ox oy] :position
                                            height :height
