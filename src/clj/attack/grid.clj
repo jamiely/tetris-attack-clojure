@@ -284,10 +284,17 @@
                            (into #{} have-ticks)
                            ticked)))
 
-(defn resolve-dissolve-blocks [grid]
+(defn resolve-dissolve-blocks [{blocks :blocks :as grid}]
   "Handles resolution of dissolve blocks"
-  ;; @todo
-  grid)
+  (let [dissolves (filter blk/dissolve? blocks)
+        ready (filter tick/ticks0? dissolves)
+        new-grid (reduce (fn [g blk]
+                           (remove-and-add-blocks g
+                                                  #{blk}
+                                                  (blk/resolve-dissolve blk)))
+                         grid
+                         ready)]
+    new-grid))
 
 (defn dissolve-blocks-from-garbage-blocks [grid blocks]
   "Turns the passed garbage blocks into 'dissolve' blocks, which transition
@@ -300,7 +307,6 @@
                                            height :height
                                            length :length :as block}]
   "Returns the points that border the garbage block"
-  ;; @todo
   (let [x-min (- ox 1)
         x-max (+ ox length)
         y-min (- oy 1)
@@ -326,7 +332,6 @@
 (defn garbage-blocks-adjacent-to-matches [{blocks :blocks :as grid}
                                           matches]
   "Given a grid and a set of matches, determines the garbage blocks which are adjacent to any of the blocks"
-  ;; @todo
   (let [matchset-pts (matchset-points matches)
         garbage-blocks (filter blk/garbage? blocks)]
     (into #{} (filter #((comp not empty?) (intersection (garbage-block-boundary-points grid %)
@@ -354,6 +359,7 @@
        resolve-swaps
        create-falling-blocks
        (resolve-matches should-resolve-matches?)
+       resolve-dissolve-blocks
        ;; create falling blocks BEFORE resolving existing once
        ;; so that we provide an opportunity for the player to
        ;; swap out a block that has temporarily finished falling
