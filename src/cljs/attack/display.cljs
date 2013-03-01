@@ -104,12 +104,22 @@
         blocks (doall (map #(blk/new-simple % color) points))]
     (doall (map (partial draw-block total-rows) blocks))))
 
-(defn draw-dissolve-block [total-rows {inner :garbage-block
+(defn draw-dissolve-block [total-rows {{pos :position
+                                        length :length height :height
+                                        :as inner} :garbage-block
                                        pending :pending-blocks
                                        :as dissolve}]
+  (let [[ox oy] (pt/above pos)
+        apos (pt/point (+ ox length) (- oy height))
+        [ox' oy'] (dispm/pt-to-display-pt (disp-info total-rows) [ox oy])
+        [ax' ay'] (dispm/pt-to-display-pt (disp-info total-rows) apos)
+        width (- ax' ox')
+        height (- oy' ay')
+        context (draw-context)]
   (draw-garbage-block-with-color total-rows inner :AAA)
   (doall (map #(draw-block total-rows (brighten-block % 0.9))
-              pending)))
+              pending))
+  (orect context "black" ox' oy' width height)))
    
 (defn draw-garbage-block [total-rows block]
   (draw-garbage-block-with-color total-rows block :black))
