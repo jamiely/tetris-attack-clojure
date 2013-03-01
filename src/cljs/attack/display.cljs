@@ -109,8 +109,8 @@
                                         :as inner} :garbage-block
                                        pending :pending-blocks
                                        :as dissolve}]
-  (let [[ox oy] (pt/above pos)
-        apos (pt/point (+ ox length) (- oy height))
+  (let [[ox oy] (pt/below pos)
+        apos (pt/point (+ ox length) (+ oy height))
         [ox' oy'] (dispm/pt-to-display-pt (disp-info total-rows) [ox oy])
         [ax' ay'] (dispm/pt-to-display-pt (disp-info total-rows) apos)
         width (- ax' ox')

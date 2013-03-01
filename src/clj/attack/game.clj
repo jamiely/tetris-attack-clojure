@@ -50,7 +50,7 @@
     (assoc game :grid new-grid)))
 
 (defn add-garbage [{grid :grid :as game}]
-  (let [garbage (blk/new-garbage (point 1 1) 5 2)] 
+  (let [garbage (blk/new-garbage (point 1 1) 5 1)] 
     (add-garbage-block game garbage)))
 
 (defn random-garbage-block [{cols :cols rows :rows :as grid}]
