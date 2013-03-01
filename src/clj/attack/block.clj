@@ -2,6 +2,14 @@
   (:require [attack.tick :as tick]
             [attack.point :as pt]))
 
+(defn types []
+  "Lists available block types"
+  ["#996633" "#FFFF00" "#FF6699" "#00FFFF" "#00FF00" "#9900CC" "#FF0000"])
+
+(defn rand-type []
+  "Returns a random block type"
+  (rand-nth (types)))
+
 (defn new-simple [pos type]
   "Returns a simple block, not to be confused with non-basic blocks such as garbage blocks"
   {:type type
@@ -37,15 +45,25 @@
 
 (defn dissolve-block-default-ticks [block] 30)
 
-(defn new-dissolve [block]
-  (let [ticks (dissolve-block-default-ticks block)]
+(defn new-dissolve [{[ox oy] :position length :length
+                     height :height :as block}]
+  (let [ticks (dissolve-block-default-ticks block)
+        pending-blocks (map #(new-simple % (rand-type))
+                            (for [x (range 0 length)
+                                  y (range 0 height)]
+                              (pt/point (+ ox x) (- oy y))))]
     {:type :dissolve
      :garbage-block block
      :ticks ticks
      ;; these are the blocks that will replace the garbage block
-     :resulting-blocks []
+     :pending-blocks pending-blocks
      :starting-ticks ticks}))
-  
+
+(defn resolve-dissolve [{pending :pending-blocks :as block}]
+  (if (tick/ticks0? block)
+    (into #{} pending)
+    #{block}))
+
 (defn new-disappear [blocks]
   (merge (new-complex blocks)
          {:ticks 15
@@ -101,14 +119,6 @@
 (defn resolve-swap-empty [{inner :block
                            into-pos :into-position :as block}]
   (assoc inner :position into-pos))
-
-(defn types []
-  "Lists available block types"
-  ["#996633" "#FFFF00" "#FF6699" "#00FFFF" "#00FF00" "#9900CC" "#FF0000"])
-
-(defn rand-type []
-  "Returns a random block type"
-  (rand-nth (types)))
 
 (defn swap? [{type :type}]
   (= type :swap))

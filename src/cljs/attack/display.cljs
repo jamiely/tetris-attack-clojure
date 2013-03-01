@@ -102,8 +102,12 @@
         blocks (doall (map #(blk/new-simple % color) points))]
     (doall (map (partial draw-block total-rows) blocks))))
 
-(defn draw-dissolve-block [total-rows {inner :garbage-block :as dissolve}]
-  (draw-garbage-block-with-color total-rows inner :AAA))
+(defn draw-dissolve-block [total-rows {inner :garbage-block
+                                       pending :pending-blocks
+                                       :as dissolve}]
+  (draw-garbage-block-with-color total-rows inner :AAA)
+  (doall (map (partial draw-block total-rows)
+              pending)))
    
 (defn draw-garbage-block [total-rows block]
   (draw-garbage-block-with-color total-rows block :black))
