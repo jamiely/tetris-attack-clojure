@@ -70,13 +70,17 @@
 
 (declare draw-block)
 
+(defn brighten-block [{type :type :as blk} factor]
+  (assoc blk :type (color/brighten (str type)
+                                   factor)))
+
 (defn draw-disappear-block [total-rows {blocks :blocks ticks :ticks}]
   (let [alter1 #(assoc %1 :type :black)
         alter (fn [{type :type :as blk}]
                 (let [color (str type)
                       max-ticks 20
                       factor (+ (/ (- max-ticks ticks) 20) 0.2)]
-                  (assoc blk :type (color/brighten color factor))))
+                  (brighten-block blk factor)))
         bs (doall (map alter blocks))]
     (doall (map (partial draw-block total-rows) bs))))
 
@@ -106,7 +110,7 @@
                                        pending :pending-blocks
                                        :as dissolve}]
   (draw-garbage-block-with-color total-rows inner :AAA)
-  (doall (map (partial draw-block total-rows)
+  (doall (map #(draw-block total-rows (brighten-block % 0.9))
               pending)))
    
 (defn draw-garbage-block [total-rows block]
