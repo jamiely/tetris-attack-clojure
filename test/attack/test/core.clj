@@ -38,7 +38,8 @@
   (let [game (assoc (game/default) :add-line-ticks 1)
         r #(get (get % :grid) :rows)
         s game/step
-        rows 6]
+        ;; the number of rows gets adjusted as a hack for garbage
+        rows (* 6 2)]
     (is (= (r game) rows))
     (is (= (r (s game)) (+ 1 rows)))
     (is (= (r (s (s game))) (+ 2 rows)))))
@@ -48,7 +49,8 @@
   (let [game (assoc (game/default) :add-line-ticks 2)
         r #(get (get % :grid) :rows)
         s game/step
-        rows 6]
+        ;; the number of rows gets adjusted as a hack for garbage
+        rows (* 6 2)]
     (is (= (r game) rows))
     (is (= (r (s game)) rows))
     (is (= (r (s (s game))) (+ 1 rows)))

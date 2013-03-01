@@ -168,7 +168,7 @@
 
 
 
-(deftest empty
+(deftest grid-empty
   (is (= (grid/empty-grid 6)
          {:blocks []
           :rows 0
