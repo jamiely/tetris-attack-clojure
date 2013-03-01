@@ -249,6 +249,16 @@
     (is (true? (grid/should-garbage-block-fall? grid gb)))))
 
 
-
+(deftest garbage-blocks-adjacent-to-matches-1
+  "Returns garbage blocks which are adjacent to match sets."
+  (let [orig (pt/point 2 2)
+        match-blk1 (blk/new-simple (pt/point 1 2) :none)
+        matches #{#{match-blk1}}
+        gb (blk/new-garbage orig 1 1)
+        grid (-> (grid/default 3 3)
+                 (assoc :blocks [])
+                 (grid/add-blocks #{gb}))]
+    (is (= (grid/garbage-blocks-adjacent-to-matches grid matches)
+           #{gb}))))
 
 
