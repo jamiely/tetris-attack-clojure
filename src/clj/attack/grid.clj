@@ -284,10 +284,36 @@
                            (into #{} have-ticks)
                            ticked)))
 
+(defn resolve-dissolve-blocks [grid]
+  "Handles resolution of dissolve blocks"
+  ;; @todo
+  grid)
+
+(defn dissolve-blocks-from-garbage-blocks [grid blocks]
+  "Turns the passed garbage blocks into 'dissolve' blocks, which transition
+   a garbage block into a bunch of simple blocks"
+  ;; @todo
+  #{})
+
+(defn garbage-blocks-adjacent-to-matches [grid matches]
+  "Given a grid and a set of matches, determines the garbage blocks
+   which are adjacent to any of the blocks"
+  ;; @todo
+  #{})
+
+(defn resolve-garbage-blocks-with-match-sets [grid matches]
+  "Handles resolution of garbage blocks relative to any match sets"
+  (let [garbage-blocks (garbage-blocks-adjacent-to-matches grid matches)
+        dissolve-blocks (dissolve-blocks-from-garbage-blocks grid garbage-blocks)]
+  (remove-and-add-blocks grid garbage-blocks dissolve-blocks)))
+
 (defn resolve-matches [should-resolve-matches? grid]
   (if should-resolve-matches? 
     (let [matches (match-sets grid)]
-      (resolve-disappear-blocks (disappear-blocks-from-match-set grid matches)))
+      (-> grid
+          (disappear-blocks-from-match-set matches)
+          resolve-disappear-blocks
+          (resolve-garbage-blocks-with-match-sets matches)))
     grid))
 
 (defn resolve-grid [grid should-resolve-matches?]

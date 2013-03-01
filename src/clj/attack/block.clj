@@ -57,6 +57,9 @@
 (defn falling? [blk] (compare-type? blk :falling))
 (defn swap-empty? [blk] (compare-type? blk :swap-empty))
 
+(defn garbage? [block]
+  (compare-type? block :garbage))
+
 (defn simple? [blk]
   (and (contains? blk :position)
        (not (garbage? blk))
@@ -64,9 +67,6 @@
 
 (defn disappear? [block]
   (compare-type? block :disappear))
-
-(defn garbage? [block]
-  (compare-type? block :garbage))
 
 (defn unwrap-falling [{inner-block :block fall-to :falling-to :as block}]
   "Unwraps a falling block, returning the inner block with its updated position"
