@@ -21,11 +21,6 @@
      ;; add a line after this many ticks
      :add-line-ticks 120}))
 
-(defn add-garbage [{grid :grid :as game}]
-  (let [garbage (blk/new-garbage (point 1 1) 5 2)
-        new-grid (grid/add-blocks grid #{garbage})] 
-    (assoc game :grid new-grid)))
-
 (defn game-over? [{grid :grid max-lines :max-lines :as game}]
   (> (grid/line-count grid) max-lines))
 
@@ -49,6 +44,27 @@
          :dirty
          (not (grid/simple-blocks-match? old-grid new-grid))))
 
+
+(defn add-garbage-block [{grid :grid :as game} garbage]
+  (let [new-grid (grid/add-blocks grid #{garbage})] 
+    (assoc game :grid new-grid)))
+
+(defn add-garbage [{grid :grid :as game}]
+  (let [garbage (blk/new-garbage (point 1 1) 5 2)] 
+    (add-garbage-block game garbage)))
+
+(defn random-garbage-block [{cols :cols rows :rows :as grid}]
+  (let [length (rand-int (- cols 3))
+        x (+ 1 (rand-int (- cols length 1)))]
+    (blk/new-garbage (point x (- rows 11))
+                     (+ 3 length)
+                     (+ 1 (rand-int 2)))))
+
+(defn add-random-garbage-every-n-steps [{grid :grid clock :clock :as game} n-steps]
+  (if (= 0 (mod clock n-steps))
+    (add-garbage-block game (random-garbage-block grid))
+    game))
+
 (defn step [{dirty :dirty :as game}]
   "Steps a game by 1"
   (if (game-over? game)
@@ -56,7 +72,9 @@
       (assoc game :status :game-over))
     (let [{grid :grid dirty? :dirty :as g} (tick game)
           new-grid (grid/resolve-grid grid dirty?)
-          new-game (step-add-line (assoc g :grid new-grid))]
+          new-game (add-random-garbage-every-n-steps
+                    (step-add-line (assoc g :grid new-grid))
+                    101)]
       (mark-dirty game new-game))))
 
 
