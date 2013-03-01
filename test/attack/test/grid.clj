@@ -248,6 +248,38 @@
                  (grid/add-blocks (conj blocks gb)))]
     (is (true? (grid/should-garbage-block-fall? grid gb)))))
 
+(deftest matchset-points
+  "Returns garbage blocks which are adjacent to match sets."
+  (let [orig (pt/point 2 2)
+        match-blk1 (blk/new-simple (pt/point 1 2) :none)
+        matches #{#{match-blk1}}]
+    (is (= (grid/matchset-points matches)
+           #{(pt/point 1 2)}))))
+
+(deftest garbage-boundary-points-1
+  "Points around the smallest garbage block"
+  (let [gb (blk/new-garbage (pt/point 2 2) 1 1)
+        grid (-> (grid/default 3 3)
+                 (assoc :blocks [])
+                 (grid/add-blocks #{gb}))
+        p pt/point
+        points (map (fn [[x y]] (pt/point x y))
+                    [[2 1] [2 3] [1 2] [3 2]])]
+    (is (= (grid/garbage-block-boundary-points grid gb)
+           (into #{} points)))))
+
+(deftest garbage-boundary-points-2
+  "Points aronud a longer garbage block"
+  (let [gb (blk/new-garbage (pt/point 2 2) 2 1)
+        grid (-> (grid/default 3 3)
+                 (assoc :blocks [])
+                 (grid/add-blocks #{gb}))
+        p pt/point
+        points (map (fn [[x y]] (pt/point x y))
+                    [[2 1] [2 3] [1 2] [3 3] [3 1]])]
+    (is (= (grid/garbage-block-boundary-points grid gb)
+           (into #{} points)))))
+
 
 (deftest garbage-blocks-adjacent-to-matches-1
   "Returns garbage blocks which are adjacent to match sets."
@@ -260,5 +292,3 @@
                  (grid/add-blocks #{gb}))]
     (is (= (grid/garbage-blocks-adjacent-to-matches grid matches)
            #{gb}))))
-
-

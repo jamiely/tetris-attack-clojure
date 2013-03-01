@@ -2,7 +2,7 @@
   (:require [attack.block :as blk]
             [attack.point :as pt]
             [attack.tick :as tick])
-  (:use [clojure.set :only [subset?]]))
+  (:use [clojure.set :only [subset? intersection]]))
 
 (defn empty-grid [cols]
   "Returns an empty grid"
@@ -295,11 +295,42 @@
   ;; @todo
   #{})
 
-(defn garbage-blocks-adjacent-to-matches [grid matches]
-  "Given a grid and a set of matches, determines the garbage blocks
-   which are adjacent to any of the blocks"
+(defn garbage-block-boundary-points [grid {[ox oy] :position
+                                           height :height
+                                           length :length :as block}]
+  "Returns the points that border the garbage block"
   ;; @todo
-  #{})
+  (let [x-min (- ox 1)
+        x-max (+ ox length)
+        y-min (- oy 1)
+        y-max (+ oy height)
+        top-and-bottom (for [x (range ox x-max)
+                             y [y-min y-max]]
+                         (pt/point x y))
+        left-and-right (for [x [x-min x-max]
+                             y (range oy y-max 1)]
+                         (pt/point x y))]
+    (into #{} (filter (partial position-valid grid)
+                      (concat top-and-bottom
+                              left-and-right)))))
+                          
+
+(defn matchset-points [matches]
+  "Returns the points associated with all of the points of the match set"
+  (into #{} (reduce (fn [res m-set]
+                      (concat res (map #(get % :position) m-set)))
+                    []
+                    matches)))
+
+(defn garbage-blocks-adjacent-to-matches [{blocks :blocks :as grid}
+                                          matches]
+  "Given a grid and a set of matches, determines the garbage blocks which are adjacent to any of the blocks"
+  ;; @todo
+  (let [matchset-pts (matchset-points matches)
+        garbage-blocks (filter blk/garbage? blocks)]
+    (into #{} (filter #((comp not empty?) (intersection (garbage-block-boundary-points grid %)
+                                                        matchset-pts))
+                      garbage-blocks))))
 
 (defn resolve-garbage-blocks-with-match-sets [grid matches]
   "Handles resolution of garbage blocks relative to any match sets"
