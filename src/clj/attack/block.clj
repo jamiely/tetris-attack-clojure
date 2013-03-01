@@ -45,13 +45,16 @@
 
 (defn dissolve-block-default-ticks [block] 30)
 
-(defn new-dissolve [{[ox oy] :position length :length
-                     height :height :as block}]
+(defn garbage-block-points [{[ox oy] :position length :length
+                             height :height :as block}]
+  (for [x (range 0 length)
+        y (range 0 height)]
+    (pt/point (+ ox x) (- oy y))))
+
+(defn new-dissolve [block]
   (let [ticks (dissolve-block-default-ticks block)
         pending-blocks (map #(new-simple % (rand-type))
-                            (for [x (range 0 length)
-                                  y (range 0 height)]
-                              (pt/point (+ ox x) (- oy y))))]
+                            (garbage-block-points block))]
     {:type :dissolve
      :garbage-block block
      :ticks ticks

@@ -98,11 +98,9 @@
   (map (partial draw-block total-rows) [(make-gray block)]))
    
 (defn draw-garbage-block-with-color [total-rows
-                                     {[ox oy] :position length :length height :height}
+                                     block
                                      color]
-  (let [points (for [x (range 0 length)
-                     y (range 0 height)]
-                 (pt/point (+ ox x) (- oy y)))
+  (let [points (blk/garbage-block-points block)
         blocks (doall (map #(blk/new-simple % color) points))]
     (doall (map (partial draw-block total-rows) blocks))))
 
