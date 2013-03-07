@@ -3,6 +3,16 @@
             [attack.cursor :as cursor]
             [attack.display :as disp]))
 
+(def request-anim-fun
+  "Use this to queue a drawing of the board"
+  (first (filter (comp not nil?)
+                 [(.-mozRequestAnimationFrame js/window)
+                  (.-msRequestAnimationFrame js/window)
+                  (.-webkitRequestAnimationFrame js/window)])))
+
+(defn request-anim [callback]
+  (request-anim-fun callback))
+
 (def GI (atom (gi/default)))
   
 (defn initial-render []
@@ -29,16 +39,15 @@
   (disp/render @GI fps)))
 
 (defn begin-stepping []
-  ;;(js/setInterval step 29)
+  (js/setInterval step 29)
   )
 
 (defn begin-rendering []
   (let [current-time (jstime)]
     (js/setTimeout (fn []
-                     (step)
                      (render current-time)
-                     (begin-rendering))
-                   31)))
+                     (request-anim begin-rendering))
+                   33)))
 
 (defn which [num]
   (case num
