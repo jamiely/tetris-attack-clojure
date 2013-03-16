@@ -26,10 +26,7 @@
 
 (defn tick [{clock :clock grid :grid :as game}]
   "Increments the clock of a game"
-  (let [new-clock (+ clock 1)]
-    (-> game
-        (assoc :clock new-clock)
-        (assoc :grid (assoc grid :cache-clock new-clock)))))
+  (assoc game :clock (+ clock 1)))
 
 (defn mod-clock? [{clock :clock} operand]
   (= 0 (mod clock operand)))
@@ -68,6 +65,10 @@
     (add-garbage-block game (random-garbage-block grid))
     game))
 
+(defn cache-grid-clock [{grid :grid clock :clock :as game}]
+  "Caches the game clock in the grid for calculation purposes"
+  (assoc game :grid (assoc grid :cache-clock clock)))
+
 (defn step [{dirty :dirty :as game}]
   "Steps a game by 1"
   (if (game-over? game)
@@ -78,6 +79,6 @@
           new-game (add-random-garbage-every-n-steps
                     (step-add-line (assoc g :grid new-grid))
                     201)]
-      (mark-dirty game new-game))))
+      (mark-dirty game (cache-grid-clock new-game)))))
 
 

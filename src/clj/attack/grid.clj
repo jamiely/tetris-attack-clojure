@@ -2,7 +2,7 @@
   (:require [attack.block :as blk]
             [attack.point :as pt]
             [attack.tick :as tick])
-  (:use [clojure.set :only [subset? intersection]]))
+  (:use [clojure.set :only [union subset? intersection]]))
 
 (defn empty-grid [cols]
   "Returns an empty grid"
@@ -57,15 +57,35 @@
         new-set new]
     (= old-set new-set)))
 
+(defn garbage-blocks [{blocks :blocks :as grid}]
+  (filter blk/garbage? blocks))
+
+(defn garbage-block-points [grid]
+  (reduce (fn [all blk]
+            (concat all (blk/garbage-block-points blk)))
+          []
+          (garbage-blocks grid)))
+
+(defn garbage-block-points-set [grid]
+  (into #{} (garbage-block-points grid)))
+
+(defn swap-empty-points [{blocks :blocks :as grid}]
+  (map #(:into-position %)
+       (filter blk/swap-empty? blocks)))
+
+(defn swap-empty-points-set [grid]
+  (into #{} (swap-empty-points grid)))
+
+(defn simple-block-points [grid]
+  (map #(:position %) (all-simple-blocks grid)))
+
+(defn simple-block-points-set [grid]
+  (into #{} (simple-block-points grid)))
+
 (defn all-occupied-pts-without-falling [{blocks :blocks :as grid}]
-  (concat (map #(:position %)
-               (all-simple-blocks grid))
-          (map #(:into-position %)
-               (filter blk/swap-empty? blocks))
-          (reduce (fn [all blk]
-                    (concat all (blk/garbage-block-points blk)))
-                  []
-                  (filter blk/garbage? blocks))))
+  (concat (simple-block-points grid)
+          (swap-empty-points grid)
+          (garbage-block-points grid)))
 
 (defn all-occupied-pts [{blocks :blocks :as grid}]
   (concat (all-occupied-pts-without-falling grid)
@@ -74,8 +94,30 @@
                   []
                   (filter blk/falling? blocks))))
 
+(defn all-occupied-pts-without-falling-set [grid]
+  (union (simple-block-points-set grid)
+         (swap-empty-points-set grid)
+         (garbage-block-points-set grid)))
+
+(defn cache-occupied-blocks! [{clock :cache-clock :as grid}]
+  (let [fn-raw #(all-occupied-pts-without-falling-set grid)
+        ; @todo there is a potential bug here if the game has not passed a clock value in
+        fn-cache (fn [] (assoc grid :cache-occupied {:clock clock
+                                                     :occupied (fn-raw)}))
+        fn-clock (fn [] (:clock (:cache-occupied grid)))]
+        (if (or (nil? clock) ; the game has not annotated the grid with the clock tick
+                (nil? (:cache-occupied grid)) ; no cache data available
+                (not= clock (fn-clock))) ; the clock tick is equal
+          (fn-cache)
+          grid)))
+
+(defn cached-occupied-blocks [grid]
+  "Returns the cached occupied blocks associated with the current grid."
+  (let [gr (cache-occupied-blocks! grid)]
+    (:occupied (:cache-occupied gr))))
+
 (defn occupied-at-without-falling? [grid point]
-  (contains? (into #{} (all-occupied-pts-without-falling grid))
+  (contains? (cached-occupied-blocks grid)
              point))
 
 (defn occupied-at? [grid point]
