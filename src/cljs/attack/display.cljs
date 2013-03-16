@@ -193,17 +193,17 @@
   (let [log #(.log js/console (str %))
         log-blks (fn [thing]
                    (log thing)
-                   (let [blocks (get thing :blocks)]
+                   (let [blocks (:blocks thing)]
                      (if (not (nil? blocks))
                        (doall (map log blocks)))))
-        grid (get (get gi :game) :grid)
-        blocks (get grid :blocks)]
+        grid (:grid (:game gi))
+        blocks (:blocks grid)]
     ;;(doall (map log-blks blocks)))
     (log gi))
   gi)
 
 (defn render-grid [{total-rows :rows :as grid}]
-    (doall (map (partial draw-block total-rows) (get grid :blocks))))
+    (doall (map (partial draw-block total-rows) (:blocks grid))))
 
 (defn init[]
   (draw-grid)

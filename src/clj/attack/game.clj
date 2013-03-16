@@ -6,7 +6,7 @@
 
 (defn adjusted-grid [cols rows]
   (let [def (grid/default cols 13)
-        removed (grid/remove-blocks def (into #{} (get def :blocks)))]
+        removed (grid/remove-blocks def (into #{} (:blocks def)))]
     (reduce (fn [grid f] (f grid)) removed (repeat rows grid/add-row))))
 
 (defn default []

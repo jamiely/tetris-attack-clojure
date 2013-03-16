@@ -140,7 +140,7 @@
   (flatten
    (map (fn [blk]
         (if (and (swap? blk) (tick/ticks0? blk))
-          (blocks-swap! (get blk :blocks))
+          (blocks-swap! (:blocks blk))
           blk))
         blocks)))
 

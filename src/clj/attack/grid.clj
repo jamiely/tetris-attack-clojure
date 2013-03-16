@@ -21,7 +21,7 @@
     (assoc grid :blocks-hash new-h)))
 
 (defn unhash-blocks [{h :blocks-hash :as grid} blocks]
-    (let [positions (map #(get % :position) (filter #(contains? % :position) blocks))
+    (let [positions (map #(:position %) (filter #(contains? % :position) blocks))
           new-h (reduce (fn [mem pos]
                           (dissoc mem pos)) h positions)]
     (assoc grid :blocks-hash new-h)))
@@ -58,9 +58,9 @@
     (= old-set new-set)))
 
 (defn all-occupied-pts-without-falling [{blocks :blocks :as grid}]
-  (concat (map #(get % :position)
+  (concat (map #(:position %)
                (all-simple-blocks grid))
-          (map #(get % :into-position)
+          (map #(:into-position %)
                (filter blk/swap-empty? blocks))
           (reduce (fn [all blk]
                     (concat all (blk/garbage-block-points blk)))
@@ -274,7 +274,7 @@
 (defn resolve-swaps [{blocks :blocks :as grid}]
   "Dissolves swap blocks when the ticks reach 0"
   (let [to-resolve (filter blk/should-resolve-swap? blocks)
-        to-add (flatten (map #(blk/blocks-swap! (get % :blocks))
+        to-add (flatten (map #(blk/blocks-swap! (:blocks %))
                              to-resolve))]
     (remove-and-add-blocks grid
                            (into #{} to-resolve)
@@ -329,7 +329,7 @@
 (defn matchset-points [matches]
   "Returns the points associated with all of the points of the match set"
   (into #{} (reduce (fn [res m-set]
-                      (concat res (map #(get % :position) m-set)))
+                      (concat res (map #(:position %) m-set)))
                     []
                     matches)))
 
