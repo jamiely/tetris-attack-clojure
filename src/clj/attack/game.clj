@@ -24,9 +24,12 @@
 (defn game-over? [{grid :grid max-lines :max-lines :as game}]
   (> (grid/line-count grid) max-lines))
 
-(defn tick [{clock :clock :as game}]
+(defn tick [{clock :clock grid :grid :as game}]
   "Increments the clock of a game"
-  (assoc game :clock (+ clock 1)))
+  (let [new-clock (+ clock 1)]
+    (-> game
+        (assoc :clock new-clock)
+        (assoc :grid (assoc grid :cache-clock new-clock)))))
 
 (defn mod-clock? [{clock :clock} operand]
   (= 0 (mod clock operand)))
