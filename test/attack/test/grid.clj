@@ -292,3 +292,24 @@
                  (grid/add-blocks #{gb}))]
     (is (= (grid/garbage-blocks-adjacent-to-matches grid matches)
            #{gb}))))
+
+(deftest grid-bottom-blocks
+  "Tests retrieval of the grid's bottom row."
+  (let [blocks #{(blk/new-simple (pt/point 1 3) :none)
+                 (blk/new-simple (pt/point 1 5) :none)
+                 (blk/new-garbage (pt/point 1 4) 3 2)}
+        grid (grid/add-blocks (grid/empty-grid 5) blocks)]
+    (is (= (into #{} (grid/grid-bottom-row-index-blocks grid))
+           blocks))))
+
+(deftest determine-grid-bottom-row-index
+  "Tests retrieval of the grid's bottom row."
+  (let [garbage (blk/new-garbage (pt/point 1 5) 3 2)
+        blocks #{(blk/new-simple (pt/point 1 3) :none)
+                 (blk/new-simple (pt/point 1 5) :none)}
+        grid (grid/add-blocks (grid/empty-grid 5) blocks)]
+    (is (= (grid/grid-bottom-row-index grid) 5))
+    (is (= (-> grid
+               (grid/add-blocks #{garbage})
+               grid/grid-bottom-row-index) 6))))
+
