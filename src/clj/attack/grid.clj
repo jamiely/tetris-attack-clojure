@@ -418,7 +418,7 @@
 
 (def grid-bottom-row-index-blocks blocks-that-can-fall)
 
-(defn grid-block-bottom-y [grid block]
+(defn grid-block-bottom-y [block]
   (cond (blk/garbage? block) (let [{[x y] :position height :height} block]
                                (- (+ y height) 1))
         (blk/simple? block) (let [{[x y] :position} block] y)
@@ -428,32 +428,24 @@
   "Returns the index of the bottom-most block in the grid"
   (->> grid
        grid-bottom-row-index-blocks
-       (map (partial grid-block-bottom-y grid))
+       (map grid-block-bottom-y)
        (remove nil?)
        (apply max)))
 
 (defn fallers-in-bottom-row? [bottom-index block]
-  "Accepts a function that returns the bottom row of the grid, and a block to test"
-  (let [[_ y] (:position block)]
-    ; @todo Needs special case to determine if garbage block is in bottom row
-    (= y bottom-index)))
-
-(defn fallers-below-simple-block [grid {pos :position :as block}]
-  "Returns a vector of blocks below the simple block. Will be 1 or empty."
-  (remove nil? [(block-at grid (pt/below pos))]))
-
-(defn fallers-below-garbage-block [grid block]
-  "Returns the blocks which are below the garbage block. This may be empty."
-  (let [points (map #(pt/below %) (garbage-block-bottom-points block))]
-    (remove nil? (map block-at points))))
-
+  "Accepts a function that returns the bottom row of the grid, and a block to test."
+  (let [y (grid-block-bottom-y block)]
+    (if (nil? y)
+      false
+      (= y bottom-index))))
 
 (defn fallers-block-below [grid block]
   "Returns the blocks below the passed block"
-  (let [fun (cond (blk/simple? block) fallers-below-simple-block
-                  (blk/garbage? block) fallers-below-garbage-block
-                  :else (fn [a b] []))]
-    (fun grid block)))
+  (let [pts-fun (cond (blk/simple? block) #(vector (:position %))
+                      (blk/garbage? block) garbage-block-bottom-points
+                      :else vector]
+        (remove nil? (map (partial block-at grid)
+                          (pts-fun block))))))
 
 (defn make-is-falling [grid]
   "Returns a memoized recursive function that takes a block and determines if it is falling."
