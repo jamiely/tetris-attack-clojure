@@ -14,14 +14,24 @@
 (defn replace-blocks [grid replacement-blocks]
   (assoc grid :blocks (into [] replacement-blocks)))
 
-(defn hash-blocks [{h :blocks-hash :as grid} blocks]
-  (let [pos-blocks (filter #(contains? % :position) blocks)
-        new-h (reduce (fn [mem {pos :position :as blk}]
-                        (assoc mem pos blk)) h pos-blocks)]
-    (assoc grid :blocks-hash new-h)))
+(defn block-points [block]
+  "Returns all of the points that a block occupies. This is mostly relevant for multi-cell blocks such as garbage blocks"
+  (cond (blk/garbage? block) (blk/garbage-block-points block)
+        (contains? block :position) [(:position block)]
+        :else []))
+
+(defn hash-blocks [{blocks-hash :blocks-hash :as grid} blocks]
+  (let [new-hash (reduce (fn [mem blk]
+                           (reduce (fn [in-mem pos]
+                                     (assoc in-mem pos blk))
+                                   mem
+                                   (block-points blk)))
+                      blocks-hash
+                      blocks)]
+    (assoc grid :blocks-hash new-hash)))
 
 (defn unhash-blocks [{h :blocks-hash :as grid} blocks]
-    (let [positions (map #(:position %) (filter #(contains? % :position) blocks))
+    (let [positions (reduce concat (map block-points blocks))
           new-h (reduce (fn [mem pos]
                           (dissoc mem pos)) h positions)]
     (assoc grid :blocks-hash new-h)))
@@ -443,25 +453,23 @@
   "Returns the blocks below the passed block"
   (let [pts-fun (cond (blk/simple? block) #(vector (:position %))
                       (blk/garbage? block) garbage-block-bottom-points
-                      :else vector]
-        (remove nil? (map (partial block-at grid)
-                          (pts-fun block))))))
+                      :else (fn [_] []))]
+        (remove nil? (map (comp (partial block-at grid) pt/below)
+                          (pts-fun block)))))
 
 (defn make-is-falling [grid]
   "Returns a memoized recursive function that takes a block and determines if it is falling."
-  (with-local-vars
-      [bottom-index (grid-bottom-row-index grid)
-       ; use to test whether a block is in the bottom row
-       in-bottom-row-fn (memoize (partial fallers-in-bottom-row? bottom-index))
-       fall-map (memoize (fn [block]
-                           (cond (nil? block) false
-                                 (in-bottom-row-fn block) false
-                                 :else (let [blocks-below (fallers-block-below grid block)]
-                                         (if (empty? blocks-below)
-                                           true
-                                           (every? fall-map blocks-below))))))]
-    (.bindRoot fall-map @fall-map)
-    @fall-map))
+  (let [bottom-index (grid-bottom-row-index grid)]
+    (with-local-vars
+        [fall-map (memoize (fn [block]
+                             (cond (nil? block) false
+                                   (fallers-in-bottom-row? bottom-index block) false
+                                   :else (let [blocks-below (fallers-block-below grid block)]
+                                           (if (empty? blocks-below)
+                                             true
+                                             (every? fall-map blocks-below))))))]
+      (.bindRoot fall-map @fall-map)
+      @fall-map)))
 
 (defn fallers-falling-map-all [grid]
   "Returns a map showing each block and its fall status"
@@ -471,8 +479,9 @@
 
 (defn fallers [grid]
   "Returns blocks that are falling. Only works with simple blocks"
-  (for [[block value] (fallers-falling-map-all grid)
-        :when (true? value)]
-    block))
+  (let [fallers-map (fallers-falling-map-all grid)]
+    (for [[block value] fallers-map
+          :when (true? value)]
+      block)))
       
   
