@@ -355,6 +355,7 @@
     (is (= (grid/fallers-falling-map-all (grid-fun #{a1 a2 a5 b1}))
            {a1 false a2 false a5 true b1 false}))))
 
+
 (deftest falling-map-simple-blocks-supporting-garbage
   "Tests generating a map of blocks and whether they are falling"
   (let [a1 (blk/new-simple (pt/point 1 4) :none)
@@ -375,10 +376,3 @@
     (is (= (grid/fallers-falling-map-all (grid-fun #{a1 a2 b1 c1 c4}))
            {a1 false a2 true b1 false c1 false c4 false}))
     ))
-
-
-
-
-
-
-
