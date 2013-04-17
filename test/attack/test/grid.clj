@@ -313,3 +313,72 @@
                (grid/add-blocks #{garbage})
                grid/grid-bottom-row-index) 6))))
 
+(deftest falling-map
+  "Tests generating a map of blocks and whether they are falling"
+  (let [a (blk/new-simple (pt/point 1 3) :none)
+        b (blk/new-simple (pt/point 1 5) :none)
+        c (blk/new-simple (pt/point 1 4) :none)
+        grid-fun #(grid/add-blocks (grid/empty-grid 5) %)]
+    (is (= (grid/fallers-falling-map-all (grid-fun #{a b c}))
+                                         {a false b false c false}))
+    (is (= (grid/fallers-falling-map-all (grid-fun #{a b}))
+                                         {a true b false}))))
+
+(deftest falling-map-garbage
+  "Tests generating a map of blocks and whether they are falling"
+  (let [a (blk/new-simple (pt/point 1 4) :none)
+        b1 (blk/new-simple (pt/point 1 5) :none)
+        b2 (blk/new-garbage (pt/point 1 5) 3 1)
+        b3 (blk/new-garbage (pt/point 1 5) 3 2) ; a taller garbage block
+        c (blk/new-simple (pt/point 5 6) :none)
+        grid-fun #(grid/add-blocks (grid/empty-grid 5) %)]
+    (is (= (grid/fallers-falling-map-all (grid-fun #{a b1}))
+           {a false b1 false}))
+    (is (= (grid/fallers-falling-map-all (grid-fun #{a b2}))
+           {a false b2 false}))
+    (is (= (grid/fallers-falling-map-all (grid-fun #{a b3}))
+           {a false b3 false}))
+    ;; c becomes the new bottom, and does not fall. there is nothing supporting the garbage
+    ;; the garbage block b2, and so a, which was supported by b2 falls
+    (is (= (grid/fallers-falling-map-all (grid-fun #{a b2 c}))
+           {a true b2 true c false}))))
+
+(deftest falling-map-garbage-adv
+  "Tests generating a map of blocks and whether they are falling"
+  (let [a1 (blk/new-simple (pt/point 1 4) :none)
+        a2 (blk/new-simple (pt/point 2 4) :none)
+        a5 (blk/new-simple (pt/point 5 4) :none)
+        
+        b1 (blk/new-garbage (pt/point 1 5) 2 1)
+        
+        grid-fun #(grid/add-blocks (grid/empty-grid 5) %)]
+    (is (= (grid/fallers-falling-map-all (grid-fun #{a1 a2 a5 b1}))
+           {a1 false a2 false a5 true b1 false}))))
+
+(deftest falling-map-simple-blocks-supporting-garbage
+  "Tests generating a map of blocks and whether they are falling"
+  (let [a1 (blk/new-simple (pt/point 1 4) :none)
+        a2 (blk/new-simple (pt/point 2 4) :none)
+        
+        b1 (blk/new-garbage (pt/point 1 3) 2 1)
+
+        c1 (blk/new-simple (pt/point 1 5) :none)
+        c4 (blk/new-simple (pt/point 4 5) :none)
+        
+        grid-fun #(grid/add-blocks (grid/empty-grid 5) %)]
+    (is (= (grid/fallers-falling-map-all (grid-fun #{a1 a2 b1}))
+           {a1 false a2 false b1 false}))
+    ;; we add a new bottom block so that the "a" blocks are falling
+    (is (= (grid/fallers-falling-map-all (grid-fun #{a1 a2 b1 c4}))
+           {a1 true a2 true b1 true c4 false}))
+    ;; allow 1 of the blocks supporting the garbage block to fall
+    (is (= (grid/fallers-falling-map-all (grid-fun #{a1 a2 b1 c1 c4}))
+           {a1 false a2 true b1 false c1 false c4 false}))
+    ))
+
+
+
+
+
+
+
