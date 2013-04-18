@@ -471,7 +471,7 @@
                                                        (:blocks blk))))
                       (blk/swap-empty? block) (fn [blk]
                                                 (cons (:into-position blk)
-                                                      (fallers-below-block grid (:block blk))))
+                                                      (fallers-block-below grid (:block blk))))
                       :else (fn [_] []))]
         (remove nil? (map (comp (partial block-at grid) pt/below)
                           (pts-fun block)))))
