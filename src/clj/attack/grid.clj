@@ -1,8 +1,11 @@
 (ns attack.grid
   (:require [attack.block :as blk]
             [attack.point :as pt]
-            [attack.tick :as tick])
+            [attack.tick :as tick]
+            [attack.compat :as compat])
   (:use [clojure.set :only [union subset? intersection]]))
+
+(declare fallers)
 
 (defn empty-grid [cols]
   "Returns an empty grid"
@@ -17,6 +20,10 @@
 (defn block-points [block]
   "Returns all of the points that a block occupies. This is mostly relevant for multi-cell blocks such as garbage blocks"
   (cond (blk/garbage? block) (blk/garbage-block-points block)
+        (blk/swap? block) (reduce concat (map block-points (:blocks block)))
+        (blk/swap-empty? block) (cons (:into-position block)
+                                      (block-points (:block block)))
+        (blk/dissolve? block) (reduce concat (map block-points (:pending-blocks block)))
         (contains? block :position) [(:position block)]
         :else []))
 
@@ -301,10 +308,10 @@
 
 (defn create-falling-blocks [{blocks :blocks :as grid}]
   "Figures out whether a block in the grid should be falling, and if so, converts it into a falling block"
-  (let [fallers (into #{} (filter (partial should-block-fall? grid) blocks))]
+  (let [falling-blocks (into #{} (fallers grid))]
     (remove-and-add-blocks grid
-                           (into #{} fallers)
-                           (map blk/new-falling fallers))))
+                           falling-blocks
+                           (map blk/new-falling falling-blocks))))
 
 (defn resolve-swap-empty-blocks [{blocks :blocks :as grid}]
   (let [to-resolve (into #{} (filter blk/should-resolve-swap-empty? blocks))]
@@ -423,8 +430,12 @@
        resolve-falling-blocks
        resolve-swap-empty-blocks))
 
+(defn block-can-fall? [block]
+  (or (blk/simple? block)
+      (blk/garbage? block)))
+
 (defn blocks-that-can-fall [grid]
-  (filter #(or (blk/simple? %1) (blk/garbage? %1)) (:blocks grid)))
+  (filter block-can-fall? (:blocks grid)))
 
 (def grid-bottom-row-index-blocks blocks-that-can-fall)
 
@@ -453,9 +464,29 @@
   "Returns the blocks below the passed block"
   (let [pts-fun (cond (blk/simple? block) #(vector (:position %))
                       (blk/garbage? block) garbage-block-bottom-points
+                      (blk/swap? block) (fn [blk]
+                                          (reduce concat
+                                                  (map (partial fallers-block-below grid)
+                                                       (:blocks blk))))
+                      (blk/swap-empty? block) (fn [blk]
+                                                (cons (:into-position blk)
+                                                      (fallers-below-block grid (:block blk))))
                       :else (fn [_] []))]
         (remove nil? (map (comp (partial block-at grid) pt/below)
                           (pts-fun block)))))
+
+(def fall-map-recur
+  "Returns a memoized recursive function that takes a block and determines if it is falling."
+  (memoize (fn [grid bottom-index block]
+             (cond (nil? block) false
+                   (false? (block-can-fall? block)) false
+                   (fallers-in-bottom-row? bottom-index block) false
+                   :else (every? (partial fall-map-recur grid bottom-index)
+                                 (fallers-block-below grid block))))))
+
+(defn make-is-falling2 [grid]
+  (let [bottom-index (grid-bottom-row-index grid)]
+    (partial fall-map-recur grid bottom-index)))
 
 (defn make-is-falling [grid]
   "Returns a memoized recursive function that takes a block and determines if it is falling."
@@ -463,6 +494,7 @@
     (with-local-vars
         [fall-map (memoize (fn [block]
                              (cond (nil? block) false
+                                   (false? (block-can-fall? block)) false
                                    (fallers-in-bottom-row? bottom-index block) false
                                    :else (let [blocks-below (fallers-block-below grid block)]
                                            (if (empty? blocks-below)
@@ -473,15 +505,21 @@
 
 (defn fallers-falling-map-all [grid]
   "Returns a map showing each block and its fall status"
-  (let [f (make-is-falling grid)
+  (let [f (make-is-falling2 grid)
         blocks (blocks-that-can-fall grid)]
     (reduce #(assoc %1 %2 (f %2)) {} blocks)))
 
 (defn fallers [grid]
   "Returns blocks that are falling. Only works with simple blocks"
-  (let [fallers-map (fallers-falling-map-all grid)]
-    (for [[block value] fallers-map
-          :when (true? value)]
-      block)))
+  (let [fallers-map (fallers-falling-map-all grid)
+        fs (for [[block value] fallers-map
+                 :when (true? value)]
+             block)]
+    ;; (compat/log "fallers!!")
+    ;; (compat/log fs)
+    ;; (when-not (empty? fs)
+    ;;   (compat/log "map!!")
+    ;;   (compat/log fallers-map))
+    fs))
       
   
