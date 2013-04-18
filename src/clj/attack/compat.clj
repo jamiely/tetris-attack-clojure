@@ -1,5 +1,8 @@
 (ns attack.compat)
 
+(defn log [msg]
+  (println (str msg)))
+
 (defn compat-read-string [val]
   (read-string val))
 

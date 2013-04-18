@@ -2,6 +2,9 @@
   (:require [cljs.reader :as reader]
             [clojure.string :as str]))
 
+(defn log [msg]
+  (.log js/console (str msg)))
+
 (defn compat-read-string [val]
   (reader/read-string val))
 
