@@ -1,3 +1,7 @@
+v1.0.4
+======
+* Improved performance
+
 v1.0.3
 ======
 * Fixed cursor position
