@@ -20,7 +20,8 @@
 (defn block-points [block]
   "Returns all of the points that a block occupies. This is mostly relevant for multi-cell blocks such as garbage blocks"
   (cond (blk/garbage? block) (blk/garbage-block-points block)
-        (blk/swap? block) (reduce concat (map block-points (:blocks block)))
+        (or (blk/swap? block)
+            (blk/disappear? block)) (reduce concat (map block-points (:blocks block)))
         (blk/swap-empty? block) (cons (:into-position block)
                                       (block-points (:block block)))
         (blk/dissolve? block) (reduce concat (map block-points (:pending-blocks block)))
