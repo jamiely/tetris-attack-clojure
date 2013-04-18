@@ -197,9 +197,13 @@
                      (if (not (nil? blocks))
                        (doall (map log blocks)))))
         grid (:grid (:game gi))
-        blocks (:blocks grid)]
+        blocks (:blocks grid)
+        fallers (grid/fallers grid)]
     ;;(doall (map log-blks blocks)))
-    (log gi))
+    (log (str "Game interface"))
+    (log gi)
+    (log (str "Fallers"))
+    (log fallers))
   gi)
 
 (defn render-grid [{total-rows :rows :as grid}]

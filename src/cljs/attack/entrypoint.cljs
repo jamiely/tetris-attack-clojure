@@ -36,10 +36,12 @@
 (defn render [last-time]
   (let [time-delta (- (jstime) last-time)
         fps (floor (* (/ 1 time-delta) 1000))]
-  (disp/render @GI fps)))
+    (disp/render @GI fps)))
+
+(def step-rate 30)
 
 (defn begin-stepping []
-  (js/setInterval step 29)
+  (js/setInterval step step-rate)
   )
 
 (defn begin-rendering []
@@ -47,7 +49,7 @@
     (js/setTimeout (fn []
                      (render current-time)
                      (request-anim begin-rendering))
-                   33)))
+                   step-rate)))
 
 (defn which [num]
   (case num
