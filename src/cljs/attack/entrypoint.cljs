@@ -70,7 +70,8 @@
   (log event)
   identity)
 
-(defn keyup [event]
+(defn ^:export keyup-handler [event]
+  "The handler for keys. Make sure to bind this specifically"
   (let [func (case (which (.-which event))
                :ENTER disp/cursor-swap
                :SPACE disp/cursor-swap
@@ -85,14 +86,14 @@
                (inspect-key event))]
     (swap! GI func)))
 
-(defn bind-keys []
-  (.keyup (js/$ "body") keyup))
+;; (defn bind-keys []
+;;   (let [body (js/$ "body")]
+;;     (.keyup body keyup-handlers)))
 
-(defn ^:export init []
+(defn ^:export init [key-binder]
   "Initializes all the functions required for the game"
-  (.log js/console (str "Initializing " @GI))
+  (log (str "Initializing " @GI))
   (initial-render)
   (begin-stepping)
-  (begin-rendering)
-  (bind-keys))
+  (begin-rendering))
         

@@ -57,10 +57,18 @@
     </div>
   </div>
   <script src="js/jquery-1.9.1.min.js"></script>
-  <script src="js/game.js"></script>
-  <!--<script src="js/game-prod.js"></script>-->
   <script>
-    $(attack.entrypoint.init);
+    $.noConflict();
+  </script>
+  <!--<script src="js/game.js"></script>-->
+  <script src="js/game.prod.js"></script>
+  <script>
+(function($){
+  $(function() {
+    attack.entrypoint.init(); 
+    $('body').keyup(attack.entrypoint.keyup_handler);
+  });
+})(jQuery);
   </script>
 </body>
 </html>

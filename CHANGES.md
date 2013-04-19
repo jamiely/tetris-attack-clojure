@@ -1,3 +1,8 @@
+v1.0.5
+======
+* Got advanced compilation mostly working, but requires manual change
+  to fix problem with browser repl code.
+
 v1.0.4
 ======
 * Improved performance
