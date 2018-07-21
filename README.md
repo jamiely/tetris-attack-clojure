@@ -1,6 +1,6 @@
-# Simple Clojure Game
+# Simple Clojure Game (Tetris Attack/Panel de Pon Clone)
 
-Another simple game to practice clojure and clojurescript.
+A game to practice clojure and clojurescript. Only works in Chrome.
 
 [![Build Status](https://travis-ci.org/jamiely/simple-clojure-game.png)](https://travis-ci.org/jamiely/simple-clojure-game)
 
