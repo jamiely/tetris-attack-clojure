@@ -6,7 +6,8 @@
 (def request-anim-fun
   "Use this to queue a drawing of the board"
   (first (filter (comp not nil?)
-                 [(.-mozRequestAnimationFrame js/window)
+                 [(.-requestAnimationFrame js/window)
+                  (.-mozRequestAnimationFrame js/window)
                   (.-msRequestAnimationFrame js/window)
                   (.-webkitRequestAnimationFrame js/window)])))
 
