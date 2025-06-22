@@ -142,7 +142,9 @@
                 (b 2 1 :red) (b 3 1 :red) (b 4 1 :blue)}
         grid (-> (grid/empty-grid 6)
                  (grid/add-blocks blocks))
-        matches #{#{(b 1 1 :red) (b 1 2 :red) (b 1 3 :red) (b 2 1 :red) (b 3 1 :red)}}]
+        matches #{#{(b 1 1 :red) (b 1 2 :red) (b 1 3 :red)}
+                  #{(b 1 1 :red) (b 2 1 :red) (b 3 1 :red)}
+                  #{(b 1 1 :red) (b 1 2 :red) (b 1 3 :red) (b 2 1 :red) (b 3 1 :red)}}]
     (is (= (grid/match-sets grid)
            matches))))
 
@@ -158,11 +160,17 @@
                          #{{:type :red, :position [1 3]}
                            {:type :red, :position [1 2]}
                            {:type :red, :position [1 1]}}}
-        expected-match-set #{#{{:type :red, :position [3 1]}
-                               {:type :red, :position [1 3]}
-                               {:type :red, :position [1 2]}
+        expected-match-set #{#{{:type :red, :position [1 2]}
                                {:type :red, :position [1 1]}
-                               {:type :red, :position [2 1]}}}]
+                               {:type :red, :position [1 3]}}
+                             #{{:type :red, :position [2 1]}
+                               {:type :red, :position [1 1]}
+                               {:type :red, :position [3 1]}}
+                             #{{:type :red, :position [1 2]}
+                               {:type :red, :position [2 1]}
+                               {:type :red, :position [1 1]}
+                               {:type :red, :position [1 3]}
+                               {:type :red, :position [3 1]}}}]
     (is (= (grid/condense-match-set2 orig-match-set)
            expected-match-set))))
 

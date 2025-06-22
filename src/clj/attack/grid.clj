@@ -233,6 +233,10 @@
               (recur (cons x result) xs)))))))
 
 (defn condense-match-set2 [ match-set ]
+  ;; TODO: Fix algorithm - currently only removes subsets but should merge overlapping match sets 
+  ;; (T/L shaped matches). The to-superset function removes complete subsets rather than merging 
+  ;; intersecting sets. Need to implement merge-overlapping-sets logic for proper Tetris Attack 
+  ;; match detection where overlapping matches should be combined into single match groups.
   (into #{} (to-superset match-set)))
 
 (defn disappear-blocks [{grid-blocks :blocks :as grid} blocks-to-disappear]
