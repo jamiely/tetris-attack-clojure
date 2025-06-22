@@ -7,11 +7,11 @@ A game to practice clojure and clojurescript. Only works in Chrome.
 ## Usage
 
     # Install plugins and dependencies based on project.clj
-    lein install
+    bin/lein install
     # Compile Clojurescript and crossover code
-    lein cljsbuild once
+    bin/lein cljsbuild once
     # Start an HTTP server on port 3000
-    lein ring server
+    bin/lein ring server
     # Navigate to: http://localhost:3000/game.html
 
 ## Tests

@@ -1,14 +1,14 @@
 (defproject tetris-attack-clojure "1.0.3-SNAPSHOT"
   :description "Tetris Attack Implementation in Clojure"
   :dependencies [
-                 [org.clojure/clojure "1.4.0"]
-                 [compojure "1.1.3"]
+                 [org.clojure/clojure "1.12.1"]
+                 [org.clojure/clojurescript "1.11.132"]
+                 [compojure "1.7.1"]
                  ]
   :source-paths ["src/clj"]
   :plugins [
-            [lein-cljsbuild "0.3.0"]
-            [lein-swank "1.4.5"]
-            [lein-ring "0.8.2"]
+            [lein-cljsbuild "1.1.8"]
+            [lein-ring "0.12.6"]
             ]
   :ring {:handler attack.core/handler }
   :cljsbuild {:crossovers [attack.point
