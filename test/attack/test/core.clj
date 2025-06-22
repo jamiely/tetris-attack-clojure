@@ -1,5 +1,4 @@
 (ns attack.test.core
-  (:use [attack.core])
   (:require [attack.game :as game]
             [attack.point :as pt]
             [attack.block :as blk]

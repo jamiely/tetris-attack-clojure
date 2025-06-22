@@ -20,10 +20,11 @@ npx shadow-cljs watch app
 npx shadow-cljs release app
 
 # Run tests
-bin/lein test
+clojure -M:test
 
-# Auto-run tests with Guard (requires Ruby/Guard setup)
-guard
+# Alternative test runners
+clojure -M:runner     # Same as :test
+clojure -M:kaocha     # Advanced kaocha features
 ```
 
 ## Dependencies
@@ -82,25 +83,20 @@ The project now includes modern Clojure testing libraries:
 ### Running Tests
 
 ```bash
-# Run all tests (176+ tests, ~2-3 seconds)
-bin/lein test
+# Run all tests (180 tests, 588 assertions, ~2-3 seconds)
+clojure -M:test
 
-# Run tests with modern libraries (dev profile)
-lein with-profile dev test
+# Alternative test runners
+clojure -M:runner     # Same as :test
+clojure -M:kaocha     # Advanced kaocha features
 
-# Run property-based tests specifically
-lein with-profile property-test test property.attack-property-tests
+# Run specific test patterns (with manual options)
+clojure -M:runner -r "attack\.test\.block"
+clojure -M:runner -r "attack\.test\.grid" 
+clojure -M:runner -r "attack\.test\.game"
 
-# Run performance benchmarks
-lein with-profile perf-test test perf.attack-performance-tests
-
-# Run specific test modules
-bin/lein test attack.test.block
-bin/lein test attack.test.grid
-bin/lein test attack.test.game
-
-# Modern testing examples and showcase
-lein test attack.test.modern-examples
+# Run specific namespaces
+clojure -M:runner -n attack.test.block
 ```
 
 **Expected Output**: Tests complete successfully with timing information, assertion counts per module, and optional performance metrics.

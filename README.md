@@ -19,10 +19,11 @@ A game to practice clojure and clojurescript. Only works in Chrome.
 ## Tests
 
     # Run all tests (180 tests, 588 assertions)
-    bin/lein test
+    clojure -M:test
     
-    # Run tests with modern development libraries (test.check, criterium)
-    bin/lein with-profile dev test
+    # Alternative test runners
+    clojure -M:runner     # Same as :test
+    clojure -M:kaocha     # Advanced kaocha features
 
 ## Browser Repl
 

@@ -1,4 +1,22 @@
 {:paths ["src/clj" "src/cljs"]
  :deps {org.clojure/clojure {:mvn/version "1.12.1"}
         org.clojure/clojurescript {:mvn/version "1.11.132"}
-        thheller/shadow-cljs {:mvn/version "2.28.10"}}}
+        thheller/shadow-cljs {:mvn/version "2.28.10"}}
+ 
+ :aliases
+ {:test {:extra-paths ["test"]
+         :extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}
+                      criterium/criterium {:mvn/version "0.4.6"}
+                      io.github.cognitect-labs/test-runner {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+         :main-opts ["-m" "cognitect.test-runner" "-r" "attack\\.test\\..*"]}
+  
+  :dev {:extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}
+                     criterium/criterium {:mvn/version "0.4.6"}}}
+  
+  :runner {:extra-paths ["test"]
+           :extra-deps {io.github.cognitect-labs/test-runner {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+           :main-opts ["-m" "cognitect.test-runner" "-r" "attack\\.test\\..*"]}
+           
+  :kaocha {:extra-paths ["test"]
+           :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+           :main-opts ["-m" "kaocha.runner"]}}}
