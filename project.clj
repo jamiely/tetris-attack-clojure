@@ -6,6 +6,7 @@
                  [compojure "1.7.1"]
                  ]
   :source-paths ["src/clj"]
+  :test-paths ["test"]
   :plugins [
             [lein-cljsbuild "1.1.8"]
             [lein-ring "0.12.6"]

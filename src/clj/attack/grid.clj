@@ -452,6 +452,11 @@
 
 (defn grid-bottom-row-index [grid]
   "Returns the index of the bottom-most block in the grid"
+  ;; TODO: BUG - This function crashes with 'Wrong number of args (0) passed to: clojure.core/max'
+  ;; when all blocks have settled and grid-bottom-row-index-blocks returns empty sequence.
+  ;; This happens during chain reactions when matches are cleared and remaining blocks settle.
+  ;; Fix: Check if sequence is empty before calling (apply max), return sensible default like 0.
+  ;; Affects: Chain reaction tests, complex gameplay scenarios with cascading matches.
   (->> grid
        grid-bottom-row-index-blocks
        (map grid-block-bottom-y)
