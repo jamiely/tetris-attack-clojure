@@ -11,6 +11,8 @@
             [lein-cljsbuild "1.1.8"]
             [lein-ring "0.12.6"]
             ]
+  :profiles {:dev {:dependencies [[org.clojure/test.check "1.1.1"]
+                                  [criterium "0.4.6"]]}}
   :ring {:handler attack.core/handler }
   :cljsbuild {:crossovers [attack.point
                            attack.color

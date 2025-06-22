@@ -16,18 +16,17 @@ A game to practice clojure and clojurescript. Only works in Chrome.
 
 ## Tests
 
-    lein test
-
-## Development
-
-    bundle install
-    guard
+    # Run all tests (180 tests, 588 assertions)
+    bin/lein test
+    
+    # Run tests with modern development libraries (test.check, criterium)
+    bin/lein with-profile dev test
 
 ## Browser Repl
 
     # Starts a server listening on port 9000 which the game page 
     # can communicate with. Run after `lein ring server`
-    lein trampoline cljsbuild repl-listen
+    bin/lein trampoline cljsbuild repl-listen
 
 ## Media
 
