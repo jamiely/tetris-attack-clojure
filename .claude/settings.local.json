@@ -23,7 +23,8 @@
       "Bash(npx shadow-cljs compile:*)",
       "Bash(mise install:*)",
       "Bash(mise use:*)",
-      "Bash(mise exec:*)"
+      "Bash(mise exec:*)",
+      "Bash(clojure:*)"
     ],
     "deny": []
   }

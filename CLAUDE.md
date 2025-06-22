@@ -19,7 +19,7 @@ npx shadow-cljs watch app
 # Compile for production (advanced compilation)
 npx shadow-cljs release app
 
-# Run tests
+# Run tests (automatic discovery with -test suffix)
 clojure -M:test
 
 # Alternative test runners

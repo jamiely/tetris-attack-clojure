@@ -1,4 +1,4 @@
-(ns attack.test.block
+(ns attack.block-test
   (:require [attack.block :as blk]
             [attack.point :as pt]
             [attack.tick :as tick])

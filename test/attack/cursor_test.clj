@@ -1,4 +1,4 @@
-(ns attack.test.cursor
+(ns attack.cursor-test
   (:require [attack.cursor :as cursor]
             [attack.point :as pt])
   (:use [clojure.test]))

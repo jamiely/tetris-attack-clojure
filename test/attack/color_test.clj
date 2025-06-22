@@ -1,4 +1,4 @@
-(ns attack.test.color
+(ns attack.color-test
   (:require [attack.color :as color])
   (:use [clojure.test]))
 

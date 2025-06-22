@@ -1,4 +1,4 @@
-(ns attack.test.core
+(ns attack.core-test
   (:require [attack.game :as game]
             [attack.point :as pt]
             [attack.block :as blk]
@@ -91,4 +91,3 @@
 (deftest gi-step
   (let [g (gi/default)]
     (is (not (nil? (gi/step g))))))
-

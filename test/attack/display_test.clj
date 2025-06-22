@@ -1,4 +1,4 @@
-(ns attack.test.display
+(ns attack.display-test
   (:require [attack.display-math :as dispm])
   (:use [clojure.test]))
 
@@ -20,4 +20,3 @@
          [20 480]))
   (is (= (pt-to-display-pt 3 [1 3])
          [20 480])))
-

@@ -1,4 +1,4 @@
-(ns attack.test.point
+(ns attack.point-test
   (:use [attack.point])
   (:use [clojure.test]))
 

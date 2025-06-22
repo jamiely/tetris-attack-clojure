@@ -1,4 +1,4 @@
-(ns attack.test.tick
+(ns attack.tick-test
   (:require [attack.tick :as tick])
   (:use [clojure.test]))
 

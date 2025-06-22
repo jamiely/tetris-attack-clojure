@@ -1,4 +1,4 @@
-(ns attack.test.game
+(ns attack.game-test
   (:require [attack.game :as game]
             [attack.grid :as grid]
             [attack.block :as blk]

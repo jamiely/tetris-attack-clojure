@@ -24,6 +24,8 @@ A game to practice clojure and clojurescript. Only works in Chrome.
     # Alternative test runners
     clojure -M:runner     # Same as :test
     clojure -M:kaocha     # Advanced kaocha features
+    
+Note: Tests follow standard Clojure naming convention with `-test` suffix for automatic discovery.
 
 ## Browser Repl
 
