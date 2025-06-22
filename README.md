@@ -6,13 +6,15 @@ A game to practice clojure and clojurescript. Only works in Chrome.
 
 ## Usage
 
-    # Install plugins and dependencies based on project.clj
-    bin/lein install
-    # Compile Clojurescript and crossover code
-    bin/lein cljsbuild once
-    # Start an HTTP server on port 3000
-    bin/lein ring server
-    # Navigate to: http://localhost:3000/game.html
+    brew install mise
+    mise install
+
+    # Install dependencies based on deps.edn
+    clojure -P
+
+    # Start development server with hot reloading
+    npx shadow-cljs watch app
+    # Navigate to: http://localhost:8080/game.html
 
 ## Tests
 
@@ -24,9 +26,11 @@ A game to practice clojure and clojurescript. Only works in Chrome.
 
 ## Browser Repl
 
-    # Starts a server listening on port 9000 which the game page 
-    # can communicate with. Run after `lein ring server`
-    bin/lein trampoline cljsbuild repl-listen
+    # Connect to the shadow-cljs browser REPL
+    npx shadow-cljs browser-repl app
+    
+    # Or use the shadow-cljs UI
+    npx shadow-cljs server
 
 ## Media
 

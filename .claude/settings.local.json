@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(lein test:*)",
+      "Bash(bin/lein test:*)",
+      "Bash(rg:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(grep:*)",
+      "Bash(bin/lein:*)",
+      "Bash(./bin/lein test attack.test.point)",
+      "Bash(mkdir:*)",
+      "Bash(./bin/lein test attack.test.grid)",
+      "Bash(LEIN_SNAPSHOTS_IN_RELEASE=true ./bin/lein with-profile default test attack.test.grid)",
+      "Bash(rm:*)",
+      "Bash(./bin/lein test :only attack.test.grid/simple-two-step-chain)",
+      "Bash(./bin/lein test :only attack.test.grid/complex-three-step-chain)",
+      "Bash(sed:*)",
+      "Bash(mv:*)",
+      "Bash(clj:*)",
+      "Bash(npx shadow-cljs compile:*)",
+      "Bash(mise install:*)",
+      "Bash(mise use:*)",
+      "Bash(mise exec:*)"
+    ],
+    "deny": []
+  }
+}

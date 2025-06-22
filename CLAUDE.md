@@ -10,20 +10,17 @@ This is a Tetris Attack clone implemented in Clojure/ClojureScript. The game use
 
 ```bash
 # Initial setup
-lein install
+clojure -P
 
-# Compile ClojureScript for development
-lein cljsbuild once
+# Start development server with hot reloading
+npx shadow-cljs watch app
+# Game accessible at http://localhost:8080/game.html
 
 # Compile for production (advanced compilation)
-lein cljsbuild once production
-
-# Start development web server
-lein ring server
-# Game accessible at http://localhost:3000/game.html
+npx shadow-cljs release app
 
 # Run tests
-lein test
+bin/lein test
 
 # Auto-run tests with Guard (requires Ruby/Guard setup)
 guard
@@ -32,21 +29,17 @@ guard
 ## Dependencies
 
 - **Clojure**: 1.12.1
-- **ClojureScript**: 1.11.132 (explicitly added for lein-cljsbuild compatibility)
-- **Compojure**: 1.7.1 (web routing)
-- **lein-cljsbuild**: 1.1.8 (ClojureScript compilation)
-- **lein-ring**: 0.12.6 (web server development)
-- **lein-swank**: 1.4.5 (deprecated - modern projects use CIDER)
+- **ClojureScript**: 1.11.132 (via shadow-cljs)
+- **shadow-cljs**: 2.28.10 (ClojureScript compilation and development server)
 
 ## Architecture
 
 ### Code Organization
 - `src/clj/attack/` - Shared game logic (compiles to both JVM and JavaScript)
 - `src/cljs/attack/` - Browser-specific code (rendering, input handling)
-- `src/attack/` - Server-side only code (minimal Compojure web server)
 
 ### Key Architectural Patterns
-- **Crossover Namespaces**: Core game logic in `src/clj/attack/` is shared between server and client
+- **Shared Namespaces**: Core game logic in `src/clj/attack/` is shared between server and client via shadow-cljs
 - **Immutable State**: Game state managed through atoms containing immutable data structures
 - **Functional Updates**: All game logic uses pure functions that return new state
 - **Separation of Concerns**: Game logic completely separate from rendering/input
@@ -365,9 +358,9 @@ bin/lein test 2>&1 | grep -A 5 -B 5 "FAIL"
 - Parallel execution: Tests are designed to be independent and thread-safe
 
 ## Build Configuration
-- Development build: Fast compilation, source maps enabled
+- Development build: Fast compilation, hot reloading, source maps enabled
 - Production build: Advanced compilation with optimizations
-- Crossover configuration ensures code sharing between Clojure and ClojureScript
+- shadow-cljs ensures seamless code sharing between Clojure and ClojureScript
 
 ## Browser Compatibility
 - Optimized for Chrome with requestAnimationFrame
