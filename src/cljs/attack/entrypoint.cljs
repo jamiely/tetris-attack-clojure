@@ -1,7 +1,8 @@
 (ns attack.entrypoint
   (:require [attack.game-interface :as gi]
             [attack.cursor :as cursor]
-            [attack.display :as disp]))
+            [attack.display :as disp]
+            [attack.screens :as screens]))
 
 (def request-anim-fun
   "Use this to queue a drawing of the board"
@@ -91,10 +92,32 @@
 ;;   (let [body (js/$ "body")]
 ;;     (.keyup body keyup-handlers)))
 
-(defn ^:export init [key-binder]
-  "Initializes all the functions required for the game"
-  (log (str "Initializing " @GI))
+(def game-keyup-listener (atom nil))
+
+(defn attach-game-keyup-handler []
+  "Attach the game's keyup handler"
+  (when-not @game-keyup-listener
+    (let [handler (fn [event] (keyup-handler event))]
+      (reset! game-keyup-listener handler)
+      (.addEventListener (.-body js/document) "keyup" handler))))
+
+(defn detach-game-keyup-handler []
+  "Detach the game's keyup handler"
+  (when @game-keyup-listener
+    (.removeEventListener (.-body js/document) "keyup" @game-keyup-listener)
+    (reset! game-keyup-listener nil)))
+
+(defn init-game []
+  "Initialize the game when starting from title screen"
+  (log (str "Initializing game " @GI))
+  (reset! GI (gi/default))
   (initial-render)
   (begin-stepping)
-  (begin-rendering))
+  (begin-rendering)
+  (attach-game-keyup-handler))
+
+(defn ^:export init []
+  "Initialize the screen system and set up the application"
+  (log "Initializing screen system")
+  (screens/init-screen-system! init-game detach-game-keyup-handler))
         

@@ -8,40 +8,8 @@
 </head>
 <body>
   <div class="container">
-    <div class="info-section">
-      <h1>Tetris Attack Clone</h1>
-      <section id="intro">
-        <p>
-        This is a clone of puzzle game <a
-          href="http://en.wikipedia.org/wiki/Tetris_Attack">Tetris
-          Attack</a> in <a
-          href="https://github.com/clojure/clojurescript">Clojurescript</a>.
-        </p>
-    
-        <p>
-        You can find the full source at: <a
-          href="https://github.com/jamiely/tetris-attack-clojure">https://github.com/jamiely/tetris-attack-clojure</a>
-        </p>
-      </section>
-      <section id="instructions">
-        <h2>Objective</h2>
-        <p>
-          Clear the colored blocks before the stack rises to the
-          top. Garbage blocks will fall from the top of the screen.
-          You can clear them by creating an adjacent match.
-        </p>
-
-        <h2>Controls</h2>
-        <ul>
-          <li>ENTER/SPACE - Swap blocks</li>
-          <li>Arrow keys - Move cursor</li>
-          <li>N - Restarts the game</li>
-          <li>R - Force another row to be added</li>
-        </ul>
-      </section>
-    </div>
     <div class="game-section">
-      <canvas id="canvas" width="250" height="400"></canvas>
+      <canvas id="canvas" class="hidden" width="250" height="400"></canvas>
     </div>
   </div>
 
@@ -79,8 +47,10 @@
   <script src="js/main.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      attack.entrypoint.init(); 
-      document.body.addEventListener('keyup', attack.entrypoint.keyup_handler);
+      // Initialize the ClojureScript screen system
+      if (typeof attack !== 'undefined' && attack.entrypoint) {
+        attack.entrypoint.init();
+      }
     });
   </script>
 </body>
