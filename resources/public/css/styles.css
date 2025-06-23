@@ -117,6 +117,12 @@ a:hover {
   overflow-y: auto;
 }
 
+.title-icon {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
 .screen-title {
   font-size: 3em;
   color: #2c3e50;
@@ -151,6 +157,11 @@ a:hover {
     padding: 30px;
     max-width: 450px;
     max-height: 85vh;
+  }
+  
+  .title-icon svg {
+    width: 56px;
+    height: 56px;
   }
   
   .screen-title {
@@ -190,6 +201,11 @@ a:hover {
     padding: 20px;
     max-width: 400px;
     max-height: 80vh;
+  }
+  
+  .title-icon svg {
+    width: 48px;
+    height: 48px;
   }
   
   .screen-title {
@@ -234,6 +250,11 @@ a:hover {
     padding: 15px;
     max-width: 350px;
     max-height: 75vh;
+  }
+  
+  .title-icon svg {
+    width: 40px;
+    height: 40px;
   }
   
   .screen-title {
