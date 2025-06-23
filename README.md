@@ -30,10 +30,10 @@ Note: Tests follow standard Clojure naming convention with `-test` suffix for au
 ## Browser Repl
 
     # Connect to the shadow-cljs browser REPL
-    npx shadow-cljs browser-repl app
+    npx shadow-cljs browser-repl
     
     # Or use the shadow-cljs UI
-    npx shadow-cljs server
+    npx shadow-cljs cljs-repl app
 
 ## Media
 

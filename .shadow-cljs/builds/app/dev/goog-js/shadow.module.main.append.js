@@ -1,1 +1,0 @@
-["^ ","~:resource-id",["~:shadow.build.modules/append","~:main"],"~:source","\ntry { attack.entrypoint.init(); } catch (e) { console.error(\"An error occurred when calling (attack.entrypoint/init)\"); console.error(e); }","~:js","\ntry { attack.entrypoint.init(); } catch (e) { console.error(\"An error occurred when calling (attack.entrypoint/init)\"); console.error(e); }"]

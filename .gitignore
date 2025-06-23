@@ -16,3 +16,4 @@ resources/public/js/game.js
 Gemfile.lock
 .lein-repl-history
 .cpcache
+.shadow-cljs

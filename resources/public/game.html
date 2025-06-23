@@ -2,10 +2,6 @@
 <html>
 <head>
   <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-  <!--[if lt IE 9]>
-    <script src="js/html5shiv.js"></script>
-  <![endif]-->
   <style>
     #canvas {
       margin-top: 3em;
@@ -28,7 +24,7 @@
         
             <p>
             You can find the full source at: <a
-              href="https://github.com/jamiely/simple-clojure-game">https://github.com/jamiely/simple-clojure-game</a>
+              href="https://github.com/jamiely/tetris-attack-clojure">https://github.com/jamiely/tetris-attack-clojure</a>
             </p>
           </section>
           <section id="instructions">
@@ -56,18 +52,12 @@
       </div>
     </div>
   </div>
-  <script src="js/jquery-1.9.1.min.js"></script>
-  <script>
-    $.noConflict();
-  </script>
   <script src="js/main.js"></script>
   <script>
-(function($){
-  $(function() {
-    attack.entrypoint.init(); 
-    $('body').keyup(attack.entrypoint.keyup_handler);
-  });
-})(jQuery);
+    document.addEventListener('DOMContentLoaded', function() {
+      attack.entrypoint.init(); 
+      document.body.addEventListener('keyup', attack.entrypoint.keyup_handler);
+    });
   </script>
 </body>
 </html>
