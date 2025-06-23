@@ -18,6 +18,7 @@
 (def GI (atom (gi/default)))
   
 (defn initial-render []
+  (disp/update-canvas-size!)
   (disp/draw-grid))
 
 (defn jstime []
@@ -113,6 +114,8 @@
   (reset! GI (gi/default))
   ;; Reset game over flag for new game
   (reset! disp/game-over-shown false)
+  ;; Set up canvas scaling and resize handler
+  (disp/setup-resize-handler!)
   (initial-render)
   (begin-stepping)
   (begin-rendering)
@@ -121,5 +124,8 @@
 (defn ^:export init []
   "Initialize the screen system and set up the application"
   (log "Initializing screen system")
+  ;; Set up canvas scaling immediately for any initial rendering
+  (disp/update-canvas-size!)
+  (disp/setup-resize-handler!)
   (screens/init-screen-system! init-game detach-game-keyup-handler))
         

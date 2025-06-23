@@ -8,20 +8,32 @@
             [attack.game-interface :as gi]
             [attack.screens :as screens]))
 
-(def WHITE "white")
+(def BACKGROUND-COLOR "#f5f5f5")
 (def BLUE "blue")
 
-(def BLOCKWIDTH 30)
-(def BLOCKHEIGHT 30)
-(def BLOCKSIZE [BLOCKWIDTH BLOCKHEIGHT])
-(def DISPLAYHEIGHT 400)
-(def DISPLAYWIDTH (* 9 BLOCKWIDTH))
+;; Base dimensions - these are reference sizes that will be scaled
+(def BASE-BLOCKWIDTH 30)
+(def BASE-BLOCKHEIGHT 30)
+(def BASE-DISPLAYHEIGHT 400)
+(def BASE-DISPLAYWIDTH (* 9 BASE-BLOCKWIDTH))
+(def BASE-ASPECT-RATIO (/ BASE-DISPLAYWIDTH BASE-DISPLAYHEIGHT))
+
+;; Scaling state
+(def scale-factor (atom 1.0))
+(def canvas-dimensions (atom {:width BASE-DISPLAYWIDTH :height BASE-DISPLAYHEIGHT}))
+(def resize-handler-setup (atom false))
+
+;; Scaled dimensions (computed dynamically)
+(defn BLOCKWIDTH [] (* BASE-BLOCKWIDTH @scale-factor))
+(defn BLOCKHEIGHT [] (* BASE-BLOCKHEIGHT @scale-factor))
+(defn DISPLAYWIDTH [] (:width @canvas-dimensions))
+(defn DISPLAYHEIGHT [] (:height @canvas-dimensions))
 
 (defn disp-info [total-rows]
   {:total-rows total-rows
-   :block-height BLOCKHEIGHT
-   :block-width BLOCKWIDTH
-   :display-height DISPLAYHEIGHT})
+   :block-height (BLOCKHEIGHT)
+   :block-width (BLOCKWIDTH)
+   :display-height (DISPLAYHEIGHT)})
 
 (defn orect [context color x y w h]
   (set! (.-lineWidth context) 3)
@@ -34,15 +46,48 @@
 (defn draw-context []
   (.getContext (canvas) "2d"))
 
+(defn update-canvas-size!
+  "Updates canvas size based on viewport while maintaining aspect ratio"
+  []
+  (let [canvas-elem (canvas)
+        viewport-width (.-innerWidth js/window)
+        viewport-height (.-innerHeight js/window)
+        ;; Calculate maximum size maintaining aspect ratio
+        scale-by-width (/ viewport-width BASE-DISPLAYWIDTH)
+        scale-by-height (/ viewport-height BASE-DISPLAYHEIGHT)
+        chosen-scale (min scale-by-width scale-by-height) ; Allow scaling up or down
+        new-width (* BASE-DISPLAYWIDTH chosen-scale)
+        new-height (* BASE-DISPLAYHEIGHT chosen-scale)]
+    ;; Debug logging
+    (.log js/console (str "Updating canvas size: viewport=" viewport-width "x" viewport-height
+                         ", scale=" chosen-scale ", canvas=" new-width "x" new-height))
+    ;; Update canvas dimensions
+    (set! (.-width canvas-elem) new-width)
+    (set! (.-height canvas-elem) new-height)
+    ;; Update scaling state
+    (reset! scale-factor chosen-scale)
+    (reset! canvas-dimensions {:width new-width :height new-height})
+    ;; Set CSS size to match canvas size
+    (set! (.. canvas-elem -style -width) (str new-width "px"))
+    (set! (.. canvas-elem -style -height) (str new-height "px"))))
+
+(defn setup-resize-handler!
+  "Sets up window resize event handler"
+  []
+  (when-not @resize-handler-setup
+    (.log js/console "Setting up resize handler")
+    (.addEventListener js/window "resize" update-canvas-size!)
+    (reset! resize-handler-setup true)))
+
 (defn draw-block-fun [total-rows fun {pt :position color :type}]
   (let [[x y] (dispm/pt-to-display-pt (disp-info total-rows) pt)]
-    (fun (draw-context) (name color) x y BLOCKWIDTH BLOCKHEIGHT)))
+    (fun (draw-context) (name color) x y (BLOCKWIDTH) (BLOCKHEIGHT))))
 
 (defn render-cursor [total-rows {pt :origin :as cursor}]
   (let [context (draw-context)
         nofill-block (fn [pt]
                        (let [[x y] (dispm/pt-to-display-pt (disp-info total-rows) pt)]
-                         (orect context "black" x y BLOCKWIDTH BLOCKHEIGHT)))]
+                         (orect context "black" x y (BLOCKWIDTH) (BLOCKHEIGHT))))]
     (nofill-block pt)
     (nofill-block (pt/point-add pt (pt/point 1 0)))))
 
@@ -57,17 +102,22 @@
   (let [context (draw-context)]
     (fill context "black")
     (set! (.-font context) "bold 12px sans-serif")
-    (.fillText context (str "Clock " clock), BLOCKWIDTH, 10)))
+    (.fillText context (str "Clock " clock), (BLOCKWIDTH), 10)))
+
+(defn debug-mode? []
+  "Check if debug query parameter is present"
+  (let [url-params (js/URLSearchParams. (.-search (.-location js/window)))]
+    (.has url-params "debug")))
 
 (defn render-fps [fps]
   (let [context (draw-context)]
     (fill context "red")
     (set! (.-font context) "bold 12px sans-serif")
-    (.fillText context (str "FPS " fps), (* 5 BLOCKWIDTH), 10)))
+    (.fillText context (str "FPS " fps), (* 5 (BLOCKWIDTH)), 10)))
 
 
 (defn draw-grid []
-  (rect (draw-context) WHITE 0 0 DISPLAYWIDTH DISPLAYHEIGHT))
+  (rect (draw-context) BACKGROUND-COLOR 0 0 (DISPLAYWIDTH) (DISPLAYHEIGHT)))
 
 (declare draw-block)
 
@@ -211,6 +261,8 @@
     (doall (map (partial draw-block total-rows) (:blocks grid))))
 
 (defn init[]
+  (update-canvas-size!)
+  (setup-resize-handler!)
   (draw-grid)
   (gi/default))
 
@@ -227,13 +279,15 @@
     (screens/show-game-over-screen!)))
 
 (defn render-game-active [{{clock :clock {rows :rows} :grid} :game cursor :cursor}]
-  (render-clock clock)
+  (when (debug-mode?)
+    (render-clock clock))
   (render-cursor rows cursor))
 
 (defn render[{{{rows :rows :as grid} :grid clock :clock :as game} :game cursor :cursor :as gi} fps]
   (draw-grid)
   (render-grid grid)
-  (render-fps fps)
+  (when (debug-mode?)
+    (render-fps fps))
   (if (game/game-over? game)
     (render-game-over gi)
     (render-game-active gi)))
