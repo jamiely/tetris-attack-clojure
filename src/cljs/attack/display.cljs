@@ -5,7 +5,8 @@
             [attack.grid :as grid]
             [attack.color :as color]
             [attack.display-math :as dispm]
-            [attack.game-interface :as gi]))
+            [attack.game-interface :as gi]
+            [attack.screens :as screens]))
 
 (def WHITE "white")
 (def BLUE "blue")
@@ -216,13 +217,14 @@
 (defn step [game-interface]
   (gi/step game-interface))
 
+;; Track if we've already shown the game over screen
+(def game-over-shown (atom false))
+
 (defn render-game-over [gi]
-  (let [context (draw-context)
-        [x y] [BLOCKWIDTH (/ DISPLAYHEIGHT 2)]]
-    (rect context "black" x (- y BLOCKHEIGHT) DISPLAYWIDTH (* BLOCKHEIGHT 2))
-    (fill context "white")
-    (set! (.-font context) "bold 20px sans-serif")
-    (.fillText context (str "Game over"), (+ x BLOCKWIDTH), y)))
+  (when-not @game-over-shown
+    ;; Show the game over screen only once
+    (reset! game-over-shown true)
+    (screens/show-game-over-screen!)))
 
 (defn render-game-active [{{clock :clock {rows :rows} :grid} :game cursor :cursor}]
   (render-clock clock)

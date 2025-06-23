@@ -111,6 +111,8 @@
   "Initialize the game when starting from title screen"
   (log (str "Initializing game " @GI))
   (reset! GI (gi/default))
+  ;; Reset game over flag for new game
+  (reset! disp/game-over-shown false)
   (initial-render)
   (begin-stepping)
   (begin-rendering)
