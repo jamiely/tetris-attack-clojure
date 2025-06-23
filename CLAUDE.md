@@ -14,7 +14,7 @@ clojure -P
 
 # Start development server with hot reloading
 npx shadow-cljs watch app
-# Game accessible at http://localhost:8080/game.html
+# Game accessible at http://localhost:8080/
 
 # Compile for production (advanced compilation)
 npx shadow-cljs release app

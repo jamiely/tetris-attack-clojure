@@ -14,7 +14,7 @@ A game to practice clojure and clojurescript. Only works in Chrome.
 
     # Start development server with hot reloading
     npx shadow-cljs watch app
-    # Navigate to: http://localhost:8080/game.html
+    # Navigate to: http://localhost:8080/
 
 ## Tests
 
