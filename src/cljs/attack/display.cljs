@@ -98,6 +98,62 @@
   (fill context color)
   (.fillRect context x y w h))
 
+(defn create-gradient [context x y w h color1 color2]
+  "Create a linear gradient from top to bottom"
+  (let [gradient (.createLinearGradient context x y x (+ y h))]
+    (.addColorStop gradient 0 color1)
+    (.addColorStop gradient 1 color2)
+    gradient))
+
+(defn draw-3d-block [context color x y w h]
+  "Draw a block with enhanced depth effect, gradients, and beveled edges"
+  (let [bevel-size 3
+        inner-x (+ x bevel-size)
+        inner-y (+ y bevel-size)
+        inner-w (- w (* 2 bevel-size))
+        inner-h (- h (* 2 bevel-size))
+        base-colors {"#FF0000" {:light "#FF6666" :dark "#990000" :highlight "#FFAAAA" :shadow "#660000"}
+                     "#00FF00" {:light "#66FF66" :dark "#009900" :highlight "#AAFFAA" :shadow "#006600"}
+                     "#0000FF" {:light "#6666FF" :dark "#000099" :highlight "#AAAAFF" :shadow "#000066"}
+                     "#FFFF00" {:light "#FFFF66" :dark "#999900" :highlight "#FFFFAA" :shadow "#666600"}
+                     "#FF6699" {:light "#FFAACC" :dark "#CC3366" :highlight "#FFDDEE" :shadow "#992244"}
+                     "#00FFFF" {:light "#66FFFF" :dark "#009999" :highlight "#AAFFFF" :shadow "#006666"}
+                     "#9900CC" {:light "#CC66FF" :dark "#660099" :highlight "#DDAAFF" :shadow "#440066"}
+                     "#996633" {:light "#CC9966" :dark "#663300" :highlight "#DDBB88" :shadow "#442200"}
+                     "black" {:light "#666666" :dark "#000000" :highlight "#999999" :shadow "#000000"}
+                     "gray" {:light "#AAAAAA" :dark "#555555" :highlight "#CCCCCC" :shadow "#333333"}}
+        colors (get base-colors color {:light "#AAAAAA" :dark "#555555" :highlight "#CCCCCC" :shadow "#333333"})]
+    
+    ;; Main block gradient fill
+    (let [gradient (create-gradient context inner-x inner-y inner-w inner-h 
+                                   (:light colors) (:dark colors))]
+      (set! (.-fillStyle context) gradient)
+      (.fillRect context inner-x inner-y inner-w inner-h))
+    
+    ;; Top highlight edge
+    (set! (.-fillStyle context) (:highlight colors))
+    (.fillRect context x y w bevel-size)
+    
+    ;; Left highlight edge  
+    (.fillRect context x y bevel-size h)
+    
+    ;; Bottom shadow edge
+    (set! (.-fillStyle context) (:shadow colors))
+    (.fillRect context x (+ y h (- bevel-size)) w bevel-size)
+    
+    ;; Right shadow edge
+    (.fillRect context (+ x w (- bevel-size)) y bevel-size h)
+    
+    ;; Inner border for definition
+    (set! (.-strokeStyle context) (:dark colors))
+    (set! (.-lineWidth context) 1)
+    (.strokeRect context (+ inner-x 0.5) (+ inner-y 0.5) (- inner-w 1) (- inner-h 1))
+    
+    ;; Outer border
+    (set! (.-strokeStyle context) "#333333")
+    (set! (.-lineWidth context) 1)
+    (.strokeRect context (+ x 0.5) (+ y 0.5) (- w 1) (- h 1))))
+
 (defn render-clock [clock]
   (let [context (draw-context)]
     (fill context "black")
@@ -183,7 +239,7 @@
                   :swap-empty (partial draw-swap-empty-block total-rows)
                   :disappear (partial draw-disappear-block total-rows)
                   :falling (partial draw-falling-block total-rows)
-                  (partial draw-block-fun total-rows rect))]
+                  (partial draw-block-fun total-rows draw-3d-block))]
     (fn-draw block)))
 
 (defn out-of-bounds? [{{rows :rows cols :cols} :grid} [x y]]
