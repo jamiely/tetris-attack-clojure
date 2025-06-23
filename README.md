@@ -2,7 +2,7 @@
 
 A modern Tetris Attack/Panel de Pon clone implemented in Clojure/ClojureScript with dynamic canvas scaling and responsive design.
 
-[![Build Status](https://travis-ci.org/jamiely/simple-clojure-game.png)](https://travis-ci.org/jamiely/simple-clojure-game)
+![Build Status](https://github.com/jamiely/tetris-attack-clojure/actions/workflows/deploy.yml/badge.svg)
 
 ## Usage
 
