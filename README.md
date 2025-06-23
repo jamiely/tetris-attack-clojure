@@ -52,10 +52,24 @@ Note: Tests follow standard Clojure naming convention with `-test` suffix for au
     # Or use the shadow-cljs UI
     npx shadow-cljs cljs-repl app
 
-## Media
+## Screenshots
 
-![8c8eb47](media/8c8eb47.png)
-![0b1d1da gameover](media/0b1d1da-gameover.png)
+### Title Screen
+![Title Screen](media/title-screen.png)
+
+### Gameplay 
+![Gameplay](media/gameplay-normal.png)
+
+### Debug Mode (with FPS and Clock)
+![Debug Mode](media/gameplay-debug.png)
+
+### Instructions Screen
+![Instructions](media/instructions-screen.png)
+
+### Game Over Screen
+![Game Over](media/game-over-screen.png)
+
+## Historical Videos
 
 * 89aad03 - http://youtu.be/wasgwLAFmwY
 * 27463f8 - http://youtu.be/WWK8RFEY04I
