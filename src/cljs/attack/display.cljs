@@ -15,7 +15,7 @@
 (def BASE-BLOCKWIDTH 30)
 (def BASE-BLOCKHEIGHT 30)
 (def BASE-DISPLAYHEIGHT 400)
-(def BASE-DISPLAYWIDTH (* 9 BASE-BLOCKWIDTH))
+(def BASE-DISPLAYWIDTH (* 6 BASE-BLOCKWIDTH))
 (def BASE-ASPECT-RATIO (/ BASE-DISPLAYWIDTH BASE-DISPLAYHEIGHT))
 
 ;; Scaling state
@@ -80,14 +80,18 @@
     (reset! resize-handler-setup true)))
 
 (defn draw-block-fun [total-rows fun {pt :position color :type}]
-  (let [[x y] (dispm/pt-to-display-pt (disp-info total-rows) pt)]
-    (fun (draw-context) (name color) x y (BLOCKWIDTH) (BLOCKHEIGHT))))
+  (let [[x y] (dispm/pt-to-display-pt (disp-info total-rows) pt)
+        ;; Adjust x to account for 1-based grid coordinates
+        adj-x (- x (BLOCKWIDTH))]
+    (fun (draw-context) (name color) adj-x y (BLOCKWIDTH) (BLOCKHEIGHT))))
 
 (defn render-cursor [total-rows {pt :origin :as cursor}]
   (let [context (draw-context)
         nofill-block (fn [pt]
-                       (let [[x y] (dispm/pt-to-display-pt (disp-info total-rows) pt)]
-                         (orect context "black" x y (BLOCKWIDTH) (BLOCKHEIGHT))))]
+                       (let [[x y] (dispm/pt-to-display-pt (disp-info total-rows) pt)
+                             ;; Adjust x to account for 1-based grid coordinates
+                             adj-x (- x (BLOCKWIDTH))]
+                         (orect context "black" adj-x y (BLOCKWIDTH) (BLOCKHEIGHT))))]
     (nofill-block pt)
     (nofill-block (pt/point-add pt (pt/point 1 0)))))
 
@@ -220,13 +224,16 @@
         apos (pt/point (+ ox length) (+ oy height))
         [ox' oy'] (dispm/pt-to-display-pt (disp-info total-rows) [ox oy])
         [ax' ay'] (dispm/pt-to-display-pt (disp-info total-rows) apos)
-        width (- ax' ox')
+        ;; Adjust x coordinates to account for 1-based grid coordinates
+        adj-ox' (- ox' (BLOCKWIDTH))
+        adj-ax' (- ax' (BLOCKWIDTH))
+        width (- adj-ax' adj-ox')
         height (- oy' ay')
         context (draw-context)]
   (draw-garbage-block-with-color total-rows inner :AAA)
   (doall (map #(draw-block total-rows (brighten-block % 0.9))
               pending))
-  (orect context "black" ox' oy' width height)))
+  (orect context "black" adj-ox' oy' width height)))
    
 (defn draw-garbage-block [total-rows block]
   (draw-garbage-block-with-color total-rows block :black))
