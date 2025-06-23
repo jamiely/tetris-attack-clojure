@@ -11,7 +11,8 @@ src/cljs/crossovers
 out
 repl
 target
-resources/public/js/game.js
+resources/public/js/
+!resources/public/js/main.js
 
 Gemfile.lock
 .lein-repl-history
