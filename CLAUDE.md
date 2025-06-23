@@ -15,6 +15,7 @@ clojure -P
 # Start development server with hot reloading
 npx shadow-cljs watch app
 # Game accessible at http://localhost:8080/
+# Debug mode: http://localhost:8080/?debug (shows FPS and clock)
 
 # Compile for production (advanced compilation)
 npx shadow-cljs release app
@@ -52,14 +53,23 @@ clojure -M:kaocha     # Advanced kaocha features
 - **Match Detection**: Recursive algorithms for finding and clearing matches
 - **Cursor System**: Player-controlled cursor for block manipulation
 
+### Display System
+- **Dynamic Canvas Scaling**: Canvas automatically resizes to fill available viewport space while maintaining aspect ratio
+- **Responsive Design**: All game elements (blocks, cursor, graphics) scale proportionally with canvas size
+- **Live Resizing**: Window resize events trigger automatic canvas and element rescaling
+- **Debug Mode**: Clock and FPS display conditionally with `?debug` query parameter
+- **Seamless Integration**: Canvas background matches page background for borderless appearance
+
 ## Key Files
-- `project.clj` - Leiningen configuration with ClojureScript build settings
+- `shadow-cljs.edn` - ClojureScript build configuration
 - `src/clj/attack/core.clj` - Main game state and logic
 - `src/clj/attack/grid.clj` - Grid operations and collision detection
 - `src/clj/attack/block.clj` - Block type definitions and behaviors
-- `src/cljs/attack/main.cljs` - Browser entry point and game loop
-- `src/cljs/attack/render.cljs` - HTML5 Canvas rendering
-- `src/cljs/attack/input.cljs` - Keyboard input handling
+- `src/cljs/attack/entrypoint.cljs` - Browser entry point and initialization
+- `src/cljs/attack/display.cljs` - Canvas rendering and dynamic scaling system
+- `src/cljs/attack/screens.cljs` - Screen management (title, game over, instructions)
+- `resources/public/index.html` - Main HTML page
+- `resources/public/css/styles.css` - Game styling and responsive layout
 
 ## Testing
 
