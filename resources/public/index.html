@@ -4,80 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tetris Attack Clone</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: #f5f5f5;
-      color: #333;
-      line-height: 1.6;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-      display: flex;
-      gap: 40px;
-      align-items: flex-start;
-    }
-    
-    .info-section {
-      flex: 1;
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .game-section {
-      flex: 0 0 auto;
-    }
-    
-    h1 {
-      color: #2c3e50;
-      margin-bottom: 20px;
-      font-size: 2.5em;
-    }
-    
-    h2 {
-      color: #34495e;
-      margin: 20px 0 10px 0;
-    }
-    
-    p {
-      margin-bottom: 15px;
-    }
-    
-    ul {
-      margin-left: 20px;
-      margin-bottom: 15px;
-    }
-    
-    li {
-      margin-bottom: 5px;
-    }
-    
-    a {
-      color: #3498db;
-      text-decoration: none;
-    }
-    
-    a:hover {
-      text-decoration: underline;
-    }
-    
-    #canvas {
-      border: 2px solid #34495e;
-      border-radius: 4px;
-      background: white;
-    }
-  </style>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
   <div class="container">
@@ -117,6 +44,38 @@
       <canvas id="canvas" width="250" height="400"></canvas>
     </div>
   </div>
+
+  <!-- Title Screen Overlay -->
+  <div id="title-screen" class="screen-overlay">
+    <div class="screen-content">
+      <h1 class="screen-title">Tetris Attack</h1>
+      <div>
+        <button id="start-game-btn" class="game-button">Start Game</button>
+        <button id="show-instructions-btn" class="game-button">Instructions</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instructions Screen Overlay -->
+  <div id="instructions-screen" class="screen-overlay hidden">
+    <div class="screen-content">
+      <h2 class="screen-title">How to Play</h2>
+      <div style="text-align: left; margin-bottom: 20px;">
+        <h3>Objective</h3>
+        <p>Clear the colored blocks before the stack rises to the top. Garbage blocks will fall from the top of the screen. You can clear them by creating an adjacent match.</p>
+        
+        <h3>Controls</h3>
+        <ul>
+          <li>ENTER/SPACE - Swap blocks</li>
+          <li>Arrow keys - Move cursor</li>
+          <li>N - Restart the game</li>
+          <li>R - Force another row to be added</li>
+        </ul>
+      </div>
+      <button id="back-to-title-btn" class="game-button">Back to Title</button>
+    </div>
+  </div>
+
   <script src="js/main.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
