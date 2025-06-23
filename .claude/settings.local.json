@@ -24,7 +24,12 @@
       "Bash(mise install:*)",
       "Bash(mise use:*)",
       "Bash(mise exec:*)",
-      "Bash(clojure:*)"
+      "Bash(clojure:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_console_messages"
     ],
     "deny": []
   }
